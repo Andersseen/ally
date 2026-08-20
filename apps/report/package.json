@@ -1,0 +1,30 @@
+{
+  "name": "@ally/report",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Static Astro report for Ally audits",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check",
+    "test:e2e": "playwright test",
+    "clean": "rm -rf dist .astro .turbo playwright-report test-results"
+  },
+  "dependencies": {
+    "@ally/core": "workspace:*",
+    "@ally/reporter-json": "workspace:*",
+    "@tailwindcss/vite": "catalog:",
+    "astro": "catalog:",
+    "tailwindcss": "catalog:"
+  },
+  "devDependencies": {
+    "@astrojs/check": "catalog:",
+    "@playwright/test": "catalog:",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

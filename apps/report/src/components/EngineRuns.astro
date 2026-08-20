@@ -1,0 +1,51 @@
+---
+import type { EngineRun } from '@ally/core';
+import { formatDuration } from '../lib/format.js';
+
+interface Props {
+  engines: readonly EngineRun[];
+}
+
+const { engines } = Astro.props;
+---
+
+<section aria-labelledby="engines-heading">
+  <h2 id="engines-heading" class="text-lg font-semibold">Engines executed</h2>
+
+  <ul class="mt-3 space-y-2" role="list">
+    {
+      engines.map((run) => (
+        <li class="rounded-lg border border-slate-200 bg-white px-4 py-3">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 class="font-medium">
+              <a
+                class="underline decoration-slate-400 underline-offset-2 hover:decoration-slate-900"
+                href={run.engine.homepage}
+              >
+                {run.engine.name}
+              </a>
+            </h3>
+            <p class="text-sm text-slate-600">
+              {/* Status is stated in words, never by colour alone. */}
+              {run.status === 'ok' ? (
+                <span>Completed — {run.findingCount} findings</span>
+              ) : (
+                <span class="font-medium text-red-800">Failed</span>
+              )}
+              <span aria-hidden="true"> · </span>
+              <span>{formatDuration(run.durationMs)}</span>
+            </p>
+          </div>
+
+          {run.status === 'failed' && (
+            <p class="mt-2 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-950">
+              {run.error.message}
+            </p>
+          )}
+
+          <p class="mt-2 text-xs text-slate-500">Licensed under {run.engine.license}</p>
+        </li>
+      ))
+    }
+  </ul>
+</section>

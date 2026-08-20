@@ -1,0 +1,17 @@
+---
+// Shown whenever the report renders bundled fixture data rather than a real
+// audit. Being unmistakable about this matters more than being subtle.
+---
+
+<aside
+  aria-labelledby="sample-data-heading"
+  class="rounded-lg border-2 border-amber-500 bg-amber-50 px-4 py-3 text-amber-950"
+>
+  <h2 id="sample-data-heading" class="font-semibold">Sample data</h2>
+  <p class="mt-1 text-sm">
+    This page is rendering built-in fixture data, not a real audit. Run an audit and rebuild with
+    <code class="rounded bg-amber-100 px-1 py-0.5 font-mono text-xs">ALLY_AUDIT_FILE</code> pointing at
+    an <code class="rounded bg-amber-100 px-1 py-0.5 font-mono text-xs">audit.json</code> to see real
+    results.
+  </p>
+</aside>

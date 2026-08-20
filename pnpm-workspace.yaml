@@ -1,0 +1,30 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Single source of truth for third-party versions across the workspace.
+# Packages reference these with the "catalog:" protocol.
+catalog:
+  '@astrojs/check': ^0.9.10
+  '@playwright/test': ^1.62.1
+  '@tailwindcss/vite': ^4.3.3
+  '@types/node': ^22.19.0
+  astro: ^7.2.4
+  axe-core: ^4.13.0
+  eslint: ^10.8.1
+  eslint-config-prettier: ^10.1.8
+  eslint-plugin-astro: ^3.1.0
+  eslint-plugin-jsx-a11y: ^6.10.2
+  playwright: ^1.62.1
+  prettier: ^3.9.6
+  prettier-plugin-astro: ^0.14.1
+  tailwindcss: ^4.3.3
+  turbo: ^2.10.11
+  typescript: ^6.0.3
+  typescript-eslint: ^8.67.0
+  vite: ^8.2.2
+  vitest: ^4.1.11
+
+# esbuild ships a platform binary via its install script; Vite needs it.
+onlyBuiltDependencies:
+  - esbuild

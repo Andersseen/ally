@@ -1,0 +1,15 @@
+Ally
+Copyright 2026 The Ally Authors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Ally orchestrates third-party accessibility engines. Those engines are consumed
+as dependencies, are not redistributed as part of this source tree, and remain
+under their own licenses:
+
+  - axe-core (Deque Systems)        MPL-2.0    https://github.com/dequelabs/axe-core
+  - IBM Equal Access (IBM)          Apache-2.0 https://github.com/IBMa/equal-access
+  - Siteimprove Alfa (Siteimprove)  MIT        https://github.com/Siteimprove/alfa
+  - QualWeb                         ISC        https://github.com/qualweb/core
+
+Ally is not affiliated with or endorsed by any of these projects.

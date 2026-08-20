@@ -1,0 +1,47 @@
+{
+  "name": "ally",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "An experimental open-source accessibility audit orchestrator",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.30.1",
+  "engines": {
+    "node": ">=22.12.0",
+    "pnpm": ">=10.0.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "test:e2e": "pnpm --filter @ally/report test:e2e",
+    "typecheck": "turbo run build typecheck && tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm test:e2e",
+    "demo:audit": "node scripts/demo-audit.ts",
+    "e2e:install": "playwright install chromium",
+    "clean": "turbo run clean && rm -rf node_modules/.cache .turbo"
+  },
+  "devDependencies": {
+    "@ally/browser": "workspace:*",
+    "@ally/config": "workspace:*",
+    "@ally/core": "workspace:*",
+    "@ally/engine-axe": "workspace:*",
+    "@ally/reporter-json": "workspace:*",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-astro": "catalog:",
+    "eslint-plugin-jsx-a11y": "catalog:",
+    "playwright": "catalog:",
+    "prettier": "catalog:",
+    "prettier-plugin-astro": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:"
+  }
+}
