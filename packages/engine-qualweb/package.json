@@ -2,7 +2,7 @@
   "name": "@ally/engine-qualweb",
   "version": "0.0.0",
   "type": "module",
-  "description": "QualWeb engine adapter for Ally (scaffold)",
+  "description": "QualWeb engine adapter for Ally",
   "license": "Apache-2.0",
   "sideEffects": false,
   "exports": {
@@ -17,13 +17,23 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "clean": "rm -rf dist .turbo"
+    "clean": "rm -rf dist .turbo",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@ally/core": "workspace:*"
+    "@ally/browser": "workspace:*",
+    "@ally/core": "workspace:*",
+    "@qualweb/act-rules": "catalog:",
+    "@qualweb/best-practices": "catalog:",
+    "@qualweb/locale": "catalog:",
+    "@qualweb/qw-page": "catalog:",
+    "@qualweb/util": "catalog:",
+    "@qualweb/wcag-techniques": "catalog:"
   },
   "devDependencies": {
     "@ally/config": "workspace:*",
-    "typescript": "catalog:"
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

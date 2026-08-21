@@ -1,0 +1,34 @@
+{
+  "name": "@ally/analyzer-keyboard",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Keyboard and focus-order analyzer for Ally",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@ally/browser": "workspace:*",
+    "@ally/core": "workspace:*",
+    "tabbable": "catalog:"
+  },
+  "devDependencies": {
+    "@ally/config": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

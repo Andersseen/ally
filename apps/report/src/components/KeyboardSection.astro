@@ -1,0 +1,151 @@
+---
+import type { KeyboardReport } from '@ally/core';
+import { formatDuration } from '../lib/format.js';
+
+interface Props {
+  keyboard: KeyboardReport;
+}
+
+const { keyboard } = Astro.props;
+
+const ANOMALY_LABELS: Record<string, string> = {
+  'positive-tabindex': 'Positive tabindex',
+  'unreachable-candidate': 'Possibly unreachable',
+  'unexpected-stop': 'Unexpected tab stop',
+  'focus-loss': 'Focus loss',
+  'potential-trap': 'Potential keyboard trap',
+};
+
+const STOP_REASONS: Record<string, string> = {
+  completed: 'Traversal completed a full pass.',
+  'budget-exhausted': 'Traversal stopped at its Tab-press budget.',
+  timeout: 'Traversal stopped at its time budget.',
+  'cycle-detected': 'Traversal stopped because focus kept repeating the same elements.',
+  'focus-lost': 'Traversal stopped because focus disappeared.',
+};
+---
+
+<section aria-labelledby="keyboard-heading">
+  <h2 id="keyboard-heading" class="text-lg font-semibold">Keyboard and focus</h2>
+
+  {
+    keyboard.status === 'failed' ? (
+      <p class="mt-3 rounded-lg border border-red-400 bg-red-50 px-4 py-3 text-sm text-red-950 dark:border-red-500/60 dark:bg-red-950/40 dark:text-red-100">
+        <strong class="font-semibold">The keyboard analysis failed.</strong> No keyboard evidence
+        was collected for this page: {keyboard.error.message}
+      </p>
+    ) : (
+      <>
+        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+          Ally pressed Tab and Shift+Tab and recorded where focus landed. It compares that with the
+          sequential focus order <code class="font-mono">tabbable</code> predicts. Nothing was
+          clicked and no other key was pressed.
+        </p>
+
+        <dl class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div class="rounded-lg border border-slate-300 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+            <dt class="text-sm text-slate-600 dark:text-slate-400">Expected tabbable</dt>
+            <dd class="mt-1 text-2xl font-semibold tabular-nums">{keyboard.expected.length}</dd>
+          </div>
+          <div class="rounded-lg border border-slate-300 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+            <dt class="text-sm text-slate-600 dark:text-slate-400">Forward stops</dt>
+            <dd class="mt-1 text-2xl font-semibold tabular-nums">
+              {keyboard.forward.stops.length}
+            </dd>
+          </div>
+          <div class="rounded-lg border border-slate-300 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+            <dt class="text-sm text-slate-600 dark:text-slate-400">Reverse stops</dt>
+            <dd class="mt-1 text-2xl font-semibold tabular-nums">
+              {keyboard.reverse.stops.length}
+            </dd>
+          </div>
+          <div class="rounded-lg border border-slate-300 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+            <dt class="text-sm text-slate-600 dark:text-slate-400">Duration</dt>
+            <dd class="mt-1 text-2xl font-semibold tabular-nums">
+              {formatDuration(keyboard.durationMs)}
+            </dd>
+          </div>
+        </dl>
+
+        <p
+          class="mt-2 text-sm text-slate-600 dark:text-slate-400"
+          data-testid="keyboard-stop-reason"
+        >
+          {STOP_REASONS[keyboard.forward.stoppedBecause] ?? keyboard.forward.stoppedBecause} Budget:{' '}
+          {keyboard.budget.maxTabPresses} Tab presses, {keyboard.budget.maxShiftTabPresses}{' '}
+          Shift+Tab presses, {formatDuration(keyboard.budget.timeoutMs)}.
+        </p>
+
+        <h3 class="mt-6 text-sm font-semibold text-slate-700 dark:text-slate-300">
+          Keyboard warnings
+        </h3>
+        {keyboard.anomalies.length === 0 ? (
+          <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">
+            The observed focus order matched the expected one, and no anomaly was detected.
+          </p>
+        ) : (
+          <ul class="mt-2 space-y-2" role="list" data-testid="keyboard-anomalies">
+            {keyboard.anomalies.map((anomaly) => (
+              <li class="rounded-lg border border-slate-300 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+                <h4 class="text-sm font-semibold">
+                  {ANOMALY_LABELS[anomaly.kind] ?? anomaly.kind}
+                  <span class="ml-2 font-mono text-xs font-normal text-slate-600 dark:text-slate-400">
+                    {anomaly.kind}
+                  </span>
+                </h4>
+                <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">{anomaly.detail}</p>
+                {anomaly.elements.length > 0 && (
+                  <ul class="mt-2 flex flex-wrap gap-2" role="list">
+                    {anomaly.elements.map((element) => (
+                      <li class="rounded border border-slate-300 px-2 py-0.5 font-mono text-xs dark:border-slate-600">
+                        &lt;{element.tagName}&gt;
+                        {element.label && <span> “{element.label}”</span>}
+                        {element.tabIndex !== undefined && (
+                          <span> tabindex={element.tabIndex}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <h3 class="mt-6 text-sm font-semibold text-slate-700 dark:text-slate-300">Keyboard path</h3>
+        {keyboard.forward.stops.length === 0 ? (
+          <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">
+            Pressing Tab never moved focus to an element on this page.
+          </p>
+        ) : (
+          <ol class="mt-2 space-y-1" data-testid="keyboard-path">
+            {keyboard.forward.stops.map((stop) => (
+              <li class="flex items-baseline gap-3 rounded border border-slate-200 bg-white px-3 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-900">
+                <span class="w-6 shrink-0 text-right font-mono text-xs text-slate-500 dark:text-slate-500">
+                  {stop.order}
+                </span>
+                <span class="font-mono text-xs text-slate-600 dark:text-slate-400">
+                  &lt;{stop.tagName}&gt;
+                </span>
+                <span class="flex-1">
+                  {stop.label === '' ? '(no accessible name)' : stop.label}
+                </span>
+                {stop.tabIndex !== undefined && stop.tabIndex > 0 && (
+                  /* Stated in words, never signalled by colour alone. */
+                  <span class="rounded border border-amber-500 bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-950 dark:border-amber-500/60 dark:bg-amber-950/50 dark:text-amber-100">
+                    tabindex {stop.tabIndex}
+                  </span>
+                )}
+                {!stop.expected && (
+                  <span class="rounded border border-slate-500 px-1.5 py-0.5 text-xs font-medium dark:border-slate-400">
+                    unexpected
+                  </span>
+                )}
+              </li>
+            ))}
+          </ol>
+        )}
+      </>
+    )
+  }
+</section>

@@ -8,3 +8,7 @@ playwright-report
 test-results
 pnpm-lock.yaml
 LICENSE
+
+# Recorded engine output. Written by scripts/capture-fixtures.ts and read
+# verbatim by the normalizer tests, so it is not ours to reformat.
+packages/*/src/__fixtures__

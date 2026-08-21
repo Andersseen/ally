@@ -1,0 +1,11 @@
+{
+  "extends": "@ally/config/tsconfig/browser.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    // The analyzer resolves tabbable's browser bundle from disk before injecting it.
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", "node_modules"]
+}

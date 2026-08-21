@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Missing names — Ally fixture</title>
+    <style>
+      body {
+        margin: 0;
+        background: #ffffff;
+        color: #111827;
+        font-family: system-ui, sans-serif;
+      }
+      .layout {
+        margin: 0 auto;
+        max-width: 40rem;
+        padding: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Missing accessible names. Several engines detect the same problems here,
+      which is what makes this page useful for exercising deduplication.
+    -->
+    <main id="main" class="layout">
+      <h1>Missing names</h1>
+
+      <h2>Unlabelled form controls</h2>
+      <form action="/search" method="get">
+        <input id="query" name="query" type="text" />
+        <select id="scope" name="scope">
+          <option value="all">Everything</option>
+          <option value="docs">Documentation</option>
+        </select>
+        <button type="submit"><span aria-hidden="true">🔍</span></button>
+      </form>
+
+      <h2>Images without text alternatives</h2>
+      <img
+        id="logo"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+        width="32"
+        height="32"
+      />
+      <a href="/home"
+        ><img
+          id="home-icon"
+          src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+          width="32"
+          height="32"
+      /></a>
+
+      <h2>Buttons without names</h2>
+      <button id="empty-button" type="button"></button>
+      <div id="fake-button" role="button" tabindex="0"></div>
+    </main>
+  </body>
+</html>

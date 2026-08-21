@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { AuditContext, AuditEngine } from './engine.js';
 import type { NormalizedFinding } from './finding.js';
+import type { KeyboardAnalysis, KeyboardAnalyzer } from './keyboard.js';
 import { runAudit } from './run-audit.js';
 import type { Severity } from './severity.js';
 
@@ -16,14 +17,25 @@ const context: AuditContext<TestPage> = {
   page: { marker: 'test-page' },
 };
 
-function finding(engineId: string, ruleId: string, severity: Severity): NormalizedFinding {
+let ordinal = 0;
+
+function finding(
+  engineId: string,
+  ruleId: string,
+  severity: Severity,
+  path?: string,
+): NormalizedFinding {
+  ordinal += 1;
   return {
-    id: `${engineId}:${ruleId}`,
+    id: `${engineId}:${ruleId}:${ordinal}`,
     engineId,
     ruleId,
+    category: 'color-contrast',
+    standard: 'wcag',
     severity,
     title: `${ruleId} failed`,
-    wcag: [],
+    wcag: [{ id: '1.4.3', level: 'AA' }],
+    ...(path === undefined ? {} : { target: { path } }),
     evidence: [],
   };
 }
@@ -37,7 +49,7 @@ function fakeEngine(
     name: `Fake ${id}`,
     homepage: `https://example.com/${id}`,
     license: 'MIT',
-    run: () => Promise.resolve({ findings }),
+    run: () => Promise.resolve({ raw: { findings }, rawCount: findings.length, version: '1.2.3' }),
     normalize: (raw) => raw.findings,
   };
 }
@@ -53,30 +65,76 @@ function failingEngine(id: string, error: Error): AuditEngine<TestPage, never> {
   };
 }
 
+function keyboardAnalyzer(
+  analysis: KeyboardAnalysis,
+  findings: readonly NormalizedFinding[] = [],
+): KeyboardAnalyzer<TestPage> {
+  return {
+    id: 'keyboard',
+    name: 'Ally keyboard analyzer',
+    homepage: 'https://example.com/keyboard',
+    license: 'Apache-2.0',
+    analyze: () => Promise.resolve(analysis),
+    toFindings: () => findings,
+  };
+}
+
+const analysis: KeyboardAnalysis = {
+  status: 'ok',
+  durationMs: 120,
+  budget: { maxTabPresses: 100, maxShiftTabPresses: 25, timeoutMs: 15_000 },
+  expected: [{ path: '/html[1]/body[1]/a[1]', tagName: 'a', label: 'Home' }],
+  forward: {
+    stops: [
+      { path: '/html[1]/body[1]/a[1]', tagName: 'a', label: 'Home', order: 1, expected: true },
+    ],
+    keyPresses: 1,
+    stoppedBecause: 'completed',
+  },
+  reverse: { stops: [], keyPresses: 0, stoppedBecause: 'completed' },
+  anomalies: [],
+};
+
 describe('runAudit', () => {
   it('aggregates findings from every engine and summarizes them by severity', async () => {
     const { result } = await runAudit({
       context,
       clock: frozenClock,
       engines: [
-        fakeEngine('alpha', [finding('alpha', 'image-alt', 'critical')]),
+        fakeEngine('alpha', [finding('alpha', 'image-alt', 'critical', '/html[1]/img[1]')]),
         fakeEngine('beta', [
-          finding('beta', 'color-contrast', 'serious'),
-          finding('beta', 'region', 'moderate'),
+          finding('beta', 'color-contrast', 'serious', '/html[1]/p[1]'),
+          finding('beta', 'region', 'moderate', '/html[1]/div[1]'),
         ]),
       ],
     });
 
-    expect(result.findings).toHaveLength(3);
     expect(result.summary.totalFindings).toBe(3);
+    expect(result.summary.uniqueFindings).toBe(3);
     expect(result.summary.bySeverity).toEqual({
       critical: 1,
       serious: 1,
       moderate: 1,
       minor: 0,
+      info: 0,
     });
     expect(result.summary.enginesSucceeded).toBe(2);
     expect(result.summary.enginesFailed).toBe(0);
+  });
+
+  it('deduplicates the same problem seen by two engines', async () => {
+    const { result } = await runAudit({
+      context,
+      clock: frozenClock,
+      engines: [
+        fakeEngine('alpha', [finding('alpha', 'color-contrast', 'serious', '/html[1]/p[1]')]),
+        fakeEngine('beta', [finding('beta', 'contrast', 'moderate', '/html[1]/p[1]')]),
+      ],
+    });
+
+    expect(result.summary.totalFindings).toBe(2);
+    expect(result.summary.uniqueFindings).toBe(1);
+    expect(result.findings[0]?.engineAgreement).toBe(2);
   });
 
   it('records a failing engine without losing the other engines results', async () => {
@@ -96,6 +154,98 @@ describe('runAudit', () => {
     expect(result.findings).toHaveLength(1);
     expect(result.summary.enginesFailed).toBe(1);
     expect(result.summary.enginesSucceeded).toBe(1);
+  });
+
+  it('treats a failed engine as missing coverage, never as a finding', async () => {
+    const { result } = await runAudit({
+      context,
+      clock: frozenClock,
+      engines: [failingEngine('broken', new Error('nope')), fakeEngine('healthy', [])],
+    });
+
+    expect(result.score.value).toBe(100);
+    expect(result.coverage).toEqual({
+      enginesConfigured: 2,
+      enginesSucceeded: 1,
+      keyboardAnalysis: 'skipped',
+    });
+  });
+
+  it('reports what each engine contributed', async () => {
+    const { result } = await runAudit({
+      context,
+      clock: frozenClock,
+      engines: [
+        fakeEngine('alpha', [
+          finding('alpha', 'color-contrast', 'serious', '/html[1]/p[1]'),
+          finding('alpha', 'image-alt', 'critical', '/html[1]/img[1]'),
+        ]),
+        fakeEngine('beta', [finding('beta', 'contrast', 'serious', '/html[1]/p[1]')]),
+      ],
+    });
+
+    const [alpha, beta] = result.contributions;
+    expect(alpha).toMatchObject({
+      engineId: 'alpha',
+      status: 'ok',
+      rawFindings: 2,
+      normalizedFindings: 2,
+      uniqueContributions: 1,
+      sharedContributions: 1,
+    });
+    expect(beta).toMatchObject({
+      engineId: 'beta',
+      uniqueContributions: 0,
+      sharedContributions: 1,
+    });
+  });
+
+  it('carries an engine note through to the artifact', async () => {
+    const degraded: AuditEngine<TestPage, null> = {
+      id: 'partial',
+      name: 'Partially working',
+      homepage: 'https://example.com/partial',
+      license: 'MIT',
+      run: () =>
+        Promise.resolve({
+          raw: null,
+          rawCount: 2,
+          notes: ['The act-rules module did not run: it threw.'],
+        }),
+      normalize: () => [],
+    };
+
+    const { result } = await runAudit({ context, clock: frozenClock, engines: [degraded] });
+    const [run] = result.engines;
+
+    // An engine that ran but lost part of itself is neither `ok` nor `failed`
+    // on its own — the run succeeded, with less coverage than intended.
+    expect(run?.status).toBe('ok');
+    expect(run?.status === 'ok' ? run.notes : undefined).toEqual([
+      'The act-rules module did not run: it threw.',
+    ]);
+    expect(result.summary.enginesSucceeded).toBe(1);
+    expect(result.summary.enginesFailed).toBe(0);
+  });
+
+  it('omits notes entirely when a run was not degraded', async () => {
+    const { result } = await runAudit({
+      context,
+      clock: frozenClock,
+      engines: [fakeEngine('alpha', [])],
+    });
+
+    expect(result.engines[0]).not.toHaveProperty('notes');
+  });
+
+  it('records the engine version an adapter resolved at run time', async () => {
+    const { result } = await runAudit({
+      context,
+      clock: frozenClock,
+      engines: [fakeEngine('alpha', [])],
+    });
+
+    expect(result.engines[0]?.engine.version).toBe('1.2.3');
   });
 
   it('keeps raw engine output out of the normalized result', async () => {
@@ -119,14 +269,46 @@ describe('runAudit', () => {
     expect(raw.has('broken')).toBe(false);
   });
 
-  it('reports unique findings as unknown until deduplication exists', async () => {
+  it('includes keyboard analysis and its findings when an analyzer is supplied', async () => {
+    const anomaly = finding('keyboard', 'positive-tabindex', 'moderate', '/html[1]/button[1]');
+    const { result, raw } = await runAudit({
+      context,
+      clock: frozenClock,
+      engines: [],
+      keyboard: keyboardAnalyzer(analysis, [anomaly]),
+    });
+
+    expect(result.keyboard?.status).toBe('ok');
+    expect(result.summary.keyboard).toEqual({
+      expectedTabbable: 1,
+      observedStops: 1,
+      anomalies: 0,
+      stoppedBecause: 'completed',
+    });
+    expect(result.findings).toHaveLength(1);
+    expect(result.coverage.keyboardAnalysis).toBe('ok');
+    expect(raw.has('keyboard')).toBe(true);
+  });
+
+  it('records a failing keyboard analyzer without failing the audit', async () => {
+    const analyzer: KeyboardAnalyzer<TestPage> = {
+      ...keyboardAnalyzer(analysis),
+      analyze: () => Promise.reject(new Error('focus never settled')),
+    };
+
     const { result } = await runAudit({
       context,
       clock: frozenClock,
       engines: [fakeEngine('alpha', [finding('alpha', 'image-alt', 'minor')])],
+      keyboard: analyzer,
     });
 
-    expect(result.summary.uniqueFindings).toBeNull();
+    expect(result.keyboard?.status).toBe('failed');
+    expect(result.keyboard?.status === 'failed' ? result.keyboard.error.message : '').toBe(
+      'focus never settled',
+    );
+    expect(result.coverage.keyboardAnalysis).toBe('failed');
+    expect(result.findings).toHaveLength(1);
   });
 
   it('derives timestamps from the injected clock', async () => {
@@ -147,7 +329,7 @@ describe('runAudit', () => {
       license: 'MIT',
       run: (received) => {
         seen = received;
-        return Promise.resolve(null);
+        return Promise.resolve({ raw: null, rawCount: 0 });
       },
       normalize: () => [],
     };

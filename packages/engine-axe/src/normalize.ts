@@ -1,10 +1,35 @@
-import { findingId } from '@ally/core';
-import type { Evidence, NormalizedFinding, Severity, WcagCriterion, WcagLevel } from '@ally/core';
+import {
+  categoryOf,
+  findingId,
+  normalizeElementPath,
+  truncateHtml,
+  wcagCriterion,
+} from '@ally/core';
+import type {
+  Evidence,
+  FindingTarget,
+  NormalizedFinding,
+  RuleStandard,
+  Severity,
+  WcagCriterion,
+  WcagLevel,
+} from '@ally/core';
 import type { AxeResults, NodeResult, Result } from 'axe-core';
-import { AXE_ENGINE_ID } from './metadata.js';
+import { AXE_ENGINE_ID, AXE_RULE_CATEGORIES } from './metadata.js';
 
-/** Evidence markup is stored for humans to read, not to re-parse. */
-const MAX_HTML_LENGTH = 400;
+/**
+ * axe output, plus the element paths the adapter resolved in the page.
+ *
+ * axe reports CSS selectors, which cannot be compared with what other engines
+ * report. The adapter resolves each selector to Ally's canonical path while the
+ * page is still open, and keeps the result beside the untouched axe output so
+ * that normalization stays a pure function.
+ */
+export interface AxeRawOutput {
+  readonly results: AxeResults;
+  /** CSS selector → canonical element path. */
+  readonly paths: Readonly<Record<string, string>>;
+}
 
 /** axe success-criterion tags look like `wcag143` (1.4.3) or `wcag1412` (1.4.12). */
 const CRITERION_TAG = /^wcag(\d)(\d)(\d{1,2})$/;
@@ -22,31 +47,77 @@ const IMPACT_TO_SEVERITY: Readonly<Record<string, Severity>> = {
 /**
  * Translates axe-core output into Ally findings.
  *
- * Only `violations` become findings. Passes, incomplete results and
- * inapplicable rules are deliberately dropped here — `incomplete` describes
- * checks needing human review and will get its own model later.
+ * Only `violations` become findings. `incomplete` describes checks that need
+ * human review rather than failures, and Ally applies the same policy to every
+ * engine: a finding means the engine decided, not that it wondered.
+ *
+ * One finding is produced per *node*, not per rule, because deduplication
+ * compares problems element by element.
  *
  * Pure by contract: no browser, no clock, no I/O.
  */
-export function normalizeAxeResults(raw: AxeResults): readonly NormalizedFinding[] {
-  return raw.violations.map(toFinding);
+export function normalizeAxeResults(raw: AxeRawOutput): readonly NormalizedFinding[] {
+  const findings: NormalizedFinding[] = [];
+  let ordinal = 0;
+
+  for (const violation of raw.results.violations) {
+    for (const node of violation.nodes) {
+      ordinal += 1;
+      findings.push(toFinding(violation, node, ordinal, raw.paths));
+    }
+  }
+
+  return findings;
 }
 
-function toFinding(violation: Result): NormalizedFinding {
+/** Total node-level results axe reported, which is what `rawCount` means. */
+export function countAxeViolations(results: AxeResults): number {
+  return results.violations.reduce((total, violation) => total + violation.nodes.length, 0);
+}
+
+/**
+ * Every top-frame selector axe reported.
+ *
+ * Cross-frame targets are excluded: `document.querySelector` cannot reach into
+ * an iframe, so resolving them would produce a path for the wrong element.
+ */
+export function axeSelectorsOf(results: AxeResults): readonly string[] {
+  const selectors = results.violations.flatMap((violation) =>
+    violation.nodes.map((node) => toSelector(node.target)),
+  );
+
+  return selectors.filter(
+    (selector): selector is string => selector !== undefined && !selector.includes(' >>> '),
+  );
+}
+
+function toFinding(
+  violation: Result,
+  node: NodeResult,
+  ordinal: number,
+  paths: Readonly<Record<string, string>>,
+): NormalizedFinding {
   const description = violation.description;
   const helpUrl = violation.helpUrl;
+  const wcag = toWcagCriteria(violation.tags);
+  const target = toTarget(node, paths);
+  const message = node.failureSummary;
 
   return {
-    id: findingId(AXE_ENGINE_ID, violation.id),
+    id: findingId(AXE_ENGINE_ID, violation.id, ordinal),
     engineId: AXE_ENGINE_ID,
     ruleId: violation.id,
+    category: categoryOf(AXE_RULE_CATEGORIES, violation.id),
+    standard: toStandard(violation.tags, wcag),
     severity: toSeverity(violation.impact),
+    ...(violation.impact ? { rawSeverity: violation.impact } : {}),
     // `help` is axe's short actionable sentence; `description` is the longer one.
     title: violation.help,
     ...(description ? { description } : {}),
     ...(helpUrl ? { helpUrl } : {}),
-    wcag: toWcagCriteria(violation.tags),
-    evidence: violation.nodes.map(toEvidence),
+    wcag,
+    ...(target === undefined ? {} : { target }),
+    evidence: message ? [toEvidence(message)] : [],
   };
 }
 
@@ -56,6 +127,15 @@ function toFinding(violation: Result): NormalizedFinding {
  */
 function toSeverity(impact: Result['impact']): Severity {
   return (impact && IMPACT_TO_SEVERITY[impact]) ?? 'moderate';
+}
+
+/**
+ * axe tags every non-WCAG rule `best-practice`, so the classification is read
+ * off the engine rather than guessed from the absence of criteria.
+ */
+function toStandard(tags: readonly string[], wcag: readonly WcagCriterion[]): RuleStandard {
+  if (wcag.length > 0) return 'wcag';
+  return tags.includes('best-practice') ? 'best-practice' : 'unknown';
 }
 
 function toWcagCriteria(tags: readonly string[]): readonly WcagCriterion[] {
@@ -69,8 +149,8 @@ function toWcagCriteria(tags: readonly string[]): readonly WcagCriterion[] {
     const [, principle, guideline, criterion] = match;
     if (principle === undefined || guideline === undefined || criterion === undefined) continue;
 
-    const id = `${principle}.${guideline}.${criterion}`;
-    criteria.push(level === undefined ? { id } : { id, level });
+    const resolved = wcagCriterion(`${principle}.${guideline}.${criterion}`, level);
+    if (resolved !== undefined) criteria.push(resolved);
   }
 
   return criteria;
@@ -92,14 +172,24 @@ function toWcagLevel(tags: readonly string[]): WcagLevel | undefined {
   return undefined;
 }
 
-function toEvidence(node: NodeResult): Evidence {
+function toEvidence(message: string): Evidence {
+  return { engineId: AXE_ENGINE_ID, message: message.replace(/\s+/g, ' ').trim() };
+}
+
+function toTarget(
+  node: NodeResult,
+  paths: Readonly<Record<string, string>>,
+): FindingTarget | undefined {
   const selector = toSelector(node.target);
-  const message = node.failureSummary;
+  if (selector === undefined) return undefined;
+
+  const resolved = paths[selector];
+  const path = resolved === undefined ? undefined : normalizeElementPath(resolved);
 
   return {
-    ...(selector !== undefined ? { selector } : {}),
-    ...(node.html ? { html: truncate(node.html) } : {}),
-    ...(message ? { message } : {}),
+    ...(path === undefined ? {} : { path }),
+    selector,
+    ...(node.html ? { html: truncateHtml(node.html) } : {}),
   };
 }
 
@@ -112,8 +202,4 @@ function toSelector(target: NodeResult['target']): string | undefined {
     .flat(2)
     .filter((part): part is string => typeof part === 'string');
   return parts.length > 0 ? parts.join(' >>> ') : undefined;
-}
-
-function truncate(html: string): string {
-  return html.length <= MAX_HTML_LENGTH ? html : `${html.slice(0, MAX_HTML_LENGTH)}…`;
 }

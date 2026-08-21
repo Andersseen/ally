@@ -1,0 +1,959 @@
+{
+  "engineVersion": "0.119.0",
+  "counts": {
+    "passed": 32,
+    "inapplicable": 66,
+    "failed": 11
+  },
+  "failed": [
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r111",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#target-size-enhanced",
+              "chapter": "2.5.5",
+              "title": "Target Size (Enhanced)"
+            }
+          ],
+          "tags": []
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "b7e6d3e094afb47eb3e3ab8c3bc213ce",
+          "serializationId": "b7e6d3e094afb47eb3e3ab8c3bc213ce",
+          "path": "/html[1]/body[1]/main[1]/p[3]/button[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "Target has insufficient size",
+                "name": "Buy now",
+                "box": {
+                  "type": "rectangle",
+                  "x": 320,
+                  "y": 172.875,
+                  "width": 83.140625,
+                  "height": 31
+                },
+                "condition": {
+                  "type": "right",
+                  "value": {
+                    "size": false,
+                    "spacing": true
+                  }
+                },
+                "tooCloseNeighbors": []
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/p[3]/button[1]",
+        "tagName": "button",
+        "html": "<button id=\"washed-button\" class=\"washed-button\" type=\"button\">"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r66",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#contrast-enhanced",
+              "chapter": "1.4.6",
+              "title": "Contrast (Enhanced)"
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            },
+            {
+              "type": "version",
+              "version": 2
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "text",
+          "internalId": "7fecb48d0326b71e485fdca3efa2f084",
+          "serializationId": "7fecb48d0326b71e485fdca3efa2f084",
+          "path": "/html[1]/body[1]/main[1]/p[1]/text()[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The highest possible contrast of the text is 2.64:1 which is\n        below the required contrast of 7:1",
+                "threshold": 7,
+                "pairings": [
+                  {
+                    "color1": {
+                      "name": "foreground",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [0.6039216, 0.627451, 0.6509804],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 0.6039216
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.627451
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.6509804
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "color2": {
+                      "name": "background",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [1, 1, 1],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "contrast": 2.64
+                  }
+                ]
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/p[1]/text()[1]"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r66",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#contrast-enhanced",
+              "chapter": "1.4.6",
+              "title": "Contrast (Enhanced)"
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            },
+            {
+              "type": "version",
+              "version": 2
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "text",
+          "internalId": "edcb49f7bad6b76100187db6ea55cbef",
+          "serializationId": "edcb49f7bad6b76100187db6ea55cbef",
+          "path": "/html[1]/body[1]/main[1]/p[2]/text()[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The highest possible contrast of the text is 1.49:1 which is\n        below the required contrast of 7:1",
+                "threshold": 7,
+                "pairings": [
+                  {
+                    "color1": {
+                      "name": "foreground",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [0.8117647, 0.8313725, 0.8509804],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 0.8117647
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.8313725
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.8509804
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "color2": {
+                      "name": "background",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [1, 1, 1],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "contrast": 1.49
+                  }
+                ]
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/p[2]/text()[1]"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r66",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#contrast-enhanced",
+              "chapter": "1.4.6",
+              "title": "Contrast (Enhanced)"
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            },
+            {
+              "type": "version",
+              "version": 2
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "text",
+          "internalId": "7d4424dd8ed008b9a1f0e1e80bee80d3",
+          "serializationId": "7d4424dd8ed008b9a1f0e1e80bee80d3",
+          "path": "/html[1]/body[1]/main[1]/p[3]/button[1]/text()[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The highest possible contrast of the text is 1.54:1 which is\n        below the required contrast of 7:1",
+                "threshold": 7,
+                "pairings": [
+                  {
+                    "color1": {
+                      "name": "foreground",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [1, 1, 1],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "color2": {
+                      "name": "background",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [0.7176471, 0.827451, 0.9490196],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 0.7176471
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.827451
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.9490196
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "contrast": 1.54
+                  }
+                ]
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/p[3]/button[1]/text()[1]"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r69",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#contrast-minimum",
+              "chapter": "1.4.3",
+              "title": "Contrast (Minimum)"
+            },
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#contrast-enhanced",
+              "chapter": "1.4.6",
+              "title": "Contrast (Enhanced)"
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            },
+            {
+              "type": "version",
+              "version": 2
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "text",
+          "internalId": "7fecb48d0326b71e485fdca3efa2f084",
+          "serializationId": "7fecb48d0326b71e485fdca3efa2f084",
+          "path": "/html[1]/body[1]/main[1]/p[1]/text()[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The highest possible contrast of the text is 2.64:1 which is\n        below the required contrast of 4.5:1",
+                "threshold": 4.5,
+                "pairings": [
+                  {
+                    "color1": {
+                      "name": "foreground",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [0.6039216, 0.627451, 0.6509804],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 0.6039216
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.627451
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.6509804
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "color2": {
+                      "name": "background",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [1, 1, 1],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "contrast": 2.64
+                  }
+                ]
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/p[1]/text()[1]"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r69",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#contrast-minimum",
+              "chapter": "1.4.3",
+              "title": "Contrast (Minimum)"
+            },
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#contrast-enhanced",
+              "chapter": "1.4.6",
+              "title": "Contrast (Enhanced)"
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            },
+            {
+              "type": "version",
+              "version": 2
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "text",
+          "internalId": "edcb49f7bad6b76100187db6ea55cbef",
+          "serializationId": "edcb49f7bad6b76100187db6ea55cbef",
+          "path": "/html[1]/body[1]/main[1]/p[2]/text()[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The highest possible contrast of the text is 1.49:1 which is\n        below the required contrast of 4.5:1",
+                "threshold": 4.5,
+                "pairings": [
+                  {
+                    "color1": {
+                      "name": "foreground",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [0.8117647, 0.8313725, 0.8509804],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 0.8117647
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.8313725
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.8509804
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "color2": {
+                      "name": "background",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [1, 1, 1],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "contrast": 1.49
+                  }
+                ]
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/p[2]/text()[1]"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r69",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#contrast-minimum",
+              "chapter": "1.4.3",
+              "title": "Contrast (Minimum)"
+            },
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#contrast-enhanced",
+              "chapter": "1.4.6",
+              "title": "Contrast (Enhanced)"
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            },
+            {
+              "type": "version",
+              "version": 2
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "text",
+          "internalId": "7d4424dd8ed008b9a1f0e1e80bee80d3",
+          "serializationId": "7d4424dd8ed008b9a1f0e1e80bee80d3",
+          "path": "/html[1]/body[1]/main[1]/p[3]/button[1]/text()[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The highest possible contrast of the text is 1.54:1 which is\n        below the required contrast of 4.5:1",
+                "threshold": 4.5,
+                "pairings": [
+                  {
+                    "color1": {
+                      "name": "foreground",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [1, 1, 1],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 1
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "color2": {
+                      "name": "background",
+                      "value": {
+                        "type": "color",
+                        "space": "srgb",
+                        "coordinates": [0.7176471, 0.827451, 0.9490196],
+                        "sRGB": [
+                          {
+                            "type": "percentage",
+                            "value": 0.7176471
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.827451
+                          },
+                          {
+                            "type": "percentage",
+                            "value": 0.9490196
+                          }
+                        ],
+                        "alpha": {
+                          "type": "percentage",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "contrast": 1.54
+                  }
+                ]
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/p[3]/button[1]/text()[1]"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r73",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#visual-presentation",
+              "chapter": "1.4.8",
+              "title": "Visual Presentation"
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "a60d8dc6590b1c8a5fa0ac4dee333b9a",
+          "serializationId": "a60d8dc6590b1c8a5fa0ac4dee333b9a",
+          "path": "/html[1]/body[1]/main[1]/p[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The line height of the paragraph is `normal` which will result in a line height of less than 1.5"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/p[1]",
+        "tagName": "p",
+        "html": "<p id=\"faint-paragraph\" class=\"faint\">"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r73",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#visual-presentation",
+              "chapter": "1.4.8",
+              "title": "Visual Presentation"
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "ebc95c97d56592473e55f32dc1418a2d",
+          "serializationId": "ebc95c97d56592473e55f32dc1418a2d",
+          "path": "/html[1]/body[1]/main[1]/p[2]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The line height of the paragraph is `normal` which will result in a line height of less than 1.5"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/p[2]",
+        "tagName": "p",
+        "html": "<p id=\"very-faint-paragraph\" class=\"very-faint\">"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r73",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#visual-presentation",
+              "chapter": "1.4.8",
+              "title": "Visual Presentation"
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "58093f490e6341ed8088676cbdd44def",
+          "serializationId": "58093f490e6341ed8088676cbdd44def",
+          "path": "/html[1]/body[1]/main[1]/p[3]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The line height of the paragraph is `normal` which will result in a line height of less than 1.5"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/p[3]",
+        "tagName": "p",
+        "html": "<p>"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r87",
+          "requirements": [
+            {
+              "type": "technique",
+              "uri": "https://www.w3.org/WAI/WCAG22/Techniques/general/G1",
+              "name": "G1",
+              "title": "Adding a link at the top of each page that goes directly to the main content area"
+            },
+            {
+              "type": "best practice",
+              "uri": "first-focusable-is-skip-link"
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "page"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "document",
+          "internalId": "3bd9ccaae8da16a293f8cae9d9842002",
+          "serializationId": "3bd9ccaae8da16a293f8cae9d9842002",
+          "path": "/"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The first tabbable element in the document is not a semantic link"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/"
+      }
+    }
+  ]
+}

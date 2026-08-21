@@ -3,13 +3,55 @@ Copyright 2026 The Ally Authors
 
 This product is licensed under the Apache License, Version 2.0 (see LICENSE).
 
-Ally orchestrates third-party accessibility engines. Those engines are consumed
-as dependencies, are not redistributed as part of this source tree, and remain
-under their own licenses:
+Ally orchestrates third-party accessibility engines and libraries. They are
+consumed as dependencies, are not redistributed as part of this source tree,
+and remain under their own licenses:
 
-  - axe-core (Deque Systems)        MPL-2.0    https://github.com/dequelabs/axe-core
-  - IBM Equal Access (IBM)          Apache-2.0 https://github.com/IBMa/equal-access
-  - Siteimprove Alfa (Siteimprove)  MIT        https://github.com/Siteimprove/alfa
-  - QualWeb                         ISC        https://github.com/qualweb/core
+  Accessibility engines
 
-Ally is not affiliated with or endorsed by any of these projects.
+  - axe-core (Deque Systems)              MPL-2.0
+    https://github.com/dequelabs/axe-core
+    Consumed as `axe-core`; its bundled `axe.source` is injected into the page
+    under audit.
+
+  - IBM Equal Access (IBM)                Apache-2.0
+    https://github.com/IBMa/equal-access
+    Consumed as `accessibility-checker-engine`, the dependency-free browser
+    bundle, which is injected into the page under audit. The `accessibility-
+    checker` harness is deliberately not used, because it bundles its own
+    Puppeteer and Chromedriver.
+
+  - Siteimprove Alfa (Siteimprove)        MIT
+    https://github.com/Siteimprove/alfa
+    Consumed as `@siteimprove/alfa-act`, `@siteimprove/alfa-dom`,
+    `@siteimprove/alfa-rules`, `@siteimprove/alfa-web` and
+    `@siteimprove/alfa-playwright`. Runs in Node against a serialized copy of
+    the page.
+
+  - QualWeb                               ISC
+    https://github.com/qualweb/qualweb
+    Consumed as `@qualweb/act-rules`, `@qualweb/wcag-techniques`,
+    `@qualweb/best-practices`, `@qualweb/qw-page`, `@qualweb/util` and
+    `@qualweb/locale` — the browser bundles QualWeb's own core injects. The
+    `@qualweb/core` package is deliberately not used, because it drives its own
+    Puppeteer instance.
+
+  Supporting libraries
+
+  - tabbable (David Clark and contributors)  MIT
+    https://github.com/focus-trap/tabbable
+    Used by `@ally/analyzer-keyboard` to determine the expected sequential
+    focus order.
+
+  - Playwright (Microsoft)                Apache-2.0
+    https://github.com/microsoft/playwright
+
+  - Astro                                 MIT
+    https://github.com/withastro/astro
+
+  - Tailwind CSS                          MIT
+    https://github.com/tailwindlabs/tailwindcss
+
+No engine source is vendored or relicensed. Ally is not affiliated with or
+endorsed by any of these projects, and none of them endorse Ally's normalized
+findings, its deduplication decisions or its Automated Accessibility Score.

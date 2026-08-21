@@ -1,7 +1,13 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { AuditRun } from '@ally/core';
-import { AUDIT_FILE_NAME, RAW_DIR_NAME, rawFileName, serializeJson } from './layout.js';
+import {
+  AUDIT_FILE_NAME,
+  RAW_DIR_NAME,
+  REPORT_DIR_NAME,
+  rawFileName,
+  serializeJson,
+} from './layout.js';
 
 export interface WriteAuditOptions {
   /** Directory to create the artifact in. Created if missing. */
@@ -10,10 +16,18 @@ export interface WriteAuditOptions {
   readonly includeRaw?: boolean;
 }
 
-/** Absolute paths of everything written. */
+/** Absolute paths of everything written, plus where the report belongs. */
 export interface AuditArtifacts {
   readonly auditFile: string;
   readonly rawFiles: readonly string[];
+  /**
+   * Where the static report is expected to be built.
+   *
+   * The reporter names the directory but does not create it: building the
+   * report is the Astro app's job, and this package has no opinion about how
+   * that happens.
+   */
+  readonly reportDir: string;
 }
 
 /**
@@ -34,8 +48,10 @@ export async function writeAuditReport(
   const auditFile = join(outDir, AUDIT_FILE_NAME);
   await writeFile(auditFile, serializeJson(run.result), 'utf8');
 
+  const reportDir = join(outDir, REPORT_DIR_NAME);
+
   if (!includeRaw || run.raw.size === 0) {
-    return { auditFile, rawFiles: [] };
+    return { auditFile, rawFiles: [], reportDir };
   }
 
   const rawDir = join(outDir, RAW_DIR_NAME);
@@ -48,5 +64,5 @@ export async function writeAuditReport(
     rawFiles.push(rawFile);
   }
 
-  return { auditFile, rawFiles };
+  return { auditFile, rawFiles, reportDir };
 }

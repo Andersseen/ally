@@ -7,8 +7,20 @@ packages:
 catalog:
   '@astrojs/check': ^0.9.10
   '@playwright/test': ^1.62.1
+  '@qualweb/act-rules': ^0.8.5
+  '@qualweb/best-practices': ^0.7.13
+  '@qualweb/locale': ^0.2.3
+  '@qualweb/qw-page': ^0.3.8
+  '@qualweb/util': ^0.7.4
+  '@qualweb/wcag-techniques': ^0.4.8
+  '@siteimprove/alfa-act': ^0.119.0
+  '@siteimprove/alfa-dom': ^0.119.0
+  '@siteimprove/alfa-playwright': ^0.84.2
+  '@siteimprove/alfa-rules': ^0.119.0
+  '@siteimprove/alfa-web': ^0.119.0
   '@tailwindcss/vite': ^4.3.3
   '@types/node': ^22.19.0
+  accessibility-checker-engine: ^4.0.30
   astro: ^7.2.4
   axe-core: ^4.13.0
   eslint: ^10.8.1
@@ -18,6 +30,7 @@ catalog:
   playwright: ^1.62.1
   prettier: ^3.9.6
   prettier-plugin-astro: ^0.14.1
+  tabbable: ^6.5.0
   tailwindcss: ^4.3.3
   turbo: ^2.10.11
   typescript: ^6.0.3

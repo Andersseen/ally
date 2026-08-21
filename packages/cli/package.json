@@ -1,0 +1,41 @@
+{
+  "name": "@ally/cli",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Command-line entry point for Ally audits",
+  "license": "Apache-2.0",
+  "bin": {
+    "ally": "./dist/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@ally/analyzer-keyboard": "workspace:*",
+    "@ally/browser": "workspace:*",
+    "@ally/core": "workspace:*",
+    "@ally/engine-alfa": "workspace:*",
+    "@ally/engine-axe": "workspace:*",
+    "@ally/engine-ibm": "workspace:*",
+    "@ally/engine-qualweb": "workspace:*",
+    "@ally/reporter-json": "workspace:*"
+  },
+  "devDependencies": {
+    "@ally/config": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

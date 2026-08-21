@@ -1,0 +1,4177 @@
+{
+  "engineVersions": {
+    "act-rules": "0.8.5",
+    "wcag-techniques": "0.4.8",
+    "best-practices": "0.7.13"
+  },
+  "modules": [
+    {
+      "moduleId": "act-rules",
+      "bestPractice": false,
+      "assertions": {
+        "QW-ACT-R4": {
+          "name": "Meta-refresh no delay",
+          "code": "QW-ACT-R4",
+          "mapping": "bc659a",
+          "description": "This rule checks that the meta element is not used for delayed redirecting or refreshing.",
+          "metadata": {
+            "target": {
+              "element": "meta"
+            },
+            "success-criteria": [
+              {
+                "name": "2.2.1",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/timing-adjustable.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#timing-adjustable"
+              },
+              {
+                "name": "2.2.4",
+                "level": "AAA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/interruptions",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#interruptions"
+              },
+              {
+                "name": "3.2.5",
+                "level": "AAA",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/change-on-request",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#change-on-request"
+              }
+            ],
+            "related": ["G110", "H76"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/bc659a/",
+            "type": ["ACTRule", "TestCase"],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R1": {
+          "name": "HTML Page has a title",
+          "code": "QW-ACT-R1",
+          "mapping": "2779a5",
+          "description": "This rule checks that the HTML page has a title.",
+          "metadata": {
+            "target": {
+              "element": "title"
+            },
+            "success-criteria": [
+              {
+                "name": "2.4.2",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/page-titled",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#page-titled"
+              }
+            ],
+            "related": ["G88", "H25"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/2779a5/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": ["WCAG21:title"],
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The `title` element exists and it's not empty ('')."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The `title` element exists and it's not empty ('').",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<title>Insufficient contrast — Ally fixture</title>",
+                  "pointer": "html > head:nth-child(1) > title:nth-child(3)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R43": {
+          "name": "Scrollable element is keyboard accessible",
+          "code": "QW-ACT-R43",
+          "mapping": "0ssw9k",
+          "description": "This rule checks that scrollable elements can be scrolled by keyboard",
+          "metadata": {
+            "target": {
+              "element": "*"
+            },
+            "success-criteria": [
+              {
+                "name": "2.1.1",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#keyboard"
+              },
+              {
+                "name": "2.1.3",
+                "level": "AAA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/keyboard-no-exception.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#keyboard-no-exception"
+              }
+            ],
+            "related": ["G202"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/0ssw9k/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R2": {
+          "name": "HTML has lang attribute",
+          "code": "QW-ACT-R2",
+          "mapping": "b5c3f8",
+          "description": "This rule checks that the html element has a non-empty lang or xml:lang attribute.",
+          "metadata": {
+            "target": {
+              "element": "html",
+              "attributes": "lang"
+            },
+            "success-criteria": [
+              {
+                "name": "3.1.1",
+                "level": "A",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/language-of-page",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#language-of-page"
+              }
+            ],
+            "related": ["H57"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/b5c3f8/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": ["WCAG21:language"],
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The `lang` attribute exists and has a value."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The `lang` attribute exists and has a value.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<html lang=\"en\"><head></head><body></body></html>",
+                  "pointer": "html"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R5": {
+          "name": "Validity of HTML Lang attribute",
+          "code": "QW-ACT-R5",
+          "mapping": "bf051a",
+          "description": "This rule checks the lang or xml:lang attribute has a valid language subtag.",
+          "metadata": {
+            "target": {
+              "element": "html",
+              "attributes": ["lang"]
+            },
+            "success-criteria": [
+              {
+                "name": "3.1.1",
+                "level": "A",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/language-of-page",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#language-of-page"
+              }
+            ],
+            "related": ["H57"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/bf051a/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": ["WCAG21:language"],
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The `lang` attribute has a valid value."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The `lang` attribute has a valid value.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<html lang=\"en\"><head></head><body>Insufficient contrast — Ally fixture\n    \n      body {\n        margin: 0;\n        background: #ffffff;\n        color: #111827;\n        font-family: system-ui, sans-serif;\n      }\n      .layout {\n        margin: 0 auto;\n        max-width: 40rem;\n        padding: 1.5rem;\n      }\n      /* 2.3:1 against white — below the 4.5:1 threshold for body text. */\n      .faint {\n        color: #9aa0a6;\n        background: #ffffff;\n        font-size: 1rem;\n      }\n      /* 1.6:1 — well below every threshold. */\n      .very-faint {\n        color: #cfd4d9;\n        background: #ffffff;\n        font-size: 1rem;\n      }\n      .washed-button {\n        background: #b7d3f2;\n        color: #ffffff;\n        border: 0;\n        padding: 0.5rem 1rem;\n      }\n    \n  (()=&gt;{\"use strict\";var e={715(e,t,n){Object.defineProperty(t,\"__esModule\",{value:!0}),t.QWElement=void 0;const l=n(300);class r{constructor(e,t){this.selector=\"\",this.element=e,this.elementsCSSRules=t;const n=e.getAttribute(\"qw-selector\");n&amp;&amp;(this.selector=n)}addCSSRulesPropertyToElement(e){var t;e&amp;&amp;(null===(t=this.elementsCSSRules)||void 0===t?void 0:t.has(e))&amp;&amp;e.setAttribute(\"qw-css-rules\",\"true\")}hasCSSRules(){return\"true\"===this.element.getAttribute(\"qw-css-rules\")}getCSSRules(){var e;return null===(e=this.elementsCSSRules)||void 0===e?void 0:e.get(this.element)}hasCSSProperty(e,t,n){var l,r;if(null===(l=this.elementsCSSRules)||void 0===l?void 0:l.has(this.element)){const l=null===(r=this.elementsCSSRules)||void 0===r?void 0:r.get(this.element);if(l){if(t&amp;&amp;n)return void 0!==l.media[n][t][e];if(t)return void 0!==l[t][e];if(n)return void 0!==l.media[n][e]}return!l||void 0!==l[e]}return!1}getCSSProperty(e,t,n){var l,r;if(null===(l=this.elementsCSSRules)||void 0===l?void 0:l.has(this.element)){const l=null===(r=this.elementsCSSRules)||void 0===r?void 0:r.get(this.element);if(l)return t&amp;&amp;n?l.media[n][t][e]:t?l[t][e]:n?l.media[n][e]:l[e]}}getCSSMediaRules(){… [truncated from 1021835 characters]",
+                  "pointer": "html"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R63": {
+          "name": "Document has a landmark with non-repeated content",
+          "code": "QW-ACT-R63",
+          "mapping": "b40fd1",
+          "description": "This rule checks that each page has an element with a landmark semantic role starting with non-repeated content",
+          "metadata": {
+            "target": {
+              "element": "html"
+            },
+            "success-criteria": [],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/b40fd1/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The page doesn't have repeated content."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The page doesn't have repeated content.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<html lang=\"en\"><head></head><body></body></html>",
+                  "pointer": "html"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R64": {
+          "name": "Document has heading for non-repeated content",
+          "code": "QW-ACT-R64",
+          "mapping": "047fe0",
+          "description": "This rule checks that the non-repeated content contains a heading",
+          "metadata": {
+            "target": {
+              "element": "html"
+            },
+            "success-criteria": [],
+            "related": ["H69"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/047fe0/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The page doesn't have repeated content."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The page doesn't have repeated content.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<html lang=\"en\"><head></head><body></body></html>",
+                  "pointer": "html"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R73": {
+          "name": "Block of repeated content is collapsible",
+          "code": "QW-ACT-R73",
+          "mapping": "3e12e1",
+          "description": "This rule checks that repeated blocks of content are collapsible.",
+          "metadata": {
+            "target": {
+              "element": "html"
+            },
+            "success-criteria": [],
+            "related": ["SCR28"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/3e12e1/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The page doesn't have repeated content."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The page doesn't have repeated content.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<html lang=\"en\"><head></head><body></body></html>",
+                  "pointer": "html"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R74": {
+          "name": "Document has an instrument to move focus to non-repeated content",
+          "code": "QW-ACT-R74",
+          "mapping": "ye5d6e",
+          "description": "This rule checks that there is an instrument to move focus to non-repeated content in the page.",
+          "metadata": {
+            "target": {
+              "element": "html"
+            },
+            "success-criteria": [],
+            "related": ["G1", "G123", "G124"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/ye5d6e/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The page doesn't have repeated content."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The page doesn't have repeated content.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<html lang=\"en\"><head></head><body></body></html>",
+                  "pointer": "html"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R6": {
+          "name": "Image button has accessible name",
+          "code": "QW-ACT-R6",
+          "mapping": "59796f",
+          "description": "This rule checks that each image button element has an accessible name.",
+          "metadata": {
+            "target": {
+              "element": "input",
+              "attributes": ["type='image'"]
+            },
+            "success-criteria": [
+              {
+                "name": "1.1.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#non-text-content"
+              },
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#name-role-value"
+              }
+            ],
+            "related": ["G94", "G95"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/59796f/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R11": {
+          "name": "Button has accessible name",
+          "code": "QW-ACT-R11",
+          "mapping": "97a4e1",
+          "description": "This rule checks that each button element has an accessible name.",
+          "metadata": {
+            "target": {
+              "element": ["button", "input"],
+              "attributes": ["role='button'"]
+            },
+            "success-criteria": [
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#name-role-value"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/97a4e1/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The test target has an accessible name."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The test target has an accessible name.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<button id=\"washed-button\" class=\"washed-button\" type=\"button\">Buy now</button>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(4) > button:nth-child(1)",
+                  "accessibleName": "Buy now"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R12": {
+          "name": "Link has accessible name",
+          "code": "QW-ACT-R12",
+          "mapping": "c487ae",
+          "description": "This rule checks that each link has an accessible name.",
+          "metadata": {
+            "target": {
+              "element": ["a[href]", "area[href]"],
+              "attributes": ["role='link'"]
+            },
+            "success-criteria": [
+              {
+                "name": "2.4.4",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#link-purpose-in-context"
+              },
+              {
+                "name": "2.4.9",
+                "level": "AAA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-link-only",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#link-purpose-link-only"
+              },
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#name-role-value"
+              }
+            ],
+            "related": ["G91"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/c487ae/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R13": {
+          "name": "Element with `aria-hidden` has no focusable content",
+          "code": "QW-ACT-R13",
+          "mapping": "6cfa84",
+          "description": "This rule checks that elements with an aria-hidden attribute do not contain focusable elements.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": ["aria-hidden='true'"]
+            },
+            "success-criteria": [
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#name-role-value"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/6cfa84/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R14": {
+          "name": "meta viewport does not prevent zoom",
+          "code": "QW-ACT-R14",
+          "mapping": "b4f0c3",
+          "description": "This rule checks that the meta element retains the user agent ability to zoom.",
+          "metadata": {
+            "target": {
+              "element": "meta",
+              "attributes": "name='viewport'"
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.4",
+                "level": "AA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/resize-text",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#resize-text"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/b4f0c3/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": [
+            {
+              "verdict": "inapplicable",
+              "description": "No test targets found.",
+              "resultCode": "I1",
+              "elements": [
+                {
+                  "htmlCode": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+                  "pointer": "html > head:nth-child(1) > meta:nth-child(2)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R71": {
+          "name": "`meta` element has no refresh delay (no exception)",
+          "code": "QW-ACT-R71",
+          "mapping": "bisz58",
+          "description": "This rule checks that the `meta` element is not used for delayed redirecting or refreshing.",
+          "metadata": {
+            "target": {
+              "element": "meta"
+            },
+            "success-criteria": [
+              {
+                "name": "2.2.4",
+                "level": "AAA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/interruptions",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#interruptions"
+              },
+              {
+                "name": "3.2.5",
+                "level": "AAA",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/change-on-request",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#change-on-request"
+              }
+            ],
+            "related": ["G110", "H76"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/bisz58/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R21": {
+          "name": "svg element with explicit role has accessible name",
+          "code": "QW-ACT-R21",
+          "mapping": "7d6734",
+          "description": "This rule checks that each SVG image element that is explicitly included in the accessibility tree has an accessible name.",
+          "metadata": {
+            "target": {
+              "element": "*"
+            },
+            "success-criteria": [
+              {
+                "name": "1.1.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#non-text-content"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/7d6734/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R22": {
+          "name": "Element within body has valid lang attribute",
+          "code": "QW-ACT-R22",
+          "mapping": "de46e4",
+          "description": "This rule checks that the lang attribute of an element in the page body has a valid primary language subtag.",
+          "metadata": {
+            "target": {
+              "element": "body *",
+              "attributes": ["lang"]
+            },
+            "success-criteria": [
+              {
+                "name": "3.1.2",
+                "level": "AA",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/language-of-parts",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#language-of-parts"
+              }
+            ],
+            "related": ["H58"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/de46e4/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": ["WCAG21:language"],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R38": {
+          "name": "ARIA required owned elements",
+          "code": "QW-ACT-R38",
+          "mapping": "bc4a75",
+          "description": "This rule checks that an element with an explicit semantic role has at least one of its required owned elements.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "role"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#info-and-relationships"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/bc4a75/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R62": {
+          "name": "Element in sequential focus order has visible focus",
+          "code": "QW-ACT-R62",
+          "mapping": "oj04fd",
+          "description": "This rule checks that each element in sequential focus order has some visible focus indication.",
+          "metadata": {
+            "target": {
+              "element": "*"
+            },
+            "success-criteria": [
+              {
+                "name": "2.4.7",
+                "level": "AA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/focus-visible.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#focus-visible"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/oj04fd/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 1,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "warning",
+            "description": "Check if the element has some visible focus indication"
+          },
+          "results": [
+            {
+              "verdict": "warning",
+              "description": "Check if the element has some visible focus indication",
+              "resultCode": "W1",
+              "elements": [
+                {
+                  "htmlCode": "<button id=\"washed-button\" class=\"washed-button\" type=\"button\">Buy now</button>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(4) > button:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R9": {
+          "name": "Links with identical accessible names have equivalent purpose",
+          "code": "QW-ACT-R9",
+          "mapping": "b20e66",
+          "description": "This rule checks that links with identical accessible names resolve to the same resource or equivalent resources.",
+          "metadata": {
+            "target": {
+              "element": "a, [role='link']"
+            },
+            "success-criteria": [
+              {
+                "name": "2.4.9",
+                "level": "AAA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-link-only.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#link-purpose-link-only"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/b20e66/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R10": {
+          "name": "`iframe` elements with identical accessible names have equivalent purpose",
+          "code": "QW-ACT-R10",
+          "mapping": "4b1c6c",
+          "description": "This rule checks that `iframe` elements with identical accessible names embed the same resource or equivalent resources.",
+          "metadata": {
+            "target": {
+              "element": "iframe",
+              "attributes": ["src"]
+            },
+            "success-criteria": [
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#name-role-value"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/4b1c6c/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R25": {
+          "name": "ARIA state or property is permitted",
+          "code": "QW-ACT-R25",
+          "mapping": "5c01ea",
+          "description": "This rule checks that WAI-ARIA states or properties are allowed for the element they are specified on.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "aria-*"
+            },
+            "success-criteria": [],
+            "related": ["ARIA5"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/5c01ea/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R27": {
+          "name": "aria-* attribute is defined in WAI-ARIA",
+          "code": "QW-ACT-R27",
+          "mapping": "5f99a7",
+          "description": "This rule checks that each aria-* attribute specified is defined in ARIA 1.1.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "aria-*"
+            },
+            "success-criteria": [],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/5f99a7/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R28": {
+          "name": "Element with role attribute has required states and properties",
+          "code": "QW-ACT-R28",
+          "mapping": "4e8ab6",
+          "description": "This rule checks that elements that have an explicit role also specify all required states and properties.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "role"
+            },
+            "success-criteria": [],
+            "related": ["ARIA5"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/4e8ab6/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R34": {
+          "name": "ARIA state or property has valid value",
+          "code": "QW-ACT-R34",
+          "mapping": "6a7281",
+          "description": "This rule checks that each ARIA state or property has a valid value.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "aria-*"
+            },
+            "success-criteria": [],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/6a7281/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R44": {
+          "name": "Links with identical accessible names and context serve equivalent purpose",
+          "code": "QW-ACT-R44",
+          "mapping": "fd3a94",
+          "description": "This rule checks that links with identical accessible names and context resolve to the same or equivalent resources.",
+          "metadata": {
+            "target": {
+              "element": "a, [role='link']"
+            },
+            "success-criteria": [
+              {
+                "name": "2.4.4",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#link-purpose-in-context"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/fd3a94/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R16": {
+          "name": "Form control has accessible name",
+          "code": "QW-ACT-R16",
+          "mapping": "e086e5",
+          "description": "Form control has accessible name",
+          "metadata": {
+            "target": {
+              "element": ["input", "select", "textarea", "*[role]"]
+            },
+            "success-criteria": [
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#name-role-value"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/e086e5/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R41": {
+          "name": "Error message describes invalid form field value",
+          "code": "QW-ACT-R41",
+          "mapping": "36b590",
+          "description": "This rule checks that text error messages provided when the user completes a form field with invalid values or using an invalid format, identify the cause of the error or how to fix the error.",
+          "metadata": {
+            "target": {
+              "element": ["input", "select", "textarea", "*[role]"]
+            },
+            "success-criteria": [
+              {
+                "name": "3.3.1",
+                "level": "A",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/TR/WCAG21/#error-identification",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#error-identification"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/36b590/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R20": {
+          "name": "role attribute has valid value",
+          "code": "QW-ACT-R20",
+          "mapping": "674b10",
+          "description": "This rule checks that each role attribute has a valid value.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": ["role"]
+            },
+            "success-criteria": [],
+            "related": ["ARIA4", "G108"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/674b10/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": ["WCAG21:language"],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R33": {
+          "name": "ARIA required context role",
+          "code": "QW-ACT-R33",
+          "mapping": "ff89c9",
+          "description": "This rule checks that an element with an explicit semantic role exists inside its required context.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "role"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#info-and-relationships"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/ff89c9/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R17": {
+          "name": "Image has accessible name",
+          "code": "QW-ACT-R17",
+          "mapping": "23a2a8",
+          "description": "This rule checks that each image that is not marked as decorative, has an accessible name.",
+          "metadata": {
+            "target": {
+              "element": "img"
+            },
+            "success-criteria": [
+              {
+                "name": "1.1.1",
+                "level": "A",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#non-text-content"
+              }
+            ],
+            "related": ["G94", "G95"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/23a2a8/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R19": {
+          "name": "iframe element has accessible name",
+          "code": "QW-ACT-R19",
+          "mapping": "cae760",
+          "description": "This rule checks that each iframe element has an accessible name.",
+          "metadata": {
+            "target": {
+              "element": "iframe"
+            },
+            "success-criteria": [
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#name-role-value"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/cae760/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R70": {
+          "name": "iframe with negative tabindex has no interactive elements",
+          "code": "QW-ACT-R70",
+          "mapping": "akn7bn",
+          "description": "This rule checks that `iframe` elements with a negative `tabindex` attribute value contain no interactive elements.",
+          "metadata": {
+            "target": {
+              "element": "iframe[tabindex]"
+            },
+            "success-criteria": [
+              {
+                "name": "2.1.1",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#keyboard"
+              }
+            ],
+            "related": ["G202"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/akn7bn/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R58": {
+          "name": "audio element content has transcript",
+          "code": "QW-ACT-R58",
+          "mapping": "2eb176",
+          "description": "Non-streaming audio elements must have a text alternative for all included auditory information.",
+          "metadata": {
+            "target": {
+              "element": "audio"
+            },
+            "success-criteria": [],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/2eb176/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R59": {
+          "name": "audio element content is media alternative for text",
+          "code": "QW-ACT-R59",
+          "mapping": "afb423",
+          "description": "This rule checks audio is a media alternative for text on the page.",
+          "metadata": {
+            "target": {
+              "element": "audio"
+            },
+            "success-criteria": [],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/afb423/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R30": {
+          "name": "Visible label is part of accessible name",
+          "code": "QW-ACT-R30",
+          "mapping": "2ee8b8",
+          "description": "This rule checks that interactive elements labeled through their content have their visible label as part of their accessible name.",
+          "metadata": {
+            "target": {
+              "element": "*"
+            },
+            "success-criteria": [
+              {
+                "name": "2.5.3",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/label-in-name.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#label-in-name"
+              }
+            ],
+            "related": ["G208"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/2ee8b8/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R51": {
+          "name": "video element visual-only content is media alternative for text",
+          "code": "QW-ACT-R51",
+          "mapping": "fd26cf",
+          "description": "This rule checks non-streaming silent video is a media alternative for text on the page.",
+          "metadata": {
+            "target": {
+              "element": "video"
+            },
+            "success-criteria": [],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/fd26cf/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R53": {
+          "name": "video element visual-only content has transcript",
+          "code": "QW-ACT-R53",
+          "mapping": "ee13b5",
+          "description": "Non-streaming video elements without audio must have all visual information available in a transcript.",
+          "metadata": {
+            "target": {
+              "element": "video"
+            },
+            "success-criteria": [],
+            "related": ["G159"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/ee13b5/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R54": {
+          "name": "video element visual-only content has audio track alternative",
+          "code": "QW-ACT-R54",
+          "mapping": "d7ba54",
+          "description": "Non-streaming video elements without audio must have an audio alternative.",
+          "metadata": {
+            "target": {
+              "element": "video"
+            },
+            "success-criteria": [],
+            "related": ["G166"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/d7ba54/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R55": {
+          "name": "video element visual content has audio description",
+          "code": "QW-ACT-R55",
+          "mapping": "1ea59c",
+          "description": "This rule checks that non-streaming video elements have all visual information also contained in the audio.",
+          "metadata": {
+            "target": {
+              "element": "video"
+            },
+            "success-criteria": [],
+            "related": ["G8", "G78", "G173"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/1ea59c/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R56": {
+          "name": "video element content is media alternative for text",
+          "code": "QW-ACT-R56",
+          "mapping": "ab4d13",
+          "description": "This rule checks non-streaming video is a media alternative for text on the page.",
+          "metadata": {
+            "target": {
+              "element": "video"
+            },
+            "success-criteria": [],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/ab4d13/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R60": {
+          "name": "video element auditory content has captions",
+          "code": "QW-ACT-R60",
+          "mapping": "f51b46",
+          "description": "This rule checks that captions are available for audio information in non-streaming video elements.",
+          "metadata": {
+            "target": {
+              "element": "video"
+            },
+            "success-criteria": [],
+            "related": ["G87", "G93", "H95"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/f51b46/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R61": {
+          "name": "Audio and visuals of video element have transcript",
+          "code": "QW-ACT-R61",
+          "mapping": "1a02b0",
+          "description": "This rule checks that non-streaming video elements have all audio and visual information available in a transcript.",
+          "metadata": {
+            "target": {
+              "element": "video"
+            },
+            "success-criteria": [
+              {
+                "name": "1.2.8",
+                "level": "AAA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/TR/WCAG21/#media-alternative-prerecorded",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#media-alternative-prerecorded"
+              }
+            ],
+            "related": ["G69"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/1a02b0/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R49": {
+          "name": "Audio or video that plays automatically has no audio that lasts more than 3 seconds",
+          "code": "QW-ACT-R49",
+          "mapping": "aaa1bf",
+          "description": "audio or video that plays automatically does not output audio for more than 3 seconds.",
+          "metadata": {
+            "target": {
+              "element": "audio, video"
+            },
+            "success-criteria": [],
+            "related": ["G60"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/aaa1bf/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R50": {
+          "name": "audio or video that plays automatically has a control mechanism",
+          "code": "QW-ACT-R50",
+          "mapping": "4c31df",
+          "description": "audio or video that plays automatically must have a control mechanism.",
+          "metadata": {
+            "target": {
+              "element": "audio, video"
+            },
+            "success-criteria": [],
+            "related": ["G170"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/4c31df/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R24": {
+          "name": "autocomplete attribute has valid value",
+          "code": "QW-ACT-R24",
+          "mapping": "73f2c2",
+          "description": "This rule checks that the HTML autocomplete attribute has a correct value.",
+          "metadata": {
+            "target": {
+              "element": "input[autocomplete], select[autocomplete], textarea[autocomplete]"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.5",
+                "level": "AA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#identify-input-purpose"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/73f2c2/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R35": {
+          "name": "Heading has accessible name",
+          "code": "QW-ACT-R35",
+          "mapping": "ffd0e9",
+          "description": "This rule applies to any HTML element with the semantic role of heading that is included in the accessibility tree.",
+          "metadata": {
+            "target": {
+              "element": ["h1-h6", "*[role='heading']"]
+            },
+            "success-criteria": [],
+            "related": ["H42"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/ffd0e9/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The test target has a non-empty accessible name."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The test target has a non-empty accessible name.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<h1>Insufficient contrast</h1>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > h1:nth-child(1)",
+                  "accessibleName": "Insufficient contrast"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R36": {
+          "name": "Headers attribute specified on a cell refers to cells in the same table element",
+          "code": "QW-ACT-R36",
+          "mapping": "a25f45",
+          "description": "This rule checks that the headers attribute on a cell refer to other cells in the same table element with a semantic role of columnheader or rowheader.",
+          "metadata": {
+            "target": {
+              "element": "table"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#info-and-relationships"
+              }
+            ],
+            "related": ["H43"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/a25f45/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R39": {
+          "name": "All table header cells have assigned data cells",
+          "code": "QW-ACT-R39",
+          "mapping": "d0f69e",
+          "description": "This rule checks that each table header has assigned data cells in a table element.",
+          "metadata": {
+            "target": {
+              "element": ["th", "*[role='columnheader']", "*[role='rowheader']"]
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#info-and-relationships"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/d0f69e/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R42": {
+          "name": "Object element has non-empty accessible name",
+          "code": "QW-ACT-R42",
+          "mapping": "8fc3b6",
+          "description": "This rule checks that each `object` element has a non-empty accessible name.",
+          "metadata": {
+            "target": {
+              "element": ["object"]
+            },
+            "success-criteria": [
+              {
+                "name": "1.1.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#non-text-content"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/8fc3b6/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R67": {
+          "name": "Letter spacing in style attributes is not !important",
+          "code": "QW-ACT-R67",
+          "mapping": "24afc2",
+          "description": "This rule checks that the style attribute is not used to prevent adjusting letter-spacing by using !important, except if it's at least 0.12 times the font size.",
+          "metadata": {
+            "target": {
+              "element": "*[style]"
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.12",
+                "level": "AA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/text-spacing.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#text-spacing"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/24afc2/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R68": {
+          "name": "Line height in style attributes is not !important",
+          "code": "QW-ACT-R68",
+          "mapping": "78fd32",
+          "description": "This rule checks that the style attribute is not used to prevent adjusting line-height by using !important, except if it's at least 1.5 times the font size.",
+          "metadata": {
+            "target": {
+              "element": "*[style]"
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.12",
+                "level": "AA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/text-spacing.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#text-spacing"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/78fd32/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R69": {
+          "name": "Word spacing in style attributes is not !important",
+          "code": "QW-ACT-R69",
+          "mapping": "9e45ec",
+          "description": "This rule checks that the style attribute is not used to prevent adjusting word-spacing by using !important, except if it's at least 0.16 times the font size.",
+          "metadata": {
+            "target": {
+              "element": "*[style]"
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.12",
+                "level": "AA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/text-spacing.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#text-spacing"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/9e45ec/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R48": {
+          "name": "Element marked as decorative is not exposed",
+          "code": "QW-ACT-R48",
+          "mapping": "46ca7f",
+          "description": "This rule checks that elements marked as decorative either are not included in the accessibility tree, or have a presentational role.",
+          "metadata": {
+            "target": {
+              "element": "[role='presentation'],[role='none'],[alt='']"
+            },
+            "success-criteria": [],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/46ca7f/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R66": {
+          "name": "Menuitem has non-empty accessible name",
+          "code": "QW-ACT-R66",
+          "mapping": "m6b1q3",
+          "description": "This rule checks that each element with a menuitem role has a non-empty accessible name.",
+          "metadata": {
+            "target": {
+              "element": "*[role='menuitem']"
+            },
+            "success-criteria": [
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#name-role-value"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/m6b1q3/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R77": {
+          "name": "ARIA required ID references exist",
+          "code": "QW-ACT-R77",
+          "mapping": "in6db8",
+          "description": "This rule checks that every ID reference required by WAI-ARIA exists.",
+          "metadata": {
+            "target": {
+              "element": "*[aria-controls]"
+            },
+            "success-criteria": [],
+            "related": ["ARIA5"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/in6db8/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R7": {
+          "name": "Orientation of the page is not restricted using CSS transform property",
+          "code": "QW-ACT-R7",
+          "mapping": "b33eff",
+          "description": "This rule checks that page content is not restricted to either landscape or portrait orientation using CSS transform property.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "transform"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.4",
+                "level": "AA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/orientation",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#orientation"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/b33eff/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R37": {
+          "name": "Text has minimum contrast",
+          "code": "QW-ACT-R37",
+          "mapping": "afw4f7",
+          "description": "This rule checks that the highest possible contrast of every text character with its background meets the minimal contrast requirement.",
+          "metadata": {
+            "target": {
+              "element": ["*"]
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.3",
+                "level": "AA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#contrast-minimum"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/afw4f7/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 1,
+            "warning": 0,
+            "failed": 3,
+            "inapplicable": 0,
+            "outcome": "failed",
+            "description": "Element has contrast ratio lower than minimum."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "Element has contrast ratio higher than minimum.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<h1>Insufficient contrast</h1>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > h1:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "failed",
+              "description": "Element has contrast ratio lower than minimum.",
+              "resultCode": "F1",
+              "elements": [
+                {
+                  "htmlCode": "<p id=\"faint-paragraph\" class=\"faint\">\n        This paragraph does not meet the 4.5:1 contrast threshold for body text.\n      </p>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(2)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "failed",
+              "description": "Element has contrast ratio lower than minimum.",
+              "resultCode": "F1",
+              "elements": [
+                {
+                  "htmlCode": "<p id=\"very-faint-paragraph\" class=\"very-faint\">\n        This paragraph is far below every contrast threshold.\n      </p>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(3)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "failed",
+              "description": "Element has contrast ratio lower than minimum.",
+              "resultCode": "F1",
+              "elements": [
+                {
+                  "htmlCode": "<button id=\"washed-button\" class=\"washed-button\" type=\"button\">Buy now</button>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(4) > button:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R65": {
+          "name": "Element with presentational children has no focusable content",
+          "code": "QW-ACT-R65",
+          "mapping": "307n5z",
+          "description": "This rule checks that elements with a role that makes its children presentational do not contain focusable elements.",
+          "metadata": {
+            "target": {
+              "element": "*"
+            },
+            "success-criteria": [
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#name-role-value"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/307n5z/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The element doesn't have descendants in the flat tree that are part of sequential focus navigation."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The element doesn't have descendants in the flat tree that are part of sequential focus navigation.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<button id=\"washed-button\" class=\"washed-button\" type=\"button\">Buy now</button>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(4) > button:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R76": {
+          "name": "Text has enhanced contrast",
+          "code": "QW-ACT-R76",
+          "mapping": "09o5cg",
+          "description": "This rule checks that the highest possible contrast of every text character with its background meets the enhanced contrast requirement.",
+          "metadata": {
+            "target": {
+              "element": "*"
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.6",
+                "level": "AAA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/contrast-enhanced.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#contrast-enhanced"
+              }
+            ],
+            "related": ["G17", "G18"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/09o5cg/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 1,
+            "warning": 0,
+            "failed": 3,
+            "inapplicable": 0,
+            "outcome": "failed",
+            "description": "Element has contrast ratio lower than minimum."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "Element has contrast ratio higher than minimum.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<h1>Insufficient contrast</h1>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > h1:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "failed",
+              "description": "Element has contrast ratio lower than minimum.",
+              "resultCode": "F1",
+              "elements": [
+                {
+                  "htmlCode": "<p id=\"faint-paragraph\" class=\"faint\">\n        This paragraph does not meet the 4.5:1 contrast threshold for body text.\n      </p>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(2)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "failed",
+              "description": "Element has contrast ratio lower than minimum.",
+              "resultCode": "F1",
+              "elements": [
+                {
+                  "htmlCode": "<p id=\"very-faint-paragraph\" class=\"very-faint\">\n        This paragraph is far below every contrast threshold.\n      </p>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(3)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "failed",
+              "description": "Element has contrast ratio lower than minimum.",
+              "resultCode": "F1",
+              "elements": [
+                {
+                  "htmlCode": "<button id=\"washed-button\" class=\"washed-button\" type=\"button\">Buy now</button>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(4) > button:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-ACT-R15": {
+          "name": "audio or video has no audio that plays automatically",
+          "code": "QW-ACT-R15",
+          "mapping": "80f0bf",
+          "description": "This rule checks that auto-play audio does not last for more than 3 seconds, or the audio has a control mechanism to stop or mute it.",
+          "metadata": {
+            "target": {
+              "element": ["audio", "video"]
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.2",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-dis-audio.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#audio-control"
+              }
+            ],
+            "related": ["G60", "G170", "G171"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/80f0bf/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R23": {
+          "name": "video element visual content has accessible alternative",
+          "code": "QW-ACT-R23",
+          "mapping": "c5a4ea",
+          "description": "This rule checks that video elements with audio have an alternative for the video content as audio or as text.",
+          "metadata": {
+            "target": {
+              "element": "video"
+            },
+            "success-criteria": [
+              {
+                "name": "1.2.3",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/audio-description-or-media-alternative-prerecorded.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#audio-description-or-media-alternative-prerecorded"
+              }
+            ],
+            "related": ["G8", "G69", "G78", "G173"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/c5a4ea/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R26": {
+          "name": "video element auditory content has accessible alternative",
+          "code": "QW-ACT-R26",
+          "mapping": "eac66b",
+          "description": "This rule checks that video elements have an alternative for information conveyed through audio.",
+          "metadata": {
+            "target": {
+              "element": "video"
+            },
+            "success-criteria": [
+              {
+                "name": "1.2.2",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/captions-prerecorded.html"
+              }
+            ],
+            "related": ["G87", "G93", "H95"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/eac66b/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R29": {
+          "name": "Audio element content has text alternative",
+          "code": "QW-ACT-R29",
+          "mapping": "e7aa44",
+          "description": "This rule checks if audio only elements have a text alternative available.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "role"
+            },
+            "success-criteria": [
+              {
+                "name": "1.2.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/audio-only-and-video-only-prerecorded",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#audio-only-and-video-only-prerecorded"
+              }
+            ],
+            "related": ["G158"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/e7aa44/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R31": {
+          "name": "Video element visual-only content has accessible alternative",
+          "code": "QW-ACT-R31",
+          "mapping": "c3232f",
+          "description": "This rule checks that video elements without audio have an alternative available.",
+          "metadata": {
+            "target": {
+              "element": "video"
+            },
+            "success-criteria": [
+              {
+                "name": "1.2.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/audio-only-and-video-only-prerecorded",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#audio-only-and-video-only-prerecorded"
+              }
+            ],
+            "related": ["G159", "G166"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/c3232f/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R32": {
+          "name": "video element visual content has strict accessible alternative",
+          "code": "QW-ACT-R32",
+          "mapping": "1ec09b",
+          "description": "This rule checks that video elements with audio have audio description.",
+          "metadata": {
+            "target": {
+              "element": "video"
+            },
+            "success-criteria": [
+              {
+                "name": "1.2.5",
+                "level": "AA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/audio-description-prerecorded.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#audio-description-prerecorded"
+              }
+            ],
+            "related": ["G8", "G78", "G173"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/1ec09b/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-ACT-R75": {
+          "name": "Bypass Blocks of Repeated Content",
+          "code": "QW-ACT-R75",
+          "mapping": "cf77f2",
+          "description": "This rule checks that each page has a mechanism to bypass repeated blocks of content.",
+          "metadata": {
+            "target": {
+              "element": "html"
+            },
+            "success-criteria": [
+              {
+                "name": "2.4.1",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#bypass-blocks"
+              }
+            ],
+            "related": ["G1", "G123", "G124", "H69", "SCR28"],
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/cf77f2/",
+            "type": ["ACTRule", "TestCase"],
+            "a11yReq": [],
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "No test targets found.QW-ACT-R63"
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "No test targets found.QW-ACT-R63",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<html lang=\"en\"><head></head><body>Insufficient contrast — Ally fixture\n    \n      body {\n        margin: 0;\n        background: #ffffff;\n        color: #111827;\n        font-family: system-ui, sans-serif;\n      }\n      .layout {\n        margin: 0 auto;\n        max-width: 40rem;\n        padding: 1.5rem;\n      }\n      /* 2.3:1 against white — below the 4.5:1 threshold for body text. */\n      .faint {\n        color: #9aa0a6;\n        background: #ffffff;\n        font-size: 1rem;\n      }\n      /* 1.6:1 — well below every threshold. */\n      .very-faint {\n        color: #cfd4d9;\n        background: #ffffff;\n        font-size: 1rem;\n      }\n      .washed-button {\n        background: #b7d3f2;\n        color: #ffffff;\n        border: 0;\n        padding: 0.5rem 1rem;\n      }\n    \n  (()=&gt;{\"use strict\";var e={715(e,t,n){Object.defineProperty(t,\"__esModule\",{value:!0}),t.QWElement=void 0;const l=n(300);class r{constructor(e,t){this.selector=\"\",this.element=e,this.elementsCSSRules=t;const n=e.getAttribute(\"qw-selector\");n&amp;&amp;(this.selector=n)}addCSSRulesPropertyToElement(e){var t;e&amp;&amp;(null===(t=this.elementsCSSRules)||void 0===t?void 0:t.has(e))&amp;&amp;e.setAttribute(\"qw-css-rules\",\"true\")}hasCSSRules(){return\"true\"===this.element.getAttribute(\"qw-css-rules\")}getCSSRules(){var e;return null===(e=this.elementsCSSRules)||void 0===e?void 0:e.get(this.element)}hasCSSProperty(e,t,n){var l,r;if(null===(l=this.elementsCSSRules)||void 0===l?void 0:l.has(this.element)){const l=null===(r=this.elementsCSSRules)||void 0===r?void 0:r.get(this.element);if(l){if(t&amp;&amp;n)return void 0!==l.media[n][t][e];if(t)return void 0!==l[t][e];if(n)return void 0!==l.media[n][e]}return!l||void 0!==l[e]}return!1}getCSSProperty(e,t,n){var l,r;if(null===(l=this.elementsCSSRules)||void 0===l?void 0:l.has(this.element)){const l=null===(r=this.elementsCSSRules)||void 0===r?void 0:r.get(this.element);if(l)return t&amp;&amp;n?l.media[n][t][e]:t?l[t][e]:n?l.media[n][e]:l[e]}}getCSSMediaRules(){… [truncated from 1021835 characters]",
+                  "pointer": "html"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "moduleId": "wcag-techniques",
+      "bestPractice": false,
+      "assertions": {
+        "QW-WCAG-T1": {
+          "name": "Providing text alternatives for the area elements of image maps",
+          "code": "QW-WCAG-T1",
+          "mapping": "H24",
+          "description": "This technique checks the text alternative of area elements of images maps",
+          "metadata": {
+            "target": {
+              "parent-sibling": "img",
+              "parent": "map",
+              "element": "area"
+            },
+            "success-criteria": [
+              {
+                "name": "1.1.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content"
+              },
+              {
+                "name": "2.4.4",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context"
+              },
+              {
+                "name": "2.4.9",
+                "level": "AAA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-link-only"
+              }
+            ],
+            "related": ["G91", "H30"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H24",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T3": {
+          "name": "Providing a description for groups of form controls using `fieldset` and `legend` elements",
+          "code": "QW-WCAG-T3",
+          "mapping": "H71",
+          "description": "This technique checks the correct use of the description element for form controls",
+          "metadata": {
+            "target": {
+              "element": "fieldset"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships"
+              },
+              {
+                "name": "3.3.2",
+                "level": "A",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/labels-or-instructions"
+              }
+            ],
+            "related": ["H44", "H65"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H71",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T9": {
+          "name": "Organizing a page using headings",
+          "code": "QW-WCAG-T9",
+          "mapping": "G141",
+          "description": "The objective of this technique is to ensure that sections have headings that identify them and that the heading are used in the correct order",
+          "metadata": {
+            "target": {
+              "element": ["h1", "h2", "h3", "h4", "h5", "h6"],
+              "attributes": "role='heading'"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships"
+              },
+              {
+                "name": "2.4.10",
+                "level": "AAA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/section-headings"
+              }
+            ],
+            "related": ["G91", "H30"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/general/G141",
+            "passed": 0,
+            "warning": 1,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "warning",
+            "description": "Please verify that headers are used to divide the page correctly."
+          },
+          "results": [
+            {
+              "verdict": "warning",
+              "description": "Please verify that headers are used to divide the page correctly.",
+              "resultCode": "W1",
+              "elements": [
+                {
+                  "htmlCode": "<body>\n    \n    \n      Insufficient contrast\n      \n        This paragraph does not meet the 4.5:1 contrast threshold for body text.\n      \n      \n        This paragraph is far below every contrast threshold.\n      \n      Buy now\n    \n  \n\n</body>",
+                  "pointer": "html > body:nth-child(2)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-WCAG-T23": {
+          "name": "Adding a link at the top of each page that goes directly to the main content area",
+          "code": "QW-WCAG-T23",
+          "mapping": "G1",
+          "description": "The objective of this technique is to provide a mechanism to bypass blocks of material that are repeated on multiple Web pages by skipping directly to the main content of the Web page.",
+          "metadata": {
+            "target": {
+              "element": "body"
+            },
+            "success-criteria": [
+              {
+                "name": "2.4.1",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks"
+              }
+            ],
+            "related": ["G123", "G124"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/general/G1",
+            "passed": 0,
+            "warning": 0,
+            "failed": 1,
+            "inapplicable": 0,
+            "outcome": "failed",
+            "description": "The first focusable control on the Web page is not a link."
+          },
+          "results": [
+            {
+              "verdict": "failed",
+              "description": "The first focusable control on the Web page is not a link.",
+              "resultCode": "F4",
+              "elements": [
+                {
+                  "htmlCode": "<button id=\"washed-button\" class=\"washed-button\" type=\"button\">Buy now</button>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(4) > button:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-WCAG-T5": {
+          "name": "Using alt attributes on images used as submit buttons",
+          "code": "QW-WCAG-T5",
+          "mapping": "H36",
+          "description": "This technique checks all input elements that are buttons use alt text",
+          "metadata": {
+            "target": {
+              "element": "input"
+            },
+            "success-criteria": [
+              {
+                "name": "1.1.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content"
+              }
+            ],
+            "related": ["G94"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H36",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T11": {
+          "name": "Providing text alternatives on applet elements",
+          "code": "QW-WCAG-T11",
+          "mapping": "H35",
+          "description": "Provide a text alternative for an applet by using the alt attribute to label an applet and providing the text alternative in the body of the applet element. In this technique, both mechanisms are required due to the varying support of the alt attribute and applet body text by user agents.",
+          "metadata": {
+            "target": {
+              "element": "applet"
+            },
+            "success-criteria": [
+              {
+                "name": "1.1.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/page-titled"
+              }
+            ],
+            "related": ["G94"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H35",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T2": {
+          "name": "Using caption elements to associate data table captions with data tables",
+          "code": "QW-WCAG-T2",
+          "mapping": "H39",
+          "description": "This technique checks the caption element is correctly use on tables",
+          "metadata": {
+            "target": {
+              "element": "table"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships"
+              }
+            ],
+            "related": ["H51", "H73", "F46"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H39",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T4": {
+          "name": "Using the summary attribute of the table element to give an overview of data tables",
+          "code": "QW-WCAG-T4",
+          "mapping": "H73",
+          "description": "This technique checks the correct use of the summary attribute for table elements",
+          "metadata": {
+            "target": {
+              "element": "table"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships"
+              }
+            ],
+            "related": ["H39", "H51", "F46"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H73",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T12": {
+          "name": "Failure of Success Criterion 1.3.1 due to using th elements, caption elements, or non-empty summary attributes in layout tables",
+          "code": "QW-WCAG-T12",
+          "mapping": "F46",
+          "description": "The objective of this technique is to describe a failure that occurs when a table used only for layout includes either th elements, a summary attribute, or a caption element. This is a failure because it uses structural (or semantic) markup only for presentation. The intent of the HTML and XHTML table elements is to present data.",
+          "metadata": {
+            "target": {
+              "element": "table"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships"
+              }
+            ],
+            "related": ["H39", "H51", "H73"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/failures/F46",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T14": {
+          "name": "Using id and headers attributes to associate data cells with header cells in data tables",
+          "code": "QW-WCAG-T14",
+          "mapping": "H43",
+          "description": "This technique checks if data cells are associated with header cells in data tables.",
+          "metadata": {
+            "target": {
+              "element": "table"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H43",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T18": {
+          "name": "Using table markup to present tabular information",
+          "code": "QW-WCAG-T18",
+          "mapping": "H51",
+          "description": "The objective of this technique is to present tabular information in a way that preserves relationships within the information even when users cannot see the table or the presentation format is changed. Using the table element with the child elements tr, th, and td makes these relationships perceivable.",
+          "metadata": {
+            "target": {
+              "element": "table"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships"
+              }
+            ],
+            "related": ["H39", "H43", "H63"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H51",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T10": {
+          "name": "Combining adjacent image and text links for the same resource",
+          "code": "QW-WCAG-T10",
+          "mapping": "H2",
+          "description": "The objective of this technique is to provide both text and iconic representations of links without making the web page more confusing or difficult for keyboard users or assistive technology users. Since different users finding text and icons more usable, providing both can improve the accessibility of the link.",
+          "metadata": {
+            "target": {
+              "element": "a"
+            },
+            "success-criteria": [
+              {
+                "name": "1.1.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/TR/UNDERSTANDING-WCAG20/text-equiv-all.html"
+              },
+              {
+                "name": "2.4.4",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-refs.html"
+              },
+              {
+                "name": "2.4.9",
+                "level": "AAA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-link.html"
+              }
+            ],
+            "related": ["G91", "G94", "H30", "C9", "F89"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H2",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T20": {
+          "name": "Supplementing link text with the title attribute",
+          "code": "QW-WCAG-T20",
+          "mapping": "H33",
+          "description": "Supplementing link text with the title attribute",
+          "metadata": {
+            "target": {
+              "element": "a"
+            },
+            "success-criteria": [
+              {
+                "name": "2.4.4",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context"
+              },
+              {
+                "name": "2.4.9",
+                "level": "AAA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-link-only"
+              }
+            ],
+            "related": ["C7", "H30"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H33",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T21": {
+          "name": "Failure of Success Criteria 2.4.4, 2.4.9 and 4.1.2 due to not providing an accessible name for an image which is the only content in a link",
+          "code": "QW-WCAG-T21",
+          "mapping": "F89",
+          "description": "This technique checks the text alternative of images which are the only content of a link",
+          "metadata": {
+            "target": {
+              "parent": "a",
+              "element": "img"
+            },
+            "success-criteria": [
+              {
+                "name": "2.4.4",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-refs.html"
+              },
+              {
+                "name": "2.4.9",
+                "level": "AAA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-link.html"
+              },
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value"
+              }
+            ],
+            "related": ["H2", "H30", "ARIA7", "ARIA8"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/failures/F89",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T6": {
+          "name": "Using both keyboard and other device-specific functions",
+          "code": "QW-WCAG-T6",
+          "mapping": "SCR20",
+          "description": "The objective of this technique is to verify the parity of keyboard-specific and mouse-specific events when code that has a scripting function associated with an event is used",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": ["onmousedown", "onmouseup", "onclick", "onmouseover", "onmouseout"]
+            },
+            "success-criteria": [
+              {
+                "name": "2.1.1",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/keyboard"
+              }
+            ],
+            "related": ["G90"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/client-side-script/SCR20",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T7": {
+          "name": "Providing definitions for abbreviations by using the abbr element",
+          "code": "QW-WCAG-T7",
+          "mapping": "H28",
+          "description": "The objective of this technique is to provide expansions or definitions for abbreviations by using the abbr element",
+          "metadata": {
+            "target": {
+              "element": "abbr"
+            },
+            "success-criteria": [
+              {
+                "name": "3.1.4",
+                "level": "AAA",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/abbreviations"
+              }
+            ],
+            "related": ["G91", "H30"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H28",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T15": {
+          "name": "Using the link element and navigation tools",
+          "code": "QW-WCAG-T15",
+          "mapping": "H59",
+          "description": "The objective of this technique is to describe how the link element can provide metadata about the position of an HTML page within a set of Web pages or can assist in locating content with a set of Web pages.",
+          "metadata": {
+            "target": {
+              "element": "link"
+            },
+            "success-criteria": [
+              {
+                "name": "2.4.5",
+                "level": "AA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/multiple-ways"
+              },
+              {
+                "name": "2.4.8",
+                "level": "AAA",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/location"
+              }
+            ],
+            "related": ["G1", "G63", "G64", "G123"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H59",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T13": {
+          "name": "Failure of Success Criterion 2.2.2 due to using the blink element",
+          "code": "QW-WCAG-T13",
+          "mapping": "F47",
+          "description": "The blink element, while not part of the official HTML or XHTML specification, is supported by many user agents. It causes any text inside the element to blink at a predetermined rate. This cannot be interrupted by the user, nor can it be disabled as a preference. The blinking continues as long as the page is displayed. Therefore, content that uses blink fails the Success Criterion because blinking can continue for more than three seconds.",
+          "metadata": {
+            "target": {
+              "element": "blink"
+            },
+            "success-criteria": [
+              {
+                "name": "2.2.2",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/pause-stop-hide"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/failures/F47",
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "Blink is not used."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "Blink is not used.",
+              "resultCode": "P1",
+              "elements": [],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-WCAG-T17": {
+          "name": "Positioning labels to maximize predictability of relationships",
+          "code": "QW-WCAG-T17",
+          "mapping": "G162",
+          "description": "This technique checks the correct position of labels in forms",
+          "metadata": {
+            "target": {
+              "element": "form"
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships"
+              },
+              {
+                "name": "3.3.2",
+                "level": "A",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/labels-or-instructions"
+              }
+            ],
+            "related": ["H44", "H71", "H65", "G131", "G167"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/general/G162.html",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T32": {
+          "name": "Using ol, ul and dl for lists or groups of links",
+          "code": "QW-WCAG-T32",
+          "mapping": "H48",
+          "description": "The objective of this technique is to create lists of related items using list elements appropriate for their purposes.",
+          "metadata": {
+            "target": {
+              "element": ["li", "dd", "dt"]
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships"
+              }
+            ],
+            "related": ["H40"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H48",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T19": {
+          "name": "Providing submit buttons",
+          "code": "QW-WCAG-T19",
+          "mapping": "H32",
+          "description": "The objective of this technique is to provide a mechanism that allows users to explicitly request changes of context. The intended use of a submit button is to generate an HTTP request that submits data entered in a form, so it is an appropriate control to use for causing a change of context.",
+          "metadata": {
+            "target": {
+              "element": "form"
+            },
+            "success-criteria": [
+              {
+                "name": "3.2.2",
+                "level": "A",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/on-input"
+              }
+            ],
+            "related": ["G80", "H36", "H84"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H32",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T24": {
+          "name": "Failure of Success Criteria 2.1.1, 2.4.7, and 3.2.1 due to using script to remove focus when focus is received",
+          "code": "QW-WCAG-T24",
+          "mapping": "F55",
+          "description": "Content that normally receives focus when the content is accessed by keyboard may have this focus removed by scripting.",
+          "metadata": {
+            "target": {
+              "element": "*"
+            },
+            "success-criteria": [
+              {
+                "name": "2.1.1",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/keyboard"
+              },
+              {
+                "name": "2.4.7",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/focus-visible"
+              },
+              {
+                "name": "3.2.1",
+                "level": "A",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/on-focus"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/failures/F55",
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "Element kept focus."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "Element kept focus.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<button id=\"washed-button\" class=\"washed-button\" type=\"button\">Buy now</button>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(4) > button:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-WCAG-T30": {
+          "name": "Failure of Success Criterion 2.2.2 due to using text-decoration:blink without a mechanism to stop it in less than five seconds",
+          "code": "QW-WCAG-T30",
+          "mapping": "F4",
+          "description": "CSS defines the blink value for the text-decoration property. When used, it causes any text in elements with this property to blink at a predetermined rate. This cannot be interrupted by the user, nor can it be disabled as a user agent preference. The blinking continues as long as the page is displayed. Therefore, content that uses text-decoration:blink fails the Success Criterion because blinking can continue for more than three seconds.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "text-decoration"
+            },
+            "success-criteria": [
+              {
+                "name": "2.2.2",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/pause-stop-hide.html"
+              }
+            ],
+            "related": ["SCR22"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/failures/F4",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T25": {
+          "name": "Using the scope attribute to associate header cells and data cells in data tables",
+          "code": "QW-WCAG-T25",
+          "mapping": "H63",
+          "description": "The objective of this technique is to associate header cells with data cells in complex tables using the scope attribute.",
+          "metadata": {
+            "target": {
+              "element": ["th", "td[scope]"]
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships"
+              }
+            ],
+            "related": ["H43", "H51"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H63",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T26": {
+          "name": "Failure of Success Criterion 4.1.2 due to using script to make div or span a user interface control in HTML without providing a role for the control",
+          "code": "QW-WCAG-T26",
+          "mapping": "F59",
+          "description": "This failure demonstrates how using generic HTML elements to create user interface controls can make the controls inaccessible to assistive technology.",
+          "metadata": {
+            "target": {
+              "element": ["div", "span"],
+              "attributes": [
+                "onmousedown",
+                "onmouseup",
+                "onclick",
+                "onmouseover",
+                "onmouseout",
+                "onkeydown",
+                "onkeyup",
+                "onkeypress",
+                "onfocus",
+                "onblur"
+              ]
+            },
+            "success-criteria": [
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value"
+              }
+            ],
+            "related": ["F42"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/failures/F59",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T8": {
+          "name": "Failure of Success Criterion 1.1.1 and 1.2.1 due to using text alternatives that are not alternatives",
+          "code": "QW-WCAG-T8",
+          "mapping": "F30",
+          "description": "This describes a failure condition for all techniques involving text alternatives. If the text in the \"text alternative\" cannot be used in place of the non-text content without losing information or function then it fails because it is not, in fact, an alternative to the non-text content",
+          "metadata": {
+            "target": {
+              "attributes": "alt"
+            },
+            "success-criteria": [
+              {
+                "name": "1.1.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content"
+              },
+              {
+                "name": "1.2.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/audio-only-and-video-only-prerecorded"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/failures/F30",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T28": {
+          "name": "Using `percent, em, names` for font sizes",
+          "code": "QW-WCAG-T28",
+          "mapping": "C121314",
+          "description": "This technique checks that all font-size attribute uses percent, em or names.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "font-size"
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.4",
+                "level": "AA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-scale.html"
+              },
+              {
+                "name": "1.4.5",
+                "level": "AA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-text-presentation.html"
+              },
+              {
+                "name": "1.4.8",
+                "level": "AAA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-visual-presentation.html"
+              },
+              {
+                "name": "1.4.9",
+                "level": "AAA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/GL/UNDERSTANDING-WCAG20/visual-audio-contrast-text-images.html"
+              }
+            ],
+            "related": ["C12", "C13", "C14"],
+            "url": {
+              "C12": "https://www.w3.org/WAI/WCAG21/Techniques/css/C12",
+              "C13": "https://www.w3.org/WAI/WCAG21/Techniques/css/C13",
+              "C14": "https://www.w3.org/WAI/WCAG21/Techniques/css/C14"
+            },
+            "passed": 2,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "This test target has a font-size css property using an relative unit value with the important flag."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "This test target has a font-size css property using an relative unit value with the important flag.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<p id=\"faint-paragraph\" class=\"faint\">\n        This paragraph does not meet the 4.5:1 contrast threshold for body text.\n      </p>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(2)"
+                }
+              ],
+              "attributes": ["1rem"]
+            },
+            {
+              "verdict": "passed",
+              "description": "This test target has a font-size css property using an relative unit value with the important flag.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<p id=\"very-faint-paragraph\" class=\"very-faint\">\n        This paragraph is far below every contrast threshold.\n      </p>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(3)"
+                }
+              ],
+              "attributes": ["1rem"]
+            }
+          ]
+        },
+        "QW-WCAG-T29": {
+          "name": "Specifying alignment either to the left or right in CSS",
+          "code": "QW-WCAG-T29",
+          "mapping": "C19",
+          "description": "This technique describes how to align blocks of text either left or right by setting the CSS text-align property.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "text-align"
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.8",
+                "level": "AAA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation"
+              }
+            ],
+            "related": [],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/css/C19",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T31": {
+          "name": "Failure of Success Criterion 1.4.3, 1.4.6 and 1.4.8 due to specifying foreground colors without specifying background colors or vice versa",
+          "code": "QW-WCAG-T31",
+          "mapping": "F24",
+          "description": "Users with vision loss or cognitive, language and learning challenges often prefer specific foreground and background color combinations. In some cases, individuals with low vision will find it much easier to see a Web page that has white text on a black background, and they may have set their user agent to present this contrast. Many user agents make it possible for users to choose a preference about the foreground or background colors they would like to see without overriding all author-specified styles. This makes it possible for users to view pages where colors have not been specified by the author in their preferred color combination.",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "text-decoration"
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.3",
+                "level": "AA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum"
+              },
+              {
+                "name": "1.4.6",
+                "level": "AAA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/contrast-enhanced"
+              },
+              {
+                "name": "1.4.8",
+                "level": "AAA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation"
+              }
+            ],
+            "related": ["C23", "C25"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/failures/F24",
+            "passed": 4,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The test target has a author defined color and background css properties."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The test target has a author defined color and background css properties.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<h1>Insufficient contrast</h1>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > h1:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "passed",
+              "description": "The test target has a author defined color and background css properties.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<p id=\"faint-paragraph\" class=\"faint\">\n        This paragraph does not meet the 4.5:1 contrast threshold for body text.\n      </p>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(2)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "passed",
+              "description": "The test target has a author defined color and background css properties.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<p id=\"very-faint-paragraph\" class=\"very-faint\">\n        This paragraph is far below every contrast threshold.\n      </p>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(3)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "passed",
+              "description": "The test target has a author defined color and background css properties.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<button id=\"washed-button\" class=\"washed-button\" type=\"button\">Buy now</button>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(4) > button:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-WCAG-T27": {
+          "name": "Failure of Success Criterion 1.4.8 due to using text that is justified (aligned to both the left and the right margins)",
+          "code": "QW-WCAG-T27",
+          "mapping": "F88",
+          "description": "This failure describes situations where blocks of text that are justified (aligned to both the left and the right margins) occurs in HTML, using the 'align' attribute.",
+          "metadata": {
+            "target": {
+              "element": ["div", "span"],
+              "attributes": "text-align"
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.8",
+                "level": "AAA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation"
+              }
+            ],
+            "related": ["C22"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/failures/F88",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T33": {
+          "name": "Using description lists - dd,dt",
+          "code": "QW-WCAG-T33",
+          "mapping": "H40",
+          "description": "Ensures <dt> and <dd> elements are contained by a <dl>",
+          "metadata": {
+            "target": {
+              "element": ["dd", "dt"]
+            },
+            "success-criteria": [
+              {
+                "name": "3.1.3",
+                "level": "AAA",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/unusual-words.html"
+              }
+            ],
+            "related": ["G62"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/general/G62",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T34": {
+          "name": "Using description lists - dl",
+          "code": "QW-WCAG-T34",
+          "mapping": "H40",
+          "description": "Ensures <dl> elements are structured correctly. <dl> elements must only directly contain properly-ordered <dt> and <dd> groups, <script>, <template> or <div> elements",
+          "metadata": {
+            "target": {
+              "element": ["dl"]
+            },
+            "success-criteria": [
+              {
+                "name": "3.1.3",
+                "level": "AAA",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/unusual-words.html"
+              }
+            ],
+            "related": ["G62"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/general/G62",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T16": {
+          "name": "Using HTML according to spec",
+          "code": "QW-WCAG-T16",
+          "mapping": "H88",
+          "description": "This technique checks that the HTML or XHTML web page follows the specification.",
+          "metadata": {
+            "target": {
+              "element": "*"
+            },
+            "success-criteria": [
+              {
+                "name": "4.1.1",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/parsing"
+              },
+              {
+                "name": "4.1.2",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/name-role-value"
+              }
+            ],
+            "related": ["H74", "H75"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H88",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-WCAG-T22": {
+          "name": "Failure of Success Criterion 3.2.1 and 3.2.5 due to opening a new window as soon as a new page is loaded",
+          "code": "QW-WCAG-T22",
+          "mapping": "F52",
+          "description": "The objective of this technique is to ensure that pages do not disorient users by opening up one or more new windows that automatically attain focus as soon as a page is loaded.",
+          "metadata": {
+            "target": {
+              "element": "*"
+            },
+            "success-criteria": [
+              {
+                "name": "3.2.5",
+                "level": "AAA",
+                "principle": "Understandable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/change-on-request"
+              }
+            ],
+            "related": ["G107"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/failures/F52",
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "Browser didn't open new tab."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "Browser didn't open new tab.",
+              "resultCode": "P1",
+              "elements": [],
+              "attributes": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "moduleId": "best-practices",
+      "bestPractice": true,
+      "assertions": {
+        "QW-BP2": {
+          "name": "Concise images alt text",
+          "code": "QW-BP2",
+          "description": "Image alt text attribute with more than 100 characters",
+          "metadata": {
+            "target": {
+              "element": "img"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP9": {
+          "name": "Table element without header cells has a caption",
+          "code": "QW-BP9",
+          "description": "A table without th elements should have a caption element to describe it.",
+          "metadata": {
+            "target": {
+              "element": "table"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP12": {
+          "name": "Using scope col and row",
+          "code": "QW-BP12",
+          "description": "Using scope col in the first row and scope row in the first element of each row",
+          "metadata": {
+            "target": {
+              "element": ["table", "tr"]
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP5": {
+          "name": "Using table elements inside other table elements",
+          "code": "QW-BP5",
+          "description": "It is not recommended to use table elements inside other table elements",
+          "metadata": {
+            "target": {
+              "element": "table",
+              "parent": "table"
+            },
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "There are not table elements inside other table elements."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "There are not table elements inside other table elements.",
+              "resultCode": "P1",
+              "elements": [],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-BP6": {
+          "name": "title element is not too long (100 characters)",
+          "code": "QW-BP6",
+          "description": "The webpage title element shouldn't have more than 100 characters",
+          "metadata": {
+            "target": {
+              "element": "title"
+            },
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The page title has less than 100 characters."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The page title has less than 100 characters.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<title>Insufficient contrast — Ally fixture</title>",
+                  "pointer": "html > head:nth-child(1) > title:nth-child(3)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-BP7": {
+          "name": "Title element contains ASCII-art",
+          "code": "QW-BP7",
+          "description": "Title element contains ASCII-art",
+          "metadata": {
+            "target": {
+              "element": "title"
+            },
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The title element doesn't contain ASCII art."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The title element doesn't contain ASCII art.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<title>Insufficient contrast — Ally fixture</title>",
+                  "pointer": "html > head:nth-child(1) > title:nth-child(3)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-BP8": {
+          "name": "Headings with images should have an accessible name",
+          "code": "QW-BP8",
+          "description": "Headings with at least one image should have an accessible name",
+          "metadata": {
+            "target": {
+              "element": ["h1", "h2", "h3", "h4", "h5", "h6", "[role='heading']"],
+              "children": "img"
+            },
+            "related": ["G130"],
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP10": {
+          "name": "HTML elements are used to control visual presentation of content",
+          "code": "QW-BP10",
+          "description": "No HTML elements are used to control the visual presentation of content",
+          "metadata": {
+            "target": {
+              "element": [
+                "b",
+                "blink",
+                "blockquote",
+                "basefont",
+                "center",
+                "cite",
+                "em",
+                "font",
+                "i",
+                "link",
+                "mark",
+                "strong",
+                "s",
+                "strike",
+                "u",
+                "vlink"
+              ]
+            },
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The webpage doesn't use elements to control the visual content presentation."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The webpage doesn't use elements to control the visual content presentation.",
+              "resultCode": "P1",
+              "elements": [],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-BP11": {
+          "name": "Using br to make a list",
+          "code": "QW-BP11",
+          "description": "Using 3 consecutive br elements",
+          "metadata": {
+            "target": {
+              "element": "br"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP1": {
+          "name": "Using h1-h6 to identify headings",
+          "code": "QW-BP1",
+          "mapping": "H42",
+          "description": "It is recommended to use HTML and XHTML heading markup to provide semantic code for headings in the content",
+          "metadata": {
+            "target": {
+              "element": ["h1", "h2", "h3", "h4", "h5", "h6"]
+            },
+            "success-criteria": [
+              {
+                "name": "1.3.1",
+                "level": "A",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html"
+              }
+            ],
+            "related": ["H69", "G141", "F2", "F43"],
+            "url": "https://www.w3.org/TR/WCAG20-TECHS/H42.html",
+            "passed": 0,
+            "warning": 1,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "warning",
+            "description": "Check that heading markup is used when content is a heading."
+          },
+          "results": [
+            {
+              "verdict": "warning",
+              "description": "Check that heading markup is used when content is a heading.",
+              "resultCode": "W1",
+              "elements": [
+                {
+                  "htmlCode": "<h1>Insufficient contrast</h1>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > h1:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-BP20": {
+          "name": "Landmark no duplicate banner",
+          "code": "QW-BP20",
+          "description": "Ensures the document has at most one banner landmark",
+          "metadata": {
+            "target": {
+              "element": "body"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP21": {
+          "name": "Landmark no duplicate contentinfo",
+          "code": "QW-BP21",
+          "description": "Ensures the document has at most one contentinfo landmark",
+          "metadata": {
+            "target": {
+              "element": "body"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP22": {
+          "name": "Landmark has one main",
+          "code": "QW-BP22",
+          "description": "Ensures the document has a main landmark",
+          "metadata": {
+            "target": {
+              "element": "body"
+            },
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "There is one main landmark."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "There is one main landmark.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<main id=\"main\" class=\"layout\">\n      Insufficient contrast\n      \n        This paragraph does not meet the 4.5:1 contrast threshold for body text.\n      \n      \n        This paragraph is far below every contrast threshold.\n      \n      Buy now\n    </main>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-BP28": {
+          "name": "H1 element is used and unique",
+          "code": "QW-BP28",
+          "description": "Ensures there is only one H1",
+          "metadata": {
+            "target": {
+              "element": "h1"
+            },
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The H1 element is used and unique"
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The H1 element is used and unique",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<h1>Insufficient contrast</h1>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > h1:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-BP13": {
+          "name": "Using consecutive links with the same href and one contains an image",
+          "code": "QW-BP13",
+          "description": "Using consecutive links with the same href in which one of the links contains an image",
+          "metadata": {
+            "target": {
+              "element": "a"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP4": {
+          "name": "Grouped links not within a nav element",
+          "code": "QW-BP4",
+          "description": "Set of 10 or more links not grouped within a list (nav)",
+          "metadata": {
+            "target": {
+              "element": "a"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP15": {
+          "name": "At least one width attribute of an HTML element is expressed in absolute values",
+          "code": "QW-BP15",
+          "description": "At least one width attribute of an HTML element is expressed in absolute values",
+          "metadata": {
+            "target": {
+              "element": "*",
+              "attributes": "width"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP17": {
+          "name": "Adding a link at the beginning of a block of repeated content to go to the end of the block",
+          "code": "QW-BP17",
+          "mapping": "G123",
+          "description": "The objective of this technique is to provide a mechanism to bypass a block of material by skipping to the end of the block.",
+          "metadata": {
+            "target": {
+              "element": "a",
+              "attributes": "href"
+            },
+            "success-criteria": [
+              {
+                "name": "2.4.1",
+                "level": "A",
+                "principle": "Operable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks"
+              }
+            ],
+            "related": ["G1", "G124"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/general/G123",
+            "passed": 0,
+            "warning": 0,
+            "failed": 1,
+            "inapplicable": 0,
+            "outcome": "failed",
+            "description": "This page does not have links."
+          },
+          "results": [
+            {
+              "verdict": "failed",
+              "description": "This page does not have links.",
+              "resultCode": "F1",
+              "elements": [],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-BP18": {
+          "name": "Using percentage values in CSS for container sizes",
+          "code": "QW-BP18",
+          "mapping": "C24",
+          "description": "The objective of this technique is to enable users to increase the size of text without having to scroll horizontally to read that text. To use this technique, an author specifies the width of text containers using percent values.",
+          "metadata": {
+            "target": {
+              "element": "span article section nav aside hgroup header footer address p hr blockquote div h1 h2 h3 h4 h5 h6 li ul ol dd dt dl figcaption",
+              "attributes": "width"
+            },
+            "success-criteria": [
+              {
+                "name": "1.4.8",
+                "level": "AAA",
+                "principle": "Perceivable",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation"
+              }
+            ],
+            "related": ["C20"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/css/C24",
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP19": {
+          "name": "Landmark banner is top level",
+          "code": "QW-BP19",
+          "description": "Ensures the banner landmark is at top level",
+          "metadata": {
+            "target": {
+              "element": "header:not([role]), [role=banner]"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP23": {
+          "name": "Listitems are used semantically",
+          "code": "QW-BP23",
+          "description": "Ensures <li> elements are used semantically",
+          "metadata": {
+            "target": {
+              "element": "li"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP24": {
+          "name": "Lists are used correctly",
+          "code": "QW-BP24",
+          "description": "Ensures that lists are structured correctly. <ul> and <ol> must only directly contain <li>, <script> or <template> elements",
+          "metadata": {
+            "target": {
+              "element": "ul,ol,menu"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP25": {
+          "name": "Landmark complementary is top level",
+          "code": "QW-BP25",
+          "description": "Ensures the complementary landmark or aside is at top level",
+          "metadata": {
+            "target": {
+              "element": "aside:not([role]), [role=complementary]"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP26": {
+          "name": "Landmark complementary is top level",
+          "code": "QW-BP26",
+          "description": "Ensures the contentinfo landmark is at top level",
+          "metadata": {
+            "target": {
+              "element": "footer:not([role]), [role=contentinfo]"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP27": {
+          "name": "Landmark main is top level",
+          "code": "QW-BP27",
+          "description": "Ensures the main landmark is at top level",
+          "metadata": {
+            "target": {
+              "element": "main:not([role]), [role=main]"
+            },
+            "passed": 1,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": "The main landmark is at top level."
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "The main landmark is at top level.",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<main id=\"main\" class=\"layout\">\n      Insufficient contrast\n      \n        This paragraph does not meet the 4.5:1 contrast threshold for body text.\n      \n      \n        This paragraph is far below every contrast threshold.\n      \n      Buy now\n    </main>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        },
+        "QW-BP29": {
+          "name": "HTML lang and xml:lang match",
+          "code": "QW-BP29",
+          "description": "The best practice checks that for the html element, there is no mismatch between the primary language in non-empty lang and xml:lang attributes, if both are used.",
+          "metadata": {
+            "target": {
+              "element": "html"
+            },
+            "passed": 0,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 1,
+            "outcome": "inapplicable",
+            "description": "No test targets found."
+          },
+          "results": []
+        },
+        "QW-BP30": {
+          "name": "id attribute value is unique",
+          "code": "QW-BP30",
+          "description": "This best practice checks that all id attribute values on a single page are unique.",
+          "metadata": {
+            "target": {
+              "element": "*"
+            },
+            "success-criteria": [
+              {
+                "name": "4.1.1",
+                "level": "A",
+                "principle": "Robust",
+                "url": "https://www.w3.org/WAI/WCAG21/Understanding/parsing.html",
+                "url_tr": "https://www.w3.org/TR/WCAG21/#parsing"
+              }
+            ],
+            "related": ["H93"],
+            "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H93",
+            "passed": 4,
+            "warning": 0,
+            "failed": 0,
+            "inapplicable": 0,
+            "outcome": "passed",
+            "description": ""
+          },
+          "results": [
+            {
+              "verdict": "passed",
+              "description": "",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<main id=\"main\" class=\"layout\">\n      Insufficient contrast\n      \n        This paragraph does not meet the 4.5:1 contrast threshold for body text.\n      \n      \n        This paragraph is far below every contrast threshold.\n      \n      Buy now\n    </main>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "passed",
+              "description": "",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<p id=\"faint-paragraph\" class=\"faint\">\n        This paragraph does not meet the 4.5:1 contrast threshold for body text.\n      </p>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(2)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "passed",
+              "description": "",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<p id=\"very-faint-paragraph\" class=\"very-faint\">\n        This paragraph is far below every contrast threshold.\n      </p>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(3)"
+                }
+              ],
+              "attributes": []
+            },
+            {
+              "verdict": "passed",
+              "description": "",
+              "resultCode": "P1",
+              "elements": [
+                {
+                  "htmlCode": "<button id=\"washed-button\" class=\"washed-button\" type=\"button\">Buy now</button>",
+                  "pointer": "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(4) > button:nth-child(1)"
+                }
+              ],
+              "attributes": []
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "paths": {
+    "html > head:nth-child(1) > title:nth-child(3)": "/html[1]/head[1]/title[1]",
+    "html": "/html[1]",
+    "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(4) > button:nth-child(1)": "/html[1]/body[1]/main[1]/p[3]/button[1]",
+    "html > head:nth-child(1) > meta:nth-child(2)": "/html[1]/head[1]/meta[2]",
+    "html > body:nth-child(2) > main:nth-child(1) > h1:nth-child(1)": "/html[1]/body[1]/main[1]/h1[1]",
+    "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(2)": "/html[1]/body[1]/main[1]/p[1]",
+    "html > body:nth-child(2) > main:nth-child(1) > p:nth-child(3)": "/html[1]/body[1]/main[1]/p[2]",
+    "html > body:nth-child(2)": "/html[1]/body[1]",
+    "html > body:nth-child(2) > main:nth-child(1)": "/html[1]/body[1]/main[1]"
+  }
+}

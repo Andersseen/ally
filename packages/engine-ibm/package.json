@@ -2,7 +2,7 @@
   "name": "@ally/engine-ibm",
   "version": "0.0.0",
   "type": "module",
-  "description": "IBM Equal Access engine adapter for Ally (scaffold)",
+  "description": "IBM Equal Access engine adapter for Ally",
   "license": "Apache-2.0",
   "sideEffects": false,
   "exports": {
@@ -17,13 +17,18 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "clean": "rm -rf dist .turbo"
+    "clean": "rm -rf dist .turbo",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@ally/core": "workspace:*"
+    "@ally/browser": "workspace:*",
+    "@ally/core": "workspace:*",
+    "accessibility-checker-engine": "catalog:"
   },
   "devDependencies": {
     "@ally/config": "workspace:*",
-    "typescript": "catalog:"
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

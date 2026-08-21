@@ -55,10 +55,14 @@ export default tseslint.config(
     },
   },
 
-  // Config files are plain ESM and are not part of any tsconfig.
+  // Config files are plain ESM and are not part of any tsconfig. They still run
+  // in Node, so Node's globals exist even though no tsconfig declares them.
   {
     files: ['**/*.js', '**/*.mjs'],
     extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: {
+      globals: { process: 'readonly' },
+    },
   },
 
   // Must stay last so formatting rules never fight Prettier.

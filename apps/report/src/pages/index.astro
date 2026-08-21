@@ -1,8 +1,11 @@
 ---
-import EngineRuns from '../components/EngineRuns.astro';
-import FindingList from '../components/FindingList.astro';
+import EngineContributions from '../components/EngineContributions.astro';
+import FindingsSection from '../components/FindingsSection.astro';
+import KeyboardSection from '../components/KeyboardSection.astro';
+import Methodology from '../components/Methodology.astro';
+import Overview from '../components/Overview.astro';
 import SampleDataNotice from '../components/SampleDataNotice.astro';
-import SummaryStats from '../components/SummaryStats.astro';
+import ScoreCard from '../components/ScoreCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { formatDuration, formatTimestamp } from '../lib/format.js';
 import { loadAudit } from '../lib/load-audit.js';
@@ -13,45 +16,55 @@ const { result, isSample } = await loadAudit();
 
 <BaseLayout title={`Ally audit — ${result.target.url}`}>
   <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6">
-    <header class="border-b border-slate-200 pb-4">
-      <p class="text-sm font-semibold tracking-wide text-slate-600 uppercase">Ally</p>
-      <p class="text-sm text-slate-600">Automated accessibility audit</p>
+    <header class="border-b border-slate-300 pb-4 dark:border-slate-700">
+      <p class="text-sm font-semibold tracking-wide text-slate-600 uppercase dark:text-slate-400">
+        Ally
+      </p>
+      <p class="text-sm text-slate-600 dark:text-slate-400">An accessibility audit orchestrator</p>
     </header>
 
     <main id="main" tabindex="-1" class="space-y-10 py-8">
       <div class="space-y-4">
-        <h1 class="text-2xl font-bold sm:text-3xl">Audit report</h1>
+        <h1 class="text-2xl font-bold sm:text-3xl">Automated accessibility audit</h1>
 
         <dl class="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-[max-content_1fr]">
-          <dt class="font-medium text-slate-600">URL</dt>
+          <dt class="font-medium text-slate-600 dark:text-slate-400">URL</dt>
           <dd class="break-all" data-testid="audit-url">{result.target.url}</dd>
 
-          <dt class="font-medium text-slate-600">Audited at</dt>
+          <dt class="font-medium text-slate-600 dark:text-slate-400">Audited at</dt>
           <dd data-testid="audit-timestamp">
             <time datetime={result.startedAt}>{formatTimestamp(result.startedAt)}</time>
           </dd>
 
-          <dt class="font-medium text-slate-600">Duration</dt>
+          <dt class="font-medium text-slate-600 dark:text-slate-400">Duration</dt>
           <dd>{formatDuration(result.durationMs)}</dd>
         </dl>
 
         {isSample && <SampleDataNotice />}
       </div>
 
-      <SummaryStats summary={result.summary} />
-      <EngineRuns engines={result.engines} />
-      <FindingList findings={result.findings} />
+      <ScoreCard score={result.score} />
+      <Overview result={result} />
+      <EngineContributions engines={result.engines} contributions={result.contributions} />
+      <FindingsSection findings={result.findings} />
+      {result.keyboard && <KeyboardSection keyboard={result.keyboard} />}
+      <Methodology result={result} />
     </main>
 
-    <footer class="border-t border-slate-200 py-6 text-sm text-slate-600">
-      <h2 class="font-semibold text-slate-800">What this report is not</h2>
+    <footer
+      class="border-t border-slate-300 py-6 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-400"
+    >
+      <h2 class="font-semibold text-slate-800 dark:text-slate-200">What this report is not</h2>
       <p class="mt-2">
         Automated checks detect only a subset of accessibility barriers. This report does not
         establish WCAG conformance, and findings still need human review. Absence of findings is not
         evidence that a page is accessible.
       </p>
       <p class="mt-2">
-        Each engine is used as a dependency and keeps its own license, listed beside it above.
+        Each engine is used as a dependency and keeps its own license, listed beside it above. Raw
+        engine output is written next to this report in
+        <code class="font-mono">raw/</code>, so any finding can be traced back to what the engine
+        actually said.
       </p>
     </footer>
   </div>

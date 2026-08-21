@@ -1,0 +1,5308 @@
+{
+  "engineVersion": "4.0.30",
+  "guidelineId": "IBM_Accessibility",
+  "numExecuted": 181,
+  "results": [
+    {
+      "ruleId": "html_lang_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Lang has a valid primary lang and conforms to BCP 47",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 394,
+        "width": 1280
+      },
+      "snippet": "<html lang=\"en\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "html_lang_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Page language detected as \"en\"",
+      "messageArgs": ["en"],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 394,
+        "width": 1280
+      },
+      "snippet": "<html lang=\"en\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "html_skipnav_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 1,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 394,
+        "width": 1280
+      },
+      "snippet": "<html lang=\"en\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "page_title_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 394,
+        "width": 1280
+      },
+      "snippet": "<html lang=\"en\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 394,
+        "width": 1280
+      },
+      "snippet": "<html lang=\"en\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/head[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<head>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/head[1]/meta[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<meta charset=\"utf-8\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/head[1]/meta[2]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<meta content=\"width=device-width, initial-scale=1\" name=\"viewport\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "page_title_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/head[1]/title[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": ["Missing names — Ally fixture"],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<title>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/head[1]/title[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<title>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "blink_css_review",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/head[1]/style[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<style>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "style_background_decorative",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/head[1]/style[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<style>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "style_color_misuse",
+      "value": ["VIOLATION", "POTENTIAL"],
+      "path": {
+        "dom": "/html[1]/head[1]/style[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Potential_1",
+      "message": "Verify color is not used as the only visual means of conveying information",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<style>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "style_highcontrast_visible",
+      "value": ["VIOLATION", "MANUAL"],
+      "path": {
+        "dom": "/html[1]/head[1]/style[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Manual_1",
+      "message": "Confirm Windows high contrast mode is supported when using CSS to include, position or alter non-decorative content",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<style>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "style_viewport_resizable",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/head[1]/style[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<style>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/head[1]/style[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<style>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/head[1]/script[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<script type=\"text/javascript\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "skip_main_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 394,
+        "width": 1280
+      },
+      "snippet": "<body>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "skip_main_described",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 394,
+        "width": 1280
+      },
+      "snippet": "<body>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 394,
+        "width": 1280
+      },
+      "snippet": "<body>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 394,
+        "width": 1280
+      },
+      "snippet": "<body>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 394,
+        "width": 1280
+      },
+      "snippet": "<body>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_id_unique",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]",
+        "aria": "/document[1]/main[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 296,
+        "top": 0,
+        "height": 394,
+        "width": 688
+      },
+      "snippet": "<main class=\"layout\" id=\"main\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]",
+        "aria": "/document[1]/main[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 296,
+        "top": 0,
+        "height": 394,
+        "width": 688
+      },
+      "snippet": "<main class=\"layout\" id=\"main\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]",
+        "aria": "/document[1]/main[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 296,
+        "top": 0,
+        "height": 394,
+        "width": 688
+      },
+      "snippet": "<main class=\"layout\" id=\"main\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]",
+        "aria": "/document[1]/main[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 296,
+        "top": 0,
+        "height": 394,
+        "width": 688
+      },
+      "snippet": "<main class=\"layout\" id=\"main\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "heading_content_exists",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h1[1]",
+        "aria": "/document[1]/main[1]/heading[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Heading element has descriptive text",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 46,
+        "height": 38,
+        "width": 640
+      },
+      "snippet": "<h1>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "heading_markup_misuse",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h1[1]",
+        "aria": "/document[1]/main[1]/heading[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 46,
+        "height": 38,
+        "width": 640
+      },
+      "snippet": "<h1>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h1[1]",
+        "aria": "/document[1]/main[1]/heading[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 46,
+        "height": 38,
+        "width": 640
+      },
+      "snippet": "<h1>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h1[1]",
+        "aria": "/document[1]/main[1]/heading[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 46,
+        "height": 38,
+        "width": 640
+      },
+      "snippet": "<h1>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_contrast_sufficient",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h1[1]",
+        "aria": "/document[1]/main[1]/heading[1]"
+      },
+      "ruleTime": 1,
+      "reasonId": "pass",
+      "message": "The contrast ratio of text with its background meets WCAG AA requirements",
+      "messageArgs": ["17.74", 32, 700, "#111827", "#ffffff", false, false],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 46,
+        "height": 38,
+        "width": 640
+      },
+      "snippet": "<h1>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h1[1]",
+        "aria": "/document[1]/main[1]/heading[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 46,
+        "height": 38,
+        "width": 640
+      },
+      "snippet": "<h1>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h1[1]",
+        "aria": "/document[1]/main[1]/heading[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 46,
+        "height": 38,
+        "width": 640
+      },
+      "snippet": "<h1>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_accessiblename_exists",
+      "value": ["INFORMATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h1[1]",
+        "aria": "/document[1]/main[1]/heading[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "An accessible name is provided for the element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 46,
+        "height": 38,
+        "width": 640
+      },
+      "snippet": "<h1>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "heading_content_exists",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[1]",
+        "aria": "/document[1]/main[1]/heading[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Heading element has descriptive text",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 105,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "heading_markup_misuse",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[1]",
+        "aria": "/document[1]/main[1]/heading[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 105,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[1]",
+        "aria": "/document[1]/main[1]/heading[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 105,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[1]",
+        "aria": "/document[1]/main[1]/heading[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 105,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_contrast_sufficient",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[1]",
+        "aria": "/document[1]/main[1]/heading[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The contrast ratio of text with its background meets WCAG AA requirements",
+      "messageArgs": ["17.74", 24, 700, "#111827", "#ffffff", false, false],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 105,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[1]",
+        "aria": "/document[1]/main[1]/heading[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 105,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[1]",
+        "aria": "/document[1]/main[1]/heading[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 105,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_accessiblename_exists",
+      "value": ["INFORMATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[1]",
+        "aria": "/document[1]/main[1]/heading[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "An accessible name is provided for the element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 105,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "form_font_color",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]",
+        "aria": "/document[1]/main[1]/form[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 153,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<form method=\"get\" action=\"/search\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "form_submit_button_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]",
+        "aria": "/document[1]/main[1]/form[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 153,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<form method=\"get\" action=\"/search\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]",
+        "aria": "/document[1]/main[1]/form[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 153,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<form method=\"get\" action=\"/search\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]",
+        "aria": "/document[1]/main[1]/form[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 153,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<form method=\"get\" action=\"/search\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]",
+        "aria": "/document[1]/main[1]/form[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 153,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<form method=\"get\" action=\"/search\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_form_label_unique",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]",
+        "aria": "/document[1]/main[1]/form[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element with \"form\" role has a unique label that describes its purpose",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 153,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<form method=\"get\" action=\"/search\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_misuse",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "input_fields_grouped",
+      "value": ["RECOMMENDATION", "POTENTIAL"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Potential_1",
+      "message": "Use the <fieldset> element to group logically related input elements",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_id_unique",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_unobscured",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element is not entirely covered by other content",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The tabbable element is visible on the screen",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "style_focus_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass_focus_visible",
+      "message": "The keyboard focus indicator is visible or is not changed from the browser default",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "target_spacing_sufficient",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass_default",
+      "message": "The target's size is determined by the user agent and is not modified by the author",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "input_label_exists",
+      "value": ["VIOLATION", "FAIL"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Fail_1",
+      "message": "Form control element <input> has no associated label",
+      "messageArgs": ["input"],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_single",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Components with a widget role should have no more than one tabbable element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 158,
+        "height": 21,
+        "width": 153
+      },
+      "snippet": "<input type=\"text\" name=\"query\" id=\"query\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "input_fields_grouped",
+      "value": ["RECOMMENDATION", "POTENTIAL"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Potential_1",
+      "message": "Use the <fieldset> element to group logically related input elements",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "script_select_review",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "select_options_grouped",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_id_unique",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_unobscured",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element is not entirely covered by other content",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The tabbable element is visible on the screen",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "style_focus_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass_focus_visible",
+      "message": "The keyboard focus indicator is visible or is not changed from the browser default",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "target_spacing_sufficient",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass_default",
+      "message": "The target's size is determined by the user agent and is not modified by the author",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "input_label_exists",
+      "value": ["VIOLATION", "FAIL"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Fail_1",
+      "message": "Form control element <select> has no associated label",
+      "messageArgs": ["select"],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_single",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Components with a widget role should have no more than one tabbable element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 478,
+        "top": 159,
+        "height": 19,
+        "width": 112
+      },
+      "snippet": "<select name=\"scope\" id=\"scope\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"all\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_contrast_sufficient",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The contrast ratio of text with its background meets WCAG AA requirements",
+      "messageArgs": ["21.00", 13.3333, 400, "#000000", "#ffffff", false, false],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"all\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"all\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"all\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_single",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Components with a widget role should have no more than one tabbable element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"all\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_descendant_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element contains valid descendants",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"all\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[2]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"docs\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_contrast_sufficient",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[2]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The contrast ratio of text with its background meets WCAG AA requirements",
+      "messageArgs": ["21.00", 13.3333, 400, "#000000", "#ffffff", false, false],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"docs\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[2]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"docs\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[2]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"docs\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_single",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[2]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Components with a widget role should have no more than one tabbable element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"docs\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_descendant_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/select[1]/option[2]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]/option[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element contains valid descendants",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<option value=\"docs\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_unobscured",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element is not entirely covered by other content",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The tabbable element is visible on the screen",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "style_focus_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass_focus_visible",
+      "message": "The keyboard focus indicator is visible or is not changed from the browser default",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "target_spacing_sufficient",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass_sized",
+      "message": "The target’s size is more than 24 CSS pixels",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "input_label_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "input_label_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The input element has an associated visible label",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_single",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Components with a widget role should have no more than one tabbable element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_descendant_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element contains valid descendants",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 594,
+        "top": 153,
+        "height": 28,
+        "width": 33
+      },
+      "snippet": "<button type=\"submit\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_attribute_allowed",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]/span[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 602,
+        "top": 161,
+        "height": 15,
+        "width": 17
+      },
+      "snippet": "<span aria-hidden=\"true\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_attribute_value_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]/span[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 602,
+        "top": 161,
+        "height": 15,
+        "width": 17
+      },
+      "snippet": "<span aria-hidden=\"true\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_hidden_nontabbable",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]/span[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 602,
+        "top": 161,
+        "height": 15,
+        "width": 17
+      },
+      "snippet": "<span aria-hidden=\"true\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_attribute_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]/span[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass",
+      "message": "ARIA attributes are valid for the element and ARIA role",
+      "messageArgs": ["aria-hidden", "span", "generic"],
+      "apiArgs": [],
+      "bounds": {
+        "left": 602,
+        "top": 161,
+        "height": 15,
+        "width": 17
+      },
+      "snippet": "<span aria-hidden=\"true\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]/span[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 602,
+        "top": 161,
+        "height": 15,
+        "width": 17
+      },
+      "snippet": "<span aria-hidden=\"true\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/form[1]/button[1]/span[1]",
+        "aria": "/document[1]/main[1]/form[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 602,
+        "top": 161,
+        "height": 15,
+        "width": 17
+      },
+      "snippet": "<span aria-hidden=\"true\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "heading_content_exists",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[2]",
+        "aria": "/document[1]/main[1]/heading[3]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Heading element has descriptive text",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 201,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "heading_markup_misuse",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[2]",
+        "aria": "/document[1]/main[1]/heading[3]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 201,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[2]",
+        "aria": "/document[1]/main[1]/heading[3]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 201,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[2]",
+        "aria": "/document[1]/main[1]/heading[3]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 201,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_contrast_sufficient",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[2]",
+        "aria": "/document[1]/main[1]/heading[3]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The contrast ratio of text with its background meets WCAG AA requirements",
+      "messageArgs": ["17.74", 24, 700, "#111827", "#ffffff", false, false],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 201,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[2]",
+        "aria": "/document[1]/main[1]/heading[3]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 201,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[2]",
+        "aria": "/document[1]/main[1]/heading[3]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 201,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_accessiblename_exists",
+      "value": ["INFORMATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[2]",
+        "aria": "/document[1]/main[1]/heading[3]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "An accessible name is provided for the element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 201,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_misuse",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/img[1]",
+        "aria": "/document[1]/main[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"logo\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_valid",
+      "value": ["VIOLATION", "FAIL"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/img[1]",
+        "aria": "/document[1]/main[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "fail_no_alt",
+      "message": "The image has neither an accessible name nor is marked as decorative or redundant",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"logo\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/img[1]",
+        "aria": "/document[1]/main[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"logo\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_id_unique",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/img[1]",
+        "aria": "/document[1]/main[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"logo\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/img[1]",
+        "aria": "/document[1]/main[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"logo\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/img[1]",
+        "aria": "/document[1]/main[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"logo\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/img[1]",
+        "aria": "/document[1]/main[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"logo\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_descendant_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/img[1]",
+        "aria": "/document[1]/main[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element contains valid descendants",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"logo\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 266,
+        "height": 18,
+        "width": 32
+      },
+      "snippet": "<a href=\"/home\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_unobscured",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element is not entirely covered by other content",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 266,
+        "height": 18,
+        "width": 32
+      },
+      "snippet": "<a href=\"/home\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The tabbable element is visible on the screen",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 266,
+        "height": 18,
+        "width": 32
+      },
+      "snippet": "<a href=\"/home\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 266,
+        "height": 18,
+        "width": 32
+      },
+      "snippet": "<a href=\"/home\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "style_focus_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass_focus_visible",
+      "message": "The keyboard focus indicator is visible or is not changed from the browser default",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 266,
+        "height": 18,
+        "width": 32
+      },
+      "snippet": "<a href=\"/home\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "target_spacing_sufficient",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass_default",
+      "message": "The target's size is determined by the user agent and is not modified by the author",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 266,
+        "height": 18,
+        "width": 32
+      },
+      "snippet": "<a href=\"/home\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 266,
+        "height": 18,
+        "width": 32
+      },
+      "snippet": "<a href=\"/home\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 266,
+        "height": 18,
+        "width": 32
+      },
+      "snippet": "<a href=\"/home\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "a_text_purpose",
+      "value": ["VIOLATION", "FAIL"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "fail_acc_name",
+      "message": "Hyperlink has no link text, label or image with a text alternative",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 266,
+        "height": 18,
+        "width": 32
+      },
+      "snippet": "<a href=\"/home\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 266,
+        "height": 18,
+        "width": 32
+      },
+      "snippet": "<a href=\"/home\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_single",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Components with a widget role should have no more than one tabbable element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 266,
+        "height": 18,
+        "width": 32
+      },
+      "snippet": "<a href=\"/home\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_misuse",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]/img[1]",
+        "aria": "/document[1]/main[1]/link[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"home-icon\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_valid",
+      "value": ["VIOLATION", "FAIL"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]/img[1]",
+        "aria": "/document[1]/main[1]/link[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "fail_no_alt",
+      "message": "The image has neither an accessible name nor is marked as decorative or redundant",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"home-icon\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]/img[1]",
+        "aria": "/document[1]/main[1]/link[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"home-icon\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_id_unique",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]/img[1]",
+        "aria": "/document[1]/main[1]/link[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"home-icon\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]/img[1]",
+        "aria": "/document[1]/main[1]/link[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"home-icon\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]/img[1]",
+        "aria": "/document[1]/main[1]/link[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"home-icon\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]/img[1]",
+        "aria": "/document[1]/main[1]/link[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"home-icon\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_descendant_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/a[1]/img[1]",
+        "aria": "/document[1]/main[1]/link[1]/img[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element contains valid descendants",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 357,
+        "top": 249,
+        "height": 32,
+        "width": 32
+      },
+      "snippet": "<img height=\"32\" width=\"32\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" id=\"home-icon\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "heading_content_exists",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[3]",
+        "aria": "/document[1]/main[1]/heading[4]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Heading element has descriptive text",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 304,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "heading_markup_misuse",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[3]",
+        "aria": "/document[1]/main[1]/heading[4]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 304,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[3]",
+        "aria": "/document[1]/main[1]/heading[4]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 304,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[3]",
+        "aria": "/document[1]/main[1]/heading[4]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 304,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_contrast_sufficient",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[3]",
+        "aria": "/document[1]/main[1]/heading[4]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The contrast ratio of text with its background meets WCAG AA requirements",
+      "messageArgs": ["17.74", 24, 700, "#111827", "#ffffff", false, false],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 304,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[3]",
+        "aria": "/document[1]/main[1]/heading[4]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 304,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[3]",
+        "aria": "/document[1]/main[1]/heading[4]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 304,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_accessiblename_exists",
+      "value": ["INFORMATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/h2[3]",
+        "aria": "/document[1]/main[1]/heading[4]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "An accessible name is provided for the element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 304,
+        "height": 28,
+        "width": 640
+      },
+      "snippet": "<h2>",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_id_unique",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_unobscured",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element is not entirely covered by other content",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The tabbable element is visible on the screen",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "style_focus_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass_focus_visible",
+      "message": "The keyboard focus indicator is visible or is not changed from the browser default",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "target_spacing_sufficient",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass_default",
+      "message": "The target's size is determined by the user agent and is not modified by the author",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "input_label_exists",
+      "value": ["VIOLATION", "FAIL"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Fail_1",
+      "message": "Form control element <button> has no associated label",
+      "messageArgs": ["button"],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_single",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Components with a widget role should have no more than one tabbable element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_descendant_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/button[1]",
+        "aria": "/document[1]/main[1]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element contains valid descendants",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 364,
+        "height": 6,
+        "width": 16
+      },
+      "snippet": "<button type=\"button\" id=\"empty-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_content_in_landmark",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_role_allowed",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_keyboard_handler_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_role_redundant",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "An explicitly-assigned ARIA role is not redundant with the implicit role of the element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_role_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": ["button", "div"],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_id_unique",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_role_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The tabbable element has a widget role",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "element_tabbable_visible",
+      "value": ["VIOLATION", "POTENTIAL"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "potential_visible",
+      "message": "Confirm the element should be tabbable and if so, it becomes visible when it has keyboard focus",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "img_alt_background",
+      "value": ["RECOMMENDATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "style_focus_visible",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass_focus_visible",
+      "message": "The keyboard focus indicator is visible or is not changed from the browser default",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_quoted_correctly",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Pass_0",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "text_whitespace_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "input_label_exists",
+      "value": ["VIOLATION", "FAIL"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Fail_2",
+      "message": "Form control with \"button\" role has no associated label",
+      "messageArgs": ["button"],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_exists",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Rule Passed",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "widget_tabbable_single",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "Components with a widget role should have no more than one tabbable element",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_attribute_required",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The required attributes for the element with the role are defined",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    },
+    {
+      "ruleId": "aria_descendant_valid",
+      "value": ["VIOLATION", "PASS"],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[1]",
+        "aria": "/document[1]/main[1]/button[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "pass",
+      "message": "The element contains valid descendants",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 320,
+        "top": 370,
+        "height": 0,
+        "width": 640
+      },
+      "snippet": "<div tabindex=\"0\" role=\"button\" id=\"fake-button\">",
+      "source": null,
+      "category": "Accessibility"
+    }
+  ],
+  "ruleMappings": {
+    "applet_alt_exists": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "application_content_accessible": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        },
+        {
+          "num": "2.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "area_alt_exists": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "canvas_content_described": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        },
+        {
+          "num": "2.1.1",
+          "level": "A"
+        },
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "embed_alt_exists": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "figure_label_exists": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "imagebutton_alt_exists": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "imagemap_alt_exists": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "img_alt_background": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "img_alt_decorative": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "img_alt_misuse": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "img_alt_null": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "img_alt_redundant": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        },
+        {
+          "num": "2.4.4",
+          "level": "A"
+        }
+      ]
+    },
+    "img_alt_valid": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "img_ismap_misuse": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "img_longdesc_misuse": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "media_alt_brief": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "media_alt_exists": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "noembed_content_exists": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "object_text_exists": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "style_background_decorative": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "style_highcontrast_visible": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        },
+        {
+          "num": "1.3.2",
+          "level": "A"
+        },
+        {
+          "num": "1.4.11",
+          "level": "AA"
+        }
+      ]
+    },
+    "svg_graphics_labelled": {
+      "criteria": [
+        {
+          "num": "1.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "media_audio_transcribed": {
+      "criteria": [
+        {
+          "num": "1.2.1",
+          "level": "A"
+        }
+      ]
+    },
+    "caption_track_exists": {
+      "criteria": [
+        {
+          "num": "1.2.2",
+          "level": "A"
+        }
+      ]
+    },
+    "media_track_available": {
+      "criteria": [
+        {
+          "num": "1.2.3",
+          "level": "A"
+        },
+        {
+          "num": "1.2.5",
+          "level": "AA"
+        }
+      ]
+    },
+    "media_live_captioned": {
+      "criteria": [
+        {
+          "num": "1.2.4",
+          "level": "AA"
+        }
+      ]
+    },
+    "aria_banner_label_unique": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_banner_single": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_child_valid": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_complementary_label_unique": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_complementary_label_visible": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_complementary_labelled": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_content_in_landmark": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_contentinfo_label_unique": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_contentinfo_misuse": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_contentinfo_single": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_form_label_unique": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_hidden_nontabbable": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        },
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_landmark_name_unique": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_main_label_unique": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_main_label_visible": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_navigation_label_unique": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_parent_required": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_region_label_unique": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_region_labelled": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "blockquote_cite_exists": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "fieldset_label_valid": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        },
+        {
+          "num": "3.3.2",
+          "level": "A"
+        }
+      ]
+    },
+    "fieldset_legend_valid": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "form_label_unique": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "heading_markup_misuse": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "input_checkboxes_grouped": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "input_fields_grouped": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "label_ref_valid": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "list_markup_review": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "list_structure_proper": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "select_options_grouped": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "table_caption_empty": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "table_caption_nested": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "table_headers_exists": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "table_headers_ref_valid": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "table_headers_related": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "table_layout_linearized": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "table_scope_valid": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "table_structure_misuse": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "table_summary_redundant": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "text_block_heading": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "text_quoted_correctly": {
+      "criteria": [
+        {
+          "num": "1.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "dir_attribute_valid": {
+      "criteria": [
+        {
+          "num": "1.3.2",
+          "level": "A"
+        }
+      ]
+    },
+    "text_whitespace_valid": {
+      "criteria": [
+        {
+          "num": "1.3.2",
+          "level": "A"
+        }
+      ]
+    },
+    "text_sensory_misuse": {
+      "criteria": [
+        {
+          "num": "1.3.3",
+          "level": "A"
+        }
+      ]
+    },
+    "element_orientation_unlocked": {
+      "criteria": [
+        {
+          "num": "1.3.4",
+          "level": "AA"
+        }
+      ]
+    },
+    "input_autocomplete_valid": {
+      "criteria": [
+        {
+          "num": "1.3.5",
+          "level": "AA"
+        }
+      ]
+    },
+    "form_font_color": {
+      "criteria": [
+        {
+          "num": "1.4.1",
+          "level": "A"
+        }
+      ]
+    },
+    "style_color_misuse": {
+      "criteria": [
+        {
+          "num": "1.4.1",
+          "level": "A"
+        }
+      ]
+    },
+    "media_autostart_controllable": {
+      "criteria": [
+        {
+          "num": "1.4.2",
+          "level": "A"
+        }
+      ]
+    },
+    "text_contrast_sufficient": {
+      "criteria": [
+        {
+          "num": "1.4.3",
+          "level": "AA"
+        }
+      ]
+    },
+    "meta_viewport_zoomable": {
+      "criteria": [
+        {
+          "num": "1.4.4",
+          "level": "AA"
+        }
+      ]
+    },
+    "style_viewport_resizable": {
+      "criteria": [
+        {
+          "num": "1.4.4",
+          "level": "AA"
+        },
+        {
+          "num": "1.4.10",
+          "level": "AA"
+        }
+      ]
+    },
+    "text_spacing_valid": {
+      "criteria": [
+        {
+          "num": "1.4.12",
+          "level": "AA"
+        }
+      ]
+    },
+    "style_hover_persistent": {
+      "criteria": [
+        {
+          "num": "1.4.13",
+          "level": "AA"
+        }
+      ]
+    },
+    "aria_activedescendant_tabindex_valid": {
+      "criteria": [
+        {
+          "num": "2.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_child_tabbable": {
+      "criteria": [
+        {
+          "num": "2.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_keyboard_handler_exists": {
+      "criteria": [
+        {
+          "num": "2.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "element_mouseevent_keyboard": {
+      "criteria": [
+        {
+          "num": "2.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "iframe_interactive_tabbable": {
+      "criteria": [
+        {
+          "num": "2.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "media_keyboard_controllable": {
+      "criteria": [
+        {
+          "num": "2.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "script_focus_blur_review": {
+      "criteria": [
+        {
+          "num": "2.1.1",
+          "level": "A"
+        },
+        {
+          "num": "2.4.7",
+          "level": "AA"
+        },
+        {
+          "num": "3.2.1",
+          "level": "A"
+        }
+      ]
+    },
+    "script_onclick_avoid": {
+      "criteria": [
+        {
+          "num": "2.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "script_onclick_misuse": {
+      "criteria": [
+        {
+          "num": "2.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "widget_tabbable_exists": {
+      "criteria": [
+        {
+          "num": "2.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "widget_tabbable_single": {
+      "criteria": [
+        {
+          "num": "2.1.1",
+          "level": "A"
+        },
+        {
+          "num": "2.4.3",
+          "level": "A"
+        }
+      ]
+    },
+    "download_keyboard_controllable": {
+      "criteria": [
+        {
+          "num": "2.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "meta_refresh_delay": {
+      "criteria": [
+        {
+          "num": "2.2.1",
+          "level": "A"
+        }
+      ]
+    },
+    "blink_css_review": {
+      "criteria": [
+        {
+          "num": "2.2.2",
+          "level": "A"
+        }
+      ]
+    },
+    "blink_elem_deprecated": {
+      "criteria": [
+        {
+          "num": "2.2.2",
+          "level": "A"
+        }
+      ]
+    },
+    "marquee_elem_avoid": {
+      "criteria": [
+        {
+          "num": "2.2.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_application_label_unique": {
+      "criteria": [
+        {
+          "num": "2.4.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_application_labelled": {
+      "criteria": [
+        {
+          "num": "2.4.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_article_label_unique": {
+      "criteria": [
+        {
+          "num": "2.4.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_document_label_unique": {
+      "criteria": [
+        {
+          "num": "2.4.1",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_toolbar_label_unique": {
+      "criteria": [
+        {
+          "num": "2.4.1",
+          "level": "A"
+        }
+      ]
+    },
+    "frame_src_valid": {
+      "criteria": [
+        {
+          "num": "2.4.1",
+          "level": "A"
+        }
+      ]
+    },
+    "html_skipnav_exists": {
+      "criteria": [
+        {
+          "num": "2.4.1",
+          "level": "A"
+        }
+      ]
+    },
+    "skip_main_described": {
+      "criteria": [
+        {
+          "num": "2.4.1",
+          "level": "A"
+        }
+      ]
+    },
+    "skip_main_exists": {
+      "criteria": [
+        {
+          "num": "2.4.1",
+          "level": "A"
+        }
+      ]
+    },
+    "page_title_exists": {
+      "criteria": [
+        {
+          "num": "2.4.2",
+          "level": "A"
+        }
+      ]
+    },
+    "page_title_valid": {
+      "criteria": [
+        {
+          "num": "2.4.2",
+          "level": "A"
+        }
+      ]
+    },
+    "a_text_purpose": {
+      "criteria": [
+        {
+          "num": "2.4.4",
+          "level": "A"
+        },
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "heading_content_exists": {
+      "criteria": [
+        {
+          "num": "2.4.6",
+          "level": "AA"
+        }
+      ]
+    },
+    "element_tabbable_visible": {
+      "criteria": [
+        {
+          "num": "2.4.7",
+          "level": "AA"
+        }
+      ]
+    },
+    "style_focus_visible": {
+      "criteria": [
+        {
+          "num": "2.4.7",
+          "level": "AA"
+        }
+      ]
+    },
+    "element_tabbable_unobscured": {
+      "criteria": [
+        {
+          "num": "2.4.11",
+          "level": "AA"
+        }
+      ]
+    },
+    "input_label_visible": {
+      "criteria": [
+        {
+          "num": "2.5.3",
+          "level": "A"
+        },
+        {
+          "num": "3.3.2",
+          "level": "A"
+        }
+      ]
+    },
+    "label_name_visible": {
+      "criteria": [
+        {
+          "num": "2.5.3",
+          "level": "A"
+        }
+      ]
+    },
+    "draggable_alternative_exists": {
+      "criteria": [
+        {
+          "num": "2.5.7",
+          "level": "AA"
+        }
+      ]
+    },
+    "target_spacing_sufficient": {
+      "criteria": [
+        {
+          "num": "2.5.8",
+          "level": "AA"
+        }
+      ]
+    },
+    "html_lang_valid": {
+      "criteria": [
+        {
+          "num": "3.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "html_lang_exists": {
+      "criteria": [
+        {
+          "num": "3.1.1",
+          "level": "A"
+        }
+      ]
+    },
+    "element_lang_valid": {
+      "criteria": [
+        {
+          "num": "3.1.2",
+          "level": "AA"
+        }
+      ]
+    },
+    "script_select_review": {
+      "criteria": [
+        {
+          "num": "3.2.1",
+          "level": "A"
+        }
+      ]
+    },
+    "a_target_warning": {
+      "criteria": [
+        {
+          "num": "3.2.2",
+          "level": "A"
+        }
+      ]
+    },
+    "form_interaction_review": {
+      "criteria": [
+        {
+          "num": "3.2.2",
+          "level": "A"
+        }
+      ]
+    },
+    "form_submit_button_exists": {
+      "criteria": [
+        {
+          "num": "3.2.2",
+          "level": "A"
+        }
+      ]
+    },
+    "input_onchange_review": {
+      "criteria": [
+        {
+          "num": "3.2.2",
+          "level": "A"
+        }
+      ]
+    },
+    "error_message_exists": {
+      "criteria": [
+        {
+          "num": "3.3.1",
+          "level": "A"
+        }
+      ]
+    },
+    "element_accesskey_labelled": {
+      "criteria": [
+        {
+          "num": "3.3.2",
+          "level": "A"
+        }
+      ]
+    },
+    "input_label_after": {
+      "criteria": [
+        {
+          "num": "3.3.2",
+          "level": "A"
+        }
+      ]
+    },
+    "input_label_before": {
+      "criteria": [
+        {
+          "num": "3.3.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_accessiblename_exists": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_activedescendant_valid": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_attribute_allowed": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_attribute_conflict": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_attribute_exists": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_attribute_redundant": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_attribute_required": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_attribute_value_valid": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_descendant_valid": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_eventhandler_role_valid": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_id_unique": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_role_allowed": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_role_valid": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "aria_widget_labelled": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "combobox_active_descendant": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "combobox_autocomplete_valid": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "combobox_design_valid": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "combobox_focusable_elements": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "combobox_haspopup_valid": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "combobox_popup_reference": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "element_tabbable_role_valid": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "frame_title_exists": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "input_haspopup_conflict": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "input_label_exists": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "label_content_exists": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "list_children_valid": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    },
+    "table_aria_descendants": {
+      "criteria": [
+        {
+          "num": "4.1.2",
+          "level": "A"
+        }
+      ]
+    }
+  },
+  "counts": {
+    "VIOLATION+PASS": 141,
+    "RECOMMENDATION+PASS": 24,
+    "VIOLATION+POTENTIAL": 2,
+    "VIOLATION+MANUAL": 1,
+    "INFORMATION+PASS": 4,
+    "RECOMMENDATION+POTENTIAL": 2,
+    "VIOLATION+FAIL": 7
+  }
+}
