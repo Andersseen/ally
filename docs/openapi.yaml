@@ -12,8 +12,8 @@ info:
 servers:
   - url: http://127.0.0.1:8787
     description: Local Node audit API used by pnpm dev.
-  - url: https://ally-api.andersseen.dev
-    description: Planned production API origin. Update this when the deployed domain is final.
+  - url: https://ally.andersseen.dev
+    description: Production site origin; Worker serves /api/* and Pages serves the UI.
 tags:
   - name: Auth
     description: dev-auth OIDC client routes and Ally app session state.
@@ -92,6 +92,12 @@ paths:
           required: false
           schema:
             type: string
+        - name: iss
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uri
       responses:
         "302":
           description: Redirects back to the web app and sets or clears Ally cookies.

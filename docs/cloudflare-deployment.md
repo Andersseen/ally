@@ -1,13 +1,13 @@
 # Cloudflare Deployment
 
-This repo deploys as two Cloudflare surfaces:
+This repo deploys as two Cloudflare surfaces on one public site origin:
 
 - Web UI: Cloudflare Pages at `https://ally.andersseen.dev`.
-- API/runner: Cloudflare Worker at `https://ally-api.andersseen.dev`.
+- API/runner: Cloudflare Worker route at `https://ally.andersseen.dev/api/*`.
 
-Keeping them separate avoids routing conflicts between the static Astro app and
-the Worker API. The web app calls the API with credentialed CORS, and the Worker
-sets `ally_session` cookies on the API origin.
+Keeping the API under the same site origin matches the registered dev-auth
+callback byte for byte and lets the Worker set `ally_session` cookies on the
+same host the static UI uses.
 
 ## 1. Register dev-auth client
 
@@ -17,7 +17,7 @@ Apply `docs/dev-auth-client-registration-prompt.md` in the
 The production callback must match:
 
 ```text
-https://ally-api.andersseen.dev/api/auth/callback
+https://ally.andersseen.dev/api/auth/callback
 ```
 
 The local callback can also be registered for development:
@@ -26,11 +26,10 @@ The local callback can also be registered for development:
 http://127.0.0.1:8787/api/auth/callback
 ```
 
-For local development, the Node API has an insecure development-only session
-secret so the sign-in button is usable immediately. Copy
-`apps/worker/.dev.vars.example` to `apps/worker/.dev.vars` when you need to
-override provider URL, client ID, redirect URI, or use a stronger local secret.
-Production Workers do not use the development fallback.
+For local development, copy `apps/worker/.dev.vars.example` to
+`apps/worker/.dev.vars` and fill in the confidential client secret plus a local
+session secret. `.dev.vars` is gitignored; do not commit those values.
+Production Workers read both secrets from Cloudflare Worker secrets.
 
 ## 2. Create Cloudflare resources
 
@@ -89,7 +88,7 @@ pnpm --filter @ally/worker deploy
 After deploy, attach the custom domain:
 
 ```text
-ally-api.andersseen.dev -> ally-audit-worker
+ally.andersseen.dev/api/* -> ally-audit-worker
 ```
 
 ## 6. Build and deploy the web UI
@@ -115,7 +114,7 @@ Before sign-in:
 curl -i \
   -H 'content-type: application/json' \
   --data '{"url":"https://example.com"}' \
-  https://ally-api.andersseen.dev/api/audits
+  https://ally.andersseen.dev/api/audits
 ```
 
 Expected for protected audit routes:

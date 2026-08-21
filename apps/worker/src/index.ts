@@ -13,13 +13,17 @@ import {
   createLoginTransaction,
   exchangeCode,
   fetchUserInfo,
+  mergeAuthUsers,
   readSession,
   readTransaction,
   resolveOidcConfig,
   safeReturnTo,
   sessionCookie,
   transactionCookie,
+  validateCallbackIssuer,
+  verifyIdToken,
   webOrigin,
+  discoverOidc,
 } from './auth.js';
 import type { AuthSession } from './auth.js';
 import type { Env, AuditJob, MessageBatch } from './bindings.js';
@@ -173,6 +177,7 @@ async function completeAuthLogin(request: Request, env: Env): Promise<Response> 
   const providerError = requestUrl.searchParams.get('error');
   const code = requestUrl.searchParams.get('code');
   const state = requestUrl.searchParams.get('state');
+  const issuer = requestUrl.searchParams.get('iss');
 
   if (providerError !== null) {
     return redirect(authRedirectUrl(env, '/', providerError), [clearTransaction]);
@@ -184,8 +189,15 @@ async function completeAuthLogin(request: Request, env: Env): Promise<Response> 
 
   try {
     const config = resolveOidcConfig(env);
-    const accessToken = await exchangeCode(config, code, transaction.verifier);
-    const user = await fetchUserInfo(config, accessToken);
+    if (!validateCallbackIssuer(issuer, config)) {
+      return redirect(authRedirectUrl(env, '/', 'invalid_issuer'), [clearTransaction]);
+    }
+
+    const endpoints = await discoverOidc(config);
+    const tokens = await exchangeCode(config, endpoints, code, transaction.verifier);
+    const idTokenUser = await verifyIdToken(config, endpoints, tokens.idToken, transaction.nonce);
+    const userInfo = await fetchUserInfo(endpoints, tokens.accessToken);
+    const user = mergeAuthUsers(idTokenUser, userInfo);
     return redirect(authRedirectUrl(env, safeReturnTo(transaction.returnTo)), [
       clearTransaction,
       await sessionCookie(user, env, isSecureRequest(request)),

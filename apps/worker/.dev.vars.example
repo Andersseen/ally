@@ -1,5 +1,6 @@
 PUBLIC_WEB_ORIGIN=http://127.0.0.1:4321
 DEV_AUTH_URL=https://auth-devflare.andersseen.dev
 DEV_AUTH_CLIENT_ID=ally-dev
+DEV_AUTH_CLIENT_SECRET=replace-with-local-dev-auth-client-secret
 DEV_AUTH_REDIRECT_URI=http://127.0.0.1:8787/api/auth/callback
 ALLY_SESSION_SECRET=replace-with-local-random-secret
