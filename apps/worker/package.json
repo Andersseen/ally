@@ -23,6 +23,7 @@
     "@cloudflare/playwright": "catalog:"
   },
   "devDependencies": {
+    "@ally/cli": "workspace:*",
     "@ally/config": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:",
