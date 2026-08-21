@@ -3,6 +3,24 @@ import type { AuditPageOptions, AuditPageOutcome, EngineSelection } from '@ally/
 import type { AllyPage } from '@ally/browser/page';
 import type { AuditEngine, AuditRun, EngineDescriptor } from '@ally/core';
 import { rawFileName, serializeJson } from '@ally/reporter-json';
+import {
+  AuthConfigurationError,
+  OidcError,
+  authIsConfigured,
+  authorizationUrl,
+  clearSessionCookie,
+  clearTransactionCookie,
+  createLoginTransaction,
+  exchangeCode,
+  fetchUserInfo,
+  readSession,
+  readTransaction,
+  resolveOidcConfig,
+  safeReturnTo,
+  sessionCookie,
+  transactionCookie,
+  webOrigin,
+} from './auth.js';
 import type { Env, AuditJob, MessageBatch } from './bindings.js';
 
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
@@ -32,6 +50,22 @@ export default {
     const url = new URL(request.url);
 
     try {
+      if (request.method === 'GET' && url.pathname === '/api/auth/session') {
+        return withCors(await getAuthSession(request, env), request, env);
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/auth/login') {
+        return await startAuthLogin(request, env);
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/auth/callback') {
+        return await completeAuthLogin(request, env);
+      }
+
+      if (request.method === 'POST' && url.pathname === '/api/auth/logout') {
+        return withCors(logout(), request, env);
+      }
+
       if (request.method === 'POST' && url.pathname === '/api/audits') {
         return withCors(await createAudit(request, env), request, env);
       }
@@ -89,6 +123,81 @@ export default {
     }
   },
 };
+
+async function getAuthSession(request: Request, env: Env): Promise<Response> {
+  let session = null;
+  try {
+    session = await readSession(request.headers.get('cookie'), env);
+  } catch (error) {
+    if (!(error instanceof AuthConfigurationError)) throw error;
+  }
+
+  const config = resolveOidcConfig(env);
+  return json({
+    authenticated: session !== null,
+    user: session?.user,
+    expiresAt: session?.expiresAt,
+    configured: authIsConfigured(env),
+    provider: {
+      issuer: config.issuer,
+      clientId: config.clientId,
+    },
+    loginUrl: `/api/auth/login?returnTo=${encodeURIComponent('/')}`,
+  });
+}
+
+async function startAuthLogin(request: Request, env: Env): Promise<Response> {
+  const requestUrl = new URL(request.url);
+  const config = resolveOidcConfig(env);
+  const transaction = createLoginTransaction(requestUrl.searchParams.get('returnTo') ?? '/');
+  return redirect(await authorizationUrl(config, transaction), [
+    transactionCookie(transaction, isSecureRequest(request)),
+  ]);
+}
+
+async function completeAuthLogin(request: Request, env: Env): Promise<Response> {
+  const requestUrl = new URL(request.url);
+  const transaction = readTransaction(request.headers.get('cookie'));
+  const clearTransaction = clearTransactionCookie();
+  const providerError = requestUrl.searchParams.get('error');
+  const code = requestUrl.searchParams.get('code');
+  const state = requestUrl.searchParams.get('state');
+
+  if (providerError !== null) {
+    return redirect(authRedirectUrl(env, '/', providerError), [clearTransaction]);
+  }
+
+  if (transaction === null || code === null || state !== transaction.state) {
+    return redirect(authRedirectUrl(env, '/', 'invalid_state'), [clearTransaction]);
+  }
+
+  try {
+    const config = resolveOidcConfig(env);
+    const accessToken = await exchangeCode(config, code, transaction.verifier);
+    const user = await fetchUserInfo(config, accessToken);
+    return redirect(authRedirectUrl(env, safeReturnTo(transaction.returnTo)), [
+      clearTransaction,
+      await sessionCookie(user, env, isSecureRequest(request)),
+    ]);
+  } catch (error) {
+    if (error instanceof AuthConfigurationError) {
+      return json({ error: error.message }, 503);
+    }
+    if (error instanceof OidcError) {
+      return redirect(authRedirectUrl(env, '/', error.message), [clearTransaction]);
+    }
+    throw error;
+  }
+}
+
+function logout(): Response {
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: {
+      ...JSON_HEADERS,
+      'set-cookie': clearSessionCookie(),
+    },
+  });
+}
 
 async function createAudit(request: Request, env: Env): Promise<Response> {
   const body: unknown = await request.json().catch(() => undefined);
@@ -429,6 +538,7 @@ function withCors(response: Response, request: Request, env: Env): Response {
   headers.set('access-control-allow-origin', allowedOrigin(origin, env));
   headers.set('access-control-allow-methods', 'GET, POST, OPTIONS');
   headers.set('access-control-allow-headers', 'content-type');
+  headers.set('access-control-allow-credentials', 'true');
   headers.set('vary', 'Origin');
   return new Response(response.body, {
     status: response.status,
@@ -446,6 +556,22 @@ function allowedOrigin(origin: string | null, env: Env): string {
   ]);
 
   return origin !== null && allowed.has(origin) ? origin : configured;
+}
+
+function redirect(location: string, cookies: readonly string[] = []): Response {
+  const headers = new Headers({ location });
+  for (const cookie of cookies) headers.append('set-cookie', cookie);
+  return new Response(null, { status: 302, headers });
+}
+
+function authRedirectUrl(env: Env, returnTo: string, error?: string): string {
+  const url = new URL(safeReturnTo(returnTo), webOrigin(env));
+  if (error !== undefined) url.searchParams.set('auth_error', error);
+  return url.toString();
+}
+
+function isSecureRequest(request: Request): boolean {
+  return new URL(request.url).protocol === 'https:';
 }
 
 function firstLine(error: unknown): string {

@@ -1,11 +1,11 @@
 import type { BrowserWorker } from '@cloudflare/playwright';
+import type { AuthEnv } from './auth.js';
 
-export interface Env {
+export interface Env extends AuthEnv {
   readonly BROWSER: BrowserWorker;
   readonly DB: D1Database;
   readonly ARTIFACTS: R2Bucket;
   readonly AUDIT_QUEUE: Queue<AuditJob>;
-  readonly PUBLIC_WEB_ORIGIN?: string;
 }
 
 export interface AuditJob {

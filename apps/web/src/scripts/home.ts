@@ -2,6 +2,12 @@ import './design-system';
 
 const form = document.querySelector('#audit-form');
 const input = document.querySelector('#audit-url');
+const authPanel = document.querySelector('#auth-panel');
+const authStatus = document.querySelector('#auth-status');
+const authLogin = document.querySelector('#auth-login');
+const authLogout = document.querySelector<HTMLElement & { disabled?: boolean; loading?: boolean }>(
+  '#auth-logout',
+);
 const statusPanel = document.querySelector('#status-panel');
 const message = document.querySelector('#status-message');
 const reportLink = document.querySelector('#report-link');
@@ -12,6 +18,51 @@ const steps = Array.from(document.querySelectorAll('[data-step]'));
 
 const apiBase = form?.getAttribute('data-api-base') ?? '';
 type AuditStatus = 'queued' | 'running' | 'completed' | 'failed';
+type AuthSession = {
+  readonly authenticated: boolean;
+  readonly configured: boolean;
+  readonly user?: {
+    readonly email: string;
+    readonly name: string;
+  };
+  readonly provider?: {
+    readonly issuer: string;
+    readonly clientId: string;
+  };
+};
+
+async function refreshAuth(): Promise<void> {
+  if (authPanel === null || authStatus === null) return;
+
+  try {
+    const response = await fetch(`${apiBase}/api/auth/session`, { credentials: 'include' });
+    if (!response.ok) throw new Error('Could not read identity status.');
+    const session = (await response.json()) as AuthSession;
+
+    if (!session.configured) {
+      authStatus.textContent = 'dev-auth routes are ready. Add a session secret to enable login.';
+      setAuthActions(false);
+      return;
+    }
+
+    if (session.authenticated) {
+      authStatus.textContent = `Signed in as ${session.user?.email || session.user?.name || 'Ally user'}.`;
+      setAuthActions(true);
+      return;
+    }
+
+    authStatus.textContent = `Not signed in. Provider: ${session.provider?.issuer ?? 'dev-auth'}.`;
+    setAuthActions(false);
+  } catch (error) {
+    authStatus.textContent = error instanceof Error ? error.message : String(error);
+    setAuthActions(false);
+  }
+}
+
+function setAuthActions(isSignedIn: boolean): void {
+  authLogin?.classList.toggle('hidden', isSignedIn);
+  authLogout?.classList.toggle('hidden', !isSignedIn);
+}
 
 function setStatus(status: AuditStatus, text: string): void {
   statusPanel?.classList.remove('hidden');
@@ -34,7 +85,7 @@ function setStatus(status: AuditStatus, text: string): void {
 }
 
 async function poll(id: string): Promise<void> {
-  const response = await fetch(`${apiBase}/api/audits/${id}`);
+  const response = await fetch(`${apiBase}/api/audits/${id}`, { credentials: 'include' });
   if (!response.ok) throw new Error('Could not read audit status.');
   const audit = (await response.json()) as {
     readonly status: AuditStatus;
@@ -85,6 +136,7 @@ form?.addEventListener('submit', (event) => {
   void fetch(`${apiBase}/api/audits`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ url: input.value }),
   })
     .then(async (response) => {
@@ -97,5 +149,21 @@ form?.addEventListener('submit', (event) => {
     })
     .catch(showError);
 });
+
+authLogout?.addEventListener('click', () => {
+  authLogout.disabled = true;
+  authLogout.loading = true;
+  void fetch(`${apiBase}/api/auth/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  })
+    .then(() => refreshAuth())
+    .finally(() => {
+      authLogout.disabled = false;
+      authLogout.loading = false;
+    });
+});
+
+void refreshAuth();
 
 export {};

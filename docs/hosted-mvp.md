@@ -71,6 +71,10 @@ real Browser Run binding.
 - `apps/web` is a static Astro tool UI with a URL input, progress polling, and a
   report view over the stored `audit.json`.
 - `apps/worker` exposes:
+  - `GET /api/auth/session`
+  - `GET /api/auth/login`
+  - `GET /api/auth/callback`
+  - `POST /api/auth/logout`
   - `POST /api/audits`
   - `GET /api/audits/:id`
   - `GET /api/audits/:id/result`
@@ -143,3 +147,26 @@ Run the Cloudflare Worker compatibility spike with:
 ```bash
 pnpm --filter @ally/worker run dev:worker
 ```
+
+## dev-auth preparation
+
+Ally is prepared to consume DevFlare's `dev-auth` OAuth2.1/OIDC provider through
+the app-owned session pattern used in `Andersseen/devflare`. The Worker starts
+an authorization-code-with-PKCE login, exchanges the callback code for provider
+userinfo, then stores a signed `ally_session` cookie for the Ally app.
+
+Required configuration:
+
+- `DEV_AUTH_URL`: OIDC provider origin. The default is
+  `https://auth-devflare.andersseen.dev`; local dev-auth should use another
+  port than Ally's local API `:8787`.
+- `DEV_AUTH_CLIENT_ID`: OAuth client registered in dev-auth. The local default
+  placeholder is `ally-dev`.
+- `DEV_AUTH_REDIRECT_URI`: callback registered in dev-auth, such as
+  `http://127.0.0.1:8787/api/auth/callback`.
+- `ALLY_SESSION_SECRET` or `DEV_AUTH_CLIENT_SECRET`: secret used to sign Ally's
+  local app session. Store it as a Worker secret, not in `wrangler.jsonc`.
+
+This is only the first auth slice. Audit creation is intentionally still public
+while the provider client registration, production callback, and authorization
+policy are finalized.

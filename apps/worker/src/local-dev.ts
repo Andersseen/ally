@@ -1,14 +1,34 @@
 import { createServer } from 'node:http';
-import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { IncomingMessage, OutgoingHttpHeaders, ServerResponse } from 'node:http';
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { performAudit } from '@ally/cli';
 import type { AuditResult } from '@ally/core';
+import {
+  AuthConfigurationError,
+  OidcError,
+  authIsConfigured,
+  authorizationUrl,
+  clearSessionCookie,
+  clearTransactionCookie,
+  createLoginTransaction,
+  exchangeCode,
+  fetchUserInfo,
+  readSession,
+  readTransaction,
+  resolveOidcConfig,
+  safeReturnTo,
+  sessionCookie,
+  transactionCookie,
+  webOrigin,
+} from './auth.ts';
+import type { AuthEnv } from './auth.ts';
 
 const HOST = '127.0.0.1';
 const PORT = 8787;
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
 const AUDIT_ROOT = join(process.cwd(), '.local-audits');
+const authEnv = localAuthEnv();
 
 type AuditStatus = 'queued' | 'running' | 'completed' | 'failed';
 
@@ -53,6 +73,26 @@ async function handle(request: IncomingMessage, response: ServerResponse): Promi
 
   const url = new URL(request.url ?? '/', `http://${HOST}:${String(PORT)}`);
 
+  if (request.method === 'GET' && url.pathname === '/api/auth/session') {
+    await getAuthSession(request, response);
+    return;
+  }
+
+  if (request.method === 'GET' && url.pathname === '/api/auth/login') {
+    await startAuthLogin(url, request, response);
+    return;
+  }
+
+  if (request.method === 'GET' && url.pathname === '/api/auth/callback') {
+    await completeAuthLogin(url, request, response);
+    return;
+  }
+
+  if (request.method === 'POST' && url.pathname === '/api/auth/logout') {
+    sendRaw(response, request, 200, JSON.stringify({ ok: true }), [clearSessionCookie()]);
+    return;
+  }
+
   if (request.method === 'POST' && url.pathname === '/api/audits') {
     await createAudit(request, response);
     return;
@@ -71,6 +111,82 @@ async function handle(request: IncomingMessage, response: ServerResponse): Promi
   }
 
   send(response, request, { error: 'Not found' }, 404);
+}
+
+async function getAuthSession(request: IncomingMessage, response: ServerResponse): Promise<void> {
+  let session = null;
+  try {
+    session = await readSession(request.headers.cookie, authEnv);
+  } catch (error) {
+    if (!(error instanceof AuthConfigurationError)) throw error;
+  }
+
+  const config = resolveOidcConfig(authEnv);
+  send(response, request, {
+    authenticated: session !== null,
+    user: session?.user,
+    expiresAt: session?.expiresAt,
+    configured: authIsConfigured(authEnv),
+    provider: {
+      issuer: config.issuer,
+      clientId: config.clientId,
+    },
+    loginUrl: `/api/auth/login?returnTo=${encodeURIComponent('/')}`,
+  });
+}
+
+async function startAuthLogin(
+  url: URL,
+  request: IncomingMessage,
+  response: ServerResponse,
+): Promise<void> {
+  const config = resolveOidcConfig(authEnv);
+  const transaction = createLoginTransaction(url.searchParams.get('returnTo') ?? '/');
+  redirect(response, await authorizationUrl(config, transaction), [
+    transactionCookie(transaction, isSecureRequest(request)),
+  ]);
+}
+
+async function completeAuthLogin(
+  url: URL,
+  request: IncomingMessage,
+  response: ServerResponse,
+): Promise<void> {
+  const transaction = readTransaction(request.headers.cookie);
+  const clearTransaction = clearTransactionCookie();
+  const providerError = url.searchParams.get('error');
+  const code = url.searchParams.get('code');
+  const state = url.searchParams.get('state');
+
+  if (providerError !== null) {
+    redirect(response, authRedirectUrl('/', providerError), [clearTransaction]);
+    return;
+  }
+
+  if (transaction === null || code === null || state !== transaction.state) {
+    redirect(response, authRedirectUrl('/', 'invalid_state'), [clearTransaction]);
+    return;
+  }
+
+  try {
+    const config = resolveOidcConfig(authEnv);
+    const accessToken = await exchangeCode(config, code, transaction.verifier);
+    const user = await fetchUserInfo(config, accessToken);
+    redirect(response, authRedirectUrl(safeReturnTo(transaction.returnTo)), [
+      clearTransaction,
+      await sessionCookie(user, authEnv, isSecureRequest(request)),
+    ]);
+  } catch (error) {
+    if (error instanceof AuthConfigurationError) {
+      send(response, request, { error: error.message }, 503);
+      return;
+    }
+    if (error instanceof OidcError) {
+      redirect(response, authRedirectUrl('/', error.message), [clearTransaction]);
+      return;
+    }
+    throw error;
+  }
 }
 
 async function createAudit(request: IncomingMessage, response: ServerResponse): Promise<void> {
@@ -234,14 +350,18 @@ function sendRaw(
   request: IncomingMessage,
   status: number,
   body?: string,
+  cookies: readonly string[] = [],
 ): void {
-  response.writeHead(status, {
+  const headers: OutgoingHttpHeaders = {
     ...JSON_HEADERS,
     'access-control-allow-origin': allowedOrigin(request.headers.origin),
     'access-control-allow-methods': 'GET, POST, OPTIONS',
     'access-control-allow-headers': 'content-type',
+    'access-control-allow-credentials': 'true',
     vary: 'Origin',
-  });
+  };
+  if (cookies.length > 0) headers['set-cookie'] = [...cookies];
+  response.writeHead(status, headers);
   response.end(body);
 }
 
@@ -250,4 +370,44 @@ function allowedOrigin(origin: string | undefined): string {
     return origin;
   }
   return 'http://127.0.0.1:4321';
+}
+
+function redirect(response: ServerResponse, location: string, cookies: readonly string[] = []): void {
+  const headers: OutgoingHttpHeaders = {
+    location,
+  };
+  if (cookies.length > 0) headers['set-cookie'] = [...cookies];
+  response.writeHead(302, headers);
+  response.end();
+}
+
+function authRedirectUrl(returnTo: string, error?: string): string {
+  const url = new URL(safeReturnTo(returnTo), webOrigin(authEnv));
+  if (error !== undefined) url.searchParams.set('auth_error', error);
+  return url.toString();
+}
+
+function isSecureRequest(request: IncomingMessage): boolean {
+  return request.headers['x-forwarded-proto'] === 'https';
+}
+
+function localAuthEnv(): AuthEnv {
+  return {
+    PUBLIC_WEB_ORIGIN: process.env.PUBLIC_WEB_ORIGIN ?? 'http://127.0.0.1:4321',
+    ...(process.env.DEV_AUTH_URL === undefined
+      ? {}
+      : { DEV_AUTH_URL: process.env.DEV_AUTH_URL }),
+    ...(process.env.DEV_AUTH_CLIENT_ID === undefined
+      ? {}
+      : { DEV_AUTH_CLIENT_ID: process.env.DEV_AUTH_CLIENT_ID }),
+    ...(process.env.DEV_AUTH_CLIENT_SECRET === undefined
+      ? {}
+      : { DEV_AUTH_CLIENT_SECRET: process.env.DEV_AUTH_CLIENT_SECRET }),
+    ...(process.env.DEV_AUTH_REDIRECT_URI === undefined
+      ? {}
+      : { DEV_AUTH_REDIRECT_URI: process.env.DEV_AUTH_REDIRECT_URI }),
+    ...(process.env.ALLY_SESSION_SECRET === undefined
+      ? {}
+      : { ALLY_SESSION_SECRET: process.env.ALLY_SESSION_SECRET }),
+  };
 }
