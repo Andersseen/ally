@@ -59,6 +59,15 @@ Generate `ALLY_SESSION_SECRET` separately:
 openssl rand -base64 48
 ```
 
+For GitHub Actions deployment, add these repository or production environment
+secrets:
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_D1_DATABASE_ID`
+- `DEV_AUTH_CLIENT_SECRET`
+- `ALLY_SESSION_SECRET`
+
 ## 4. Apply D1 migrations
 
 ```bash
