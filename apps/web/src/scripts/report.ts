@@ -1,3 +1,5 @@
+import './design-system';
+
 const root = document.querySelector('#report');
 const apiBase = root?.getAttribute('data-api-base') ?? '';
 const id = new URL(window.location.href).searchParams.get('id') ?? '';
@@ -41,7 +43,7 @@ function render(result: AuditResultJson): void {
 
   if (root) {
     root.innerHTML = `
-      <p class="mb-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#7c4f2b]">
+      <p class="eyebrow">
         Automated accessibility audit
       </p>
       <h1 class="break-words text-3xl font-bold text-[#14211e]">${escapeHtml(result.target.url)}</h1>
@@ -49,39 +51,28 @@ function render(result: AuditResultJson): void {
         Audited ${escapeHtml(new Date(result.finishedAt).toUTCString())}
       </p>
 
-      <div class="mt-6 grid gap-4 sm:grid-cols-4">
-        <div class="rounded-md border border-[#d8c9b1] bg-[#fffaf1] p-4">
-          <p class="text-sm text-[#5b675f]">Score</p>
-          <p class="mt-1 text-3xl font-bold text-[#14211e]">${escapeHtml(result.score.value)} / 100</p>
-        </div>
-        <div class="rounded-md border border-[#d8c9b1] bg-[#fffaf1] p-4">
-          <p class="text-sm text-[#5b675f]">Unique findings</p>
-          <p class="mt-1 text-3xl font-bold text-[#14211e]">${escapeHtml(result.summary.uniqueFindings)}</p>
-        </div>
-        <div class="rounded-md border border-[#d8c9b1] bg-[#fffaf1] p-4">
-          <p class="text-sm text-[#5b675f]">Engines</p>
-          <p class="mt-1 text-3xl font-bold text-[#14211e]">${escapeHtml(result.coverage.enginesSucceeded)} / ${escapeHtml(result.coverage.enginesConfigured)}</p>
-        </div>
-        <div class="rounded-md border border-[#d8c9b1] bg-[#fffaf1] p-4">
-          <p class="text-sm text-[#5b675f]">Keyboard</p>
-          <p class="mt-1 text-3xl font-bold text-[#14211e]">${escapeHtml(result.coverage.keyboardAnalysis)}</p>
-        </div>
+      <div class="report-grid mt-6" and-motion="fade-in-up" and-motion-trigger="enter">
+        ${renderMetric('Score', `${escapeHtml(result.score.value)} / 100`, 'activity')}
+        ${renderMetric('Unique findings', result.summary.uniqueFindings, 'file-text')}
+        ${renderMetric('Engines', `${escapeHtml(result.coverage.enginesSucceeded)} / ${escapeHtml(result.coverage.enginesConfigured)}`, 'success')}
+        ${renderMetric('Keyboard', result.coverage.keyboardAnalysis, 'accessibility')}
       </div>
 
-      <p class="mt-6 rounded-md border border-[#d8c9b1] bg-[#fffaf1] p-4 text-sm leading-6 text-[#4d4439]">
+      <and-alert class="mt-6 block" variant="default">
+        <and-icon slot="icon" name="info"></and-icon>
         Automated testing only. This report does not establish WCAG conformance, and manual review is still required.
-      </p>
+      </and-alert>
 
       <section class="mt-8">
         <h2 class="text-xl font-bold text-[#14211e]">Engine runs</h2>
-        <div class="mt-3 divide-y divide-[#d8c9b1] rounded-md border border-[#d8c9b1] bg-white">
+        <and-card class="mt-3 block" padded="true">
           ${engines
             .map(
               (run) => `
-                <article class="p-4">
+                <article class="engine-row py-4">
                   <div class="flex flex-wrap items-center justify-between gap-3">
                     <h3 class="font-semibold text-[#14211e]">${escapeHtml(run.engine.name)}</h3>
-                    <span class="text-sm ${run.status === 'ok' ? 'text-[#1d5d52]' : 'text-[#9a351f]'}">${escapeHtml(run.status)}</span>
+                    <and-badge variant="${run.status === 'ok' ? 'default' : 'destructive'}">${escapeHtml(run.status)}</and-badge>
                   </div>
                   <p class="mt-2 text-sm text-[#5b675f]">
                     ${
@@ -94,22 +85,23 @@ function render(result: AuditResultJson): void {
               `,
             )
             .join('')}
-        </div>
+        </and-card>
       </section>
 
       <section class="mt-8">
         <h2 class="text-xl font-bold text-[#14211e]">Findings</h2>
-        <div class="mt-3 space-y-3">
+        <div class="mt-3 space-y-3" and-motion="fade-in-up" and-motion-trigger="enter">
           ${
             findings.length === 0
-              ? '<p class="rounded-md border border-[#d8c9b1] bg-white p-4 text-[#5b675f]">No automated findings were reported.</p>'
+              ? '<and-card padded="true"><p class="text-[#5b675f]">No automated findings were reported.</p></and-card>'
               : findings
                   .map(
                     (finding) => `
-                      <article class="rounded-md border border-[#d8c9b1] bg-white p-4">
+                      <and-card class="block" padded="true">
+                      <article>
                         <div class="flex flex-wrap items-center gap-2">
-                          <span class="rounded-sm bg-[#f1e3cd] px-2 py-1 text-xs font-semibold uppercase text-[#7c4f2b]">${escapeHtml(finding.severity)}</span>
-                          <span class="text-xs text-[#5b675f]">${escapeHtml(finding.engineIds.join(', '))}</span>
+                          <and-badge variant="secondary">${escapeHtml(finding.severity)}</and-badge>
+                          <and-badge variant="outline">${escapeHtml(finding.engineIds.join(', '))}</and-badge>
                         </div>
                         <h3 class="mt-3 font-semibold text-[#14211e]">${escapeHtml(finding.title)}</h3>
                         <p class="mt-2 text-sm leading-6 text-[#38443f]">${escapeHtml(finding.description)}</p>
@@ -119,6 +111,7 @@ function render(result: AuditResultJson): void {
                             : ''
                         }
                       </article>
+                      </and-card>
                     `,
                   )
                   .join('')
@@ -129,8 +122,27 @@ function render(result: AuditResultJson): void {
   }
 }
 
+function renderMetric(label: string, value: unknown, icon: string): string {
+  return `
+    <and-card padded="true">
+      <div and-layout="horizontal align:center justify:between gap:sm">
+        <div>
+          <p class="text-sm text-[#5b675f]">${escapeHtml(label)}</p>
+          <p class="metric-value mt-2">${escapeHtml(value)}</p>
+        </div>
+        <span class="brand-icon" aria-hidden="true">
+          <and-icon name="${escapeHtml(icon)}" size="18"></and-icon>
+        </span>
+      </div>
+    </and-card>
+  `;
+}
+
 if (id === '') {
-  if (root) root.innerHTML = '<p class="text-[#9a351f]">Missing audit id.</p>';
+  if (root) {
+    root.innerHTML =
+      '<and-alert variant="destructive"><and-icon slot="icon" name="alert-circle"></and-icon>Missing audit id.</and-alert>';
+  }
 } else {
   fetch(`${apiBase}/api/audits/${id}/result`)
     .then(async (response) => {
@@ -140,7 +152,7 @@ if (id === '') {
     .then(render)
     .catch((error: unknown) => {
       if (root) {
-        root.innerHTML = `<p class="rounded-md border border-[#d8c9b1] bg-[#fffaf1] p-4 text-[#9a351f]">${escapeHtml(error instanceof Error ? error.message : String(error))}</p>`;
+        root.innerHTML = `<and-alert variant="destructive"><and-icon slot="icon" name="alert-circle"></and-icon>${escapeHtml(error instanceof Error ? error.message : String(error))}</and-alert>`;
       }
     });
 }

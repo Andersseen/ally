@@ -5,14 +5,27 @@ const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
 ---
 
 <BaseLayout title="Ally report">
-  <main class="mx-auto min-h-screen w-full max-w-6xl px-5 py-6 sm:px-8">
-    <header class="flex items-center justify-between border-b border-[#d8c9b1] pb-4">
-      <a class="text-xl font-bold text-[#14211e]" href="/">Ally</a>
-      <a class="text-sm font-semibold text-[#1d5d52]" href="/">New audit</a>
+  <main class="shell" and-layout="vertical gap:xl">
+    <header class="topbar" and-layout="horizontal align:center justify:between gap:md wrap:wrap">
+      <a class="brand-mark" href="/">
+        <span class="brand-icon" aria-hidden="true">
+          <and-icon name="accessibility" size="20"></and-icon>
+        </span>
+        <span>Ally</span>
+      </a>
+      <and-button href="/" variant="outline" size="sm">
+        <and-icon name="arrow-right" size="15"></and-icon>
+        New audit
+      </and-button>
     </header>
 
     <section id="report" class="py-8" data-api-base={apiBase} aria-live="polite">
-      <p class="text-[#5b675f]">Loading report…</p>
+      <and-card padded="true">
+        <div and-layout="horizontal align:center gap:sm">
+          <and-icon name="loader" size="18"></and-icon>
+          <p class="text-[#5b675f]">Loading report...</p>
+        </div>
+      </and-card>
     </section>
   </main>
 

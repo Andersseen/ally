@@ -5,83 +5,129 @@ const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
 ---
 
 <BaseLayout title="Ally">
-  <main class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-5 py-6 sm:px-8">
-    <header class="flex items-center justify-between border-b border-[#d8c9b1] pb-4">
-      <a class="text-xl font-bold tracking-normal text-[#14211e]" href="/">Ally</a>
-      <span class="text-sm text-[#5b675f]">Automated audit MVP</span>
+  <main class="shell" and-layout="vertical gap:xl">
+    <header class="topbar" and-layout="horizontal align:center justify:between gap:md wrap:wrap">
+      <a class="brand-mark" href="/">
+        <span class="brand-icon" aria-hidden="true">
+          <and-icon name="accessibility" size="20"></and-icon>
+        </span>
+        <span>Ally</span>
+      </a>
+      <and-badge variant="secondary">Automated audit MVP</and-badge>
     </header>
 
-    <section class="grid flex-1 items-center gap-8 py-10 md:grid-cols-[1.1fr_0.9fr]">
-      <div>
-        <p class="mb-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#7c4f2b]">
+    <section class="grid flex-1 items-center gap-8 py-10 md:grid-cols-[1.04fr_0.96fr]">
+      <div and-layout="vertical gap:lg" and-motion="fade-in-up" and-motion-trigger="enter">
+        <p class="eyebrow">
           Hosted web audit
         </p>
-        <h1 class="max-w-2xl text-4xl font-bold leading-tight text-[#14211e] sm:text-5xl">
+        <h1 class="hero-title">
           Ally
         </h1>
-        <p class="mt-5 max-w-xl text-lg leading-8 text-[#38443f]">
+        <p class="hero-copy">
           Run axe-core, IBM Equal Access, Siteimprove Alfa, QualWeb, and Ally's keyboard
           analyzer against one public page, then normalize, deduplicate, and score the findings.
         </p>
-        <p class="mt-5 max-w-xl rounded-md border border-[#d8c9b1] bg-[#fffaf1] p-4 text-sm leading-6 text-[#4d4439]">
+        <div and-layout="horizontal gap:sm wrap:wrap">
+          <and-badge variant="outline">
+            <and-icon name="activity" size="14"></and-icon>
+            5 engines
+          </and-badge>
+          <and-badge variant="outline">
+            <and-icon name="file-text" size="14"></and-icon>
+            JSON report
+          </and-badge>
+          <and-badge variant="outline">
+            <and-icon name="success" size="14"></and-icon>
+            Normalized findings
+          </and-badge>
+        </div>
+        <and-alert variant="default">
+          <and-icon slot="icon" name="info"></and-icon>
           Automated auditing does not prove WCAG conformance. A clean automated result still
           requires manual review before you can claim accessibility.
-        </p>
+        </and-alert>
       </div>
 
       <form
         id="audit-form"
-        class="rounded-md border border-[#cbb99d] bg-[#fffaf1] p-5 shadow-sm"
+        class="surface audit-card p-5"
         data-api-base={apiBase}
+        and-layout="vertical gap:md"
+        and-motion="fade-in-up"
+        and-motion-trigger="enter"
+        and-motion-delay="120ms"
       >
-        <label class="block text-sm font-semibold text-[#14211e]" for="audit-url">
-          Public URL
-        </label>
-        <input
-          id="audit-url"
-          name="url"
-          type="url"
-          inputmode="url"
-          autocomplete="url"
-          required
-          placeholder="https://example.com"
-          class="mt-2 w-full rounded-md border border-[#b9aa91] bg-white px-3 py-3 text-base text-[#14211e] outline-none transition focus:border-[#2f6f62] focus:ring-4 focus:ring-[#2f6f62]/20"
-        />
-        <button
-          type="submit"
-          class="mt-4 inline-flex w-full items-center justify-center rounded-md bg-[#1d5d52] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#164a42] disabled:cursor-not-allowed disabled:bg-[#8aa7a1]"
-        >
-          Run audit
-        </button>
+        <and-card padded="true">
+          <div and-layout="vertical gap:md">
+            <div and-layout="horizontal align:center justify:between gap:sm">
+              <div>
+                <p class="eyebrow">Target</p>
+                <h2 class="mt-1 text-xl font-bold text-[#14211e]">Public URL</h2>
+              </div>
+              <span class="brand-icon" aria-hidden="true">
+                <and-icon name="play" size="18"></and-icon>
+              </span>
+            </div>
 
-        <div id="status-panel" class="mt-5 hidden border-t border-[#d8c9b1] pt-5" aria-live="polite">
+            <label class="text-sm font-semibold text-[#14211e]" for="audit-url">
+              Public URL
+            </label>
+            <input
+              id="audit-url"
+              name="url"
+              type="url"
+              inputmode="url"
+              autocomplete="url"
+              required
+              placeholder="https://example.com"
+              class="native-field"
+            />
+            <and-button id="run-button" class="full-width" type="submit" size="lg">
+              <and-icon name="arrow-right" size="18"></and-icon>
+              Run audit
+            </and-button>
+          </div>
+        </and-card>
+
+        <and-card id="status-panel" class="hidden" padded="true" aria-live="polite">
           <ol class="space-y-3 text-sm">
             <li class="flex items-center gap-3" data-step="queued">
-              <span class="h-2.5 w-2.5 rounded-full bg-[#b9aa91]"></span>
+              <span class="status-dot">
+                <and-icon name="check" size="15"></and-icon>
+              </span>
               <span>Audit queued</span>
             </li>
             <li class="flex items-center gap-3" data-step="running">
-              <span class="h-2.5 w-2.5 rounded-full bg-[#b9aa91]"></span>
+              <span class="status-dot">
+                <and-icon name="loader" size="15"></and-icon>
+              </span>
               <span>Running</span>
             </li>
             <li class="flex items-center gap-3" data-step="completed">
-              <span class="h-2.5 w-2.5 rounded-full bg-[#b9aa91]"></span>
+              <span class="status-dot">
+                <and-icon name="success" size="15"></and-icon>
+              </span>
               <span>Completed</span>
             </li>
             <li class="hidden items-center gap-3" data-step="failed">
-              <span class="h-2.5 w-2.5 rounded-full bg-[#b9aa91]"></span>
+              <span class="status-dot">
+                <and-icon name="alert-circle" size="15"></and-icon>
+              </span>
               <span>Failed</span>
             </li>
           </ol>
           <p id="status-message" class="mt-4 text-sm text-[#5b675f]"></p>
-          <a
+          <and-button
             id="report-link"
-            class="mt-4 hidden rounded-md border border-[#1d5d52] px-4 py-2 text-center text-sm font-semibold text-[#1d5d52] hover:bg-[#eef6f3]"
+            class="mt-4 hidden"
             href="/reports"
+            variant="outline"
           >
+            <and-icon name="external-link" size="16"></and-icon>
             View report
-          </a>
-        </div>
+          </and-button>
+        </and-card>
       </form>
     </section>
   </main>

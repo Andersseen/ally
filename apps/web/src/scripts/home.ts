@@ -1,9 +1,13 @@
+import './design-system';
+
 const form = document.querySelector('#audit-form');
 const input = document.querySelector('#audit-url');
 const statusPanel = document.querySelector('#status-panel');
 const message = document.querySelector('#status-message');
 const reportLink = document.querySelector('#report-link');
-const button = form?.querySelector('button');
+const button = document.querySelector<HTMLElement & { disabled?: boolean; loading?: boolean }>(
+  '#run-button',
+);
 const steps = Array.from(document.querySelectorAll('[data-step]'));
 
 const apiBase = form?.getAttribute('data-api-base') ?? '';
@@ -15,7 +19,6 @@ function setStatus(status: AuditStatus, text: string): void {
 
   for (const step of steps) {
     const name = step.getAttribute('data-step');
-    const dot = step.querySelector('span');
     const failed = status === 'failed';
     const active =
       (!failed && status === name) ||
@@ -25,10 +28,8 @@ function setStatus(status: AuditStatus, text: string): void {
 
     step.classList.toggle('hidden', name === 'failed' && !failed);
     step.classList.toggle('flex', name !== 'failed' || failed);
-    dot?.classList.toggle('bg-[#1d5d52]', active);
-    dot?.classList.toggle('bg-[#9a351f]', failedStep);
-    dot?.classList.toggle('bg-[#b9aa91]', !active && !failedStep);
     step.classList.toggle('font-semibold', active || failedStep);
+    step.setAttribute('data-state', failedStep ? 'failed' : active ? 'active' : 'idle');
   }
 }
 
@@ -42,19 +43,19 @@ async function poll(id: string): Promise<void> {
 
   if (audit.status === 'failed') {
     setStatus('failed', audit.error ?? 'The audit failed.');
-    if (button) button.disabled = false;
+    setButtonBusy(false);
     return;
   }
 
   setStatus(audit.status, audit.status === 'completed' ? 'Audit complete.' : 'Audit is running.');
 
   if (audit.status === 'completed') {
-    if (reportLink instanceof HTMLAnchorElement) {
-      reportLink.href = `/reports?id=${encodeURIComponent(id)}`;
+    if (reportLink instanceof HTMLElement) {
+      reportLink.setAttribute('href', `/reports?id=${encodeURIComponent(id)}`);
       reportLink.classList.remove('hidden');
       reportLink.classList.add('inline-flex');
     }
-    if (button) button.disabled = false;
+    setButtonBusy(false);
     return;
   }
 
@@ -63,13 +64,20 @@ async function poll(id: string): Promise<void> {
 
 function showError(error: unknown): void {
   setStatus('running', error instanceof Error ? error.message : String(error));
-  if (button) button.disabled = false;
+  setButtonBusy(false);
+}
+
+function setButtonBusy(isBusy: boolean): void {
+  if (button) {
+    button.disabled = isBusy;
+    button.loading = isBusy;
+  }
 }
 
 form?.addEventListener('submit', (event) => {
   event.preventDefault();
   if (!(input instanceof HTMLInputElement)) return;
-  if (button) button.disabled = true;
+  setButtonBusy(true);
   if (reportLink) reportLink.classList.add('hidden');
 
   setStatus('queued', 'Creating audit job.');
