@@ -1,8 +1,10 @@
 {
-  "extends": "@ally/config/tsconfig/library.json",
+  "extends": "@ally/config/tsconfig/browser.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    // The adapter resolves the engine bundle from disk before injecting it.
+    "types": ["node"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["dist", "node_modules"]

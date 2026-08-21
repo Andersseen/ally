@@ -33,3 +33,6 @@ audit/
 *.log
 npm-debug.log*
 pnpm-debug.log*
+
+# End-to-end artifacts (see scripts/prepare-e2e.ts)
+apps/report/e2e/.artifacts/

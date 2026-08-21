@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Keyboard cycle — Ally fixture</title>
+    <style>
+      body {
+        margin: 0;
+        background: #ffffff;
+        color: #111827;
+        font-family: system-ui, sans-serif;
+      }
+      .layout {
+        margin: 0 auto;
+        max-width: 40rem;
+        padding: 1.5rem;
+      }
+      .trap {
+        border: 1px solid #111827;
+        padding: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      A deliberate keyboard trap: focus entering the group is cycled between
+      three controls and can never leave by pressing Tab. Ally reports this as a
+      *potential* trap, because a modal dialog may cycle focus on purpose.
+    -->
+    <main id="main" class="layout">
+      <h1>Keyboard cycle</h1>
+
+      <p><button id="before" type="button">Before the trap</button></p>
+
+      <div class="trap" id="trap">
+        <button id="trap-a" type="button">Trap A</button>
+        <button id="trap-b" type="button">Trap B</button>
+        <button id="trap-c" type="button">Trap C</button>
+      </div>
+
+      <p><button id="after" type="button">After the trap</button></p>
+    </main>
+
+    <script>
+      // Keep focus inside #trap once it is entered, in both directions.
+      (function () {
+        var trap = document.getElementById('trap');
+        var stops = Array.prototype.slice.call(trap.querySelectorAll('button'));
+
+        document.addEventListener(
+          'keydown',
+          function (event) {
+            if (event.key !== 'Tab') return;
+            var index = stops.indexOf(document.activeElement);
+            if (index === -1) return;
+
+            event.preventDefault();
+            var next = event.shiftKey ? index - 1 : index + 1;
+            stops[(next + stops.length) % stops.length].focus();
+          },
+          true,
+        );
+      })();
+    </script>
+  </body>
+</html>

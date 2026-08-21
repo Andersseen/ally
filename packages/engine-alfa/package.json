@@ -2,7 +2,7 @@
   "name": "@ally/engine-alfa",
   "version": "0.0.0",
   "type": "module",
-  "description": "Siteimprove Alfa engine adapter for Ally (scaffold)",
+  "description": "Siteimprove Alfa engine adapter for Ally",
   "license": "Apache-2.0",
   "sideEffects": false,
   "exports": {
@@ -17,13 +17,21 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "clean": "rm -rf dist .turbo"
+    "clean": "rm -rf dist .turbo",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@ally/core": "workspace:*"
+    "@ally/browser": "workspace:*",
+    "@ally/core": "workspace:*",
+    "@siteimprove/alfa-act": "catalog:",
+    "@siteimprove/alfa-dom": "catalog:",
+    "@siteimprove/alfa-playwright": "catalog:",
+    "@siteimprove/alfa-rules": "catalog:",
+    "@siteimprove/alfa-web": "catalog:"
   },
   "devDependencies": {
     "@ally/config": "workspace:*",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

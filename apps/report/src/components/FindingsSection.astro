@@ -1,0 +1,210 @@
+---
+import type { AuditResult } from '@ally/core';
+import { SEVERITIES } from '@ally/core';
+import FindingCard from './FindingCard.astro';
+import { STANDARD_LABELS } from '../lib/format.js';
+
+interface Props {
+  findings: AuditResult['findings'];
+}
+
+const { findings } = Astro.props;
+
+// Only offer a filter for values that actually occur, so the UI never presents
+// a control that can only ever produce an empty list.
+const presentSeverities = SEVERITIES.filter((severity) =>
+  findings.some((finding) => finding.severity === severity),
+);
+const presentStandards = (['wcag', 'best-practice', 'unknown'] as const).filter((standard) =>
+  findings.some((finding) => finding.standard === standard),
+);
+const presentEngines = [...new Set(findings.flatMap((finding) => finding.engineIds))].sort();
+---
+
+<section aria-labelledby="findings-heading">
+  <h2 id="findings-heading" class="text-lg font-semibold">Findings</h2>
+  <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+    Deduplicated across engines and ordered by severity. Absence of findings is not evidence that a
+    page is accessible.
+  </p>
+
+  {
+    findings.length === 0 ? (
+      <p class="mt-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+        No findings were reported. Automated checks cover only part of accessibility — manual review
+        is still required.
+      </p>
+    ) : (
+      <>
+        {/*
+          Filtering is a small progressive enhancement: without JavaScript every
+          finding is already in the document, and the controls simply do nothing.
+        */}
+        <form
+          class="mt-4 rounded-lg border border-slate-300 bg-white p-4 dark:border-slate-700 dark:bg-slate-900"
+          data-finding-filters
+          aria-labelledby="filters-heading"
+        >
+          <h3 id="filters-heading" class="text-sm font-semibold">
+            Filter findings
+          </h3>
+
+          <div class="mt-3 grid gap-4 sm:grid-cols-3">
+            <fieldset>
+              <legend class="text-xs font-semibold text-slate-600 uppercase dark:text-slate-400">
+                Severity
+              </legend>
+              <div class="mt-2 space-y-1">
+                {presentSeverities.map((severity) => (
+                  <label class="flex items-center gap-2 text-sm">
+                    <input type="checkbox" name="severity" value={severity} checked />
+                    <span class="capitalize">{severity}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="text-xs font-semibold text-slate-600 uppercase dark:text-slate-400">
+                Classification
+              </legend>
+              <div class="mt-2 space-y-1">
+                {presentStandards.map((standard) => (
+                  <label class="flex items-center gap-2 text-sm">
+                    <input type="checkbox" name="standard" value={standard} checked />
+                    <span>{STANDARD_LABELS[standard]}</span>
+                  </label>
+                ))}
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="checkbox" name="level" value="A" checked />
+                  <span>WCAG level A</span>
+                </label>
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="checkbox" name="level" value="AA" checked />
+                  <span>WCAG level AA</span>
+                </label>
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="checkbox" name="level" value="AAA" checked />
+                  <span>WCAG level AAA</span>
+                </label>
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="checkbox" name="level" value="none" checked />
+                  <span>No level</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="text-xs font-semibold text-slate-600 uppercase dark:text-slate-400">
+                Source
+              </legend>
+              <div class="mt-2 space-y-1">
+                {presentEngines.map((engineId) => (
+                  <label class="flex items-center gap-2 text-sm">
+                    <input type="checkbox" name="engine" value={engineId} checked />
+                    <span>{engineId}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              class="rounded-md border border-slate-400 px-3 py-1.5 text-sm font-medium hover:bg-slate-100 dark:border-slate-600 dark:hover:bg-slate-800"
+              data-reset-filters
+            >
+              Show all findings
+            </button>
+            <p
+              class="text-sm text-slate-700 dark:text-slate-300"
+              role="status"
+              data-filter-status
+              data-total={findings.length}
+            >
+              Showing {findings.length} of {findings.length} findings
+            </p>
+          </div>
+        </form>
+
+        <ul class="mt-4 space-y-3" role="list" data-finding-list>
+          {findings.map((finding) => (
+            <FindingCard finding={finding} />
+          ))}
+        </ul>
+
+        <p
+          class="mt-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
+          data-empty-message
+          hidden
+        >
+          No findings match the current filters.
+        </p>
+      </>
+    )
+  }
+</section>
+
+<script>
+  /**
+   * Finding filters.
+   *
+   * Vanilla DOM, no framework: the report is a static artifact and this is the
+   * only interactive part of it. Every finding is already in the HTML, so the
+   * page is complete before this script runs and remains usable if it never
+   * does.
+   */
+  const form = document.querySelector<HTMLFormElement>('[data-finding-filters]');
+  const list = document.querySelector<HTMLElement>('[data-finding-list]');
+  const status = document.querySelector<HTMLElement>('[data-filter-status]');
+  const emptyMessage = document.querySelector<HTMLElement>('[data-empty-message]');
+
+  if (form && list && status) {
+    const findings = Array.from(list.querySelectorAll<HTMLElement>('[data-finding]'));
+    const total = Number(status.dataset['total'] ?? findings.length);
+
+    const checkedValues = (name: string): Set<string> =>
+      new Set(
+        Array.from(
+          form.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`),
+          (input) => input.value,
+        ),
+      );
+
+    const apply = (): void => {
+      const severities = checkedValues('severity');
+      const standards = checkedValues('standard');
+      const levels = checkedValues('level');
+      const engines = checkedValues('engine');
+
+      let visible = 0;
+
+      for (const finding of findings) {
+        const engineIds = (finding.dataset['engines'] ?? '').split(' ').filter(Boolean);
+
+        const matches =
+          severities.has(finding.dataset['severity'] ?? '') &&
+          standards.has(finding.dataset['standard'] ?? '') &&
+          levels.has(finding.dataset['level'] ?? 'none') &&
+          engineIds.some((engineId) => engines.has(engineId));
+
+        finding.hidden = !matches;
+        if (matches) visible += 1;
+      }
+
+      status.textContent = `Showing ${visible} of ${total} findings`;
+      if (emptyMessage) emptyMessage.hidden = visible !== 0;
+    };
+
+    form.addEventListener('change', apply);
+    form.querySelector<HTMLButtonElement>('[data-reset-filters]')?.addEventListener('click', () => {
+      for (const input of form.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')) {
+        input.checked = true;
+      }
+      apply();
+    });
+
+    apply();
+  }
+</script>

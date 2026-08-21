@@ -10,3 +10,18 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* A visible focus ring everywhere, including for keyboard users in Safari. */
+:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* `<details>` markers vary between browsers; a consistent one reads better. */
+summary {
+  cursor: pointer;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}

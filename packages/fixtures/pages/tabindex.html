@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tab order — Ally fixture</title>
+    <style>
+      body {
+        margin: 0;
+        background: #ffffff;
+        color: #111827;
+        font-family: system-ui, sans-serif;
+      }
+      .layout {
+        margin: 0 auto;
+        max-width: 40rem;
+        padding: 1.5rem;
+      }
+      .offscreen {
+        position: absolute;
+        left: -10000px;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Keyboard-order problems:
+        * positive tabindex values reorder the sequential focus path;
+        * an off-screen control stays tabbable but is invisible to sighted users.
+      Nothing here traps focus — that is keyboard-cycle.html.
+    -->
+    <main id="main" class="layout">
+      <h1>Tab order</h1>
+
+      <p><a id="first-link" href="#main">First in DOM order</a></p>
+
+      <p>
+        <button id="tab-five" type="button" tabindex="5">Fifth by tabindex</button>
+        <button id="tab-three" type="button" tabindex="3">Third by tabindex</button>
+        <button id="tab-one" type="button" tabindex="1">First by tabindex</button>
+      </p>
+
+      <p><button id="natural" type="button">Natural order</button></p>
+
+      <p>
+        <a id="offscreen-link" class="offscreen" href="/hidden">Off-screen but tabbable</a>
+      </p>
+
+      <p><button id="last" type="button">Last in DOM order</button></p>
+    </main>
+  </body>
+</html>

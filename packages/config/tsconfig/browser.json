@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Ally Browser Library",
+  "extends": "./library.json",
+  "compilerOptions": {
+    // Packages that run code *inside* the audited page need DOM types to
+    // describe what they send there. They still run in Node; the DOM types
+    // describe the far side of `page.evaluate`, not this side.
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+  }
+}

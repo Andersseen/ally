@@ -1,8 +1,10 @@
 {
-  "extends": "@ally/config/tsconfig/library.json",
+  "extends": "@ally/config/tsconfig/browser.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
+    // Tests read recorded engine output from disk.
+    "types": ["node"],
     "lib": ["ES2023", "DOM"]
   },
   "include": ["src/**/*.ts"],

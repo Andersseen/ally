@@ -1,5 +1,5 @@
 {
-  "extends": "@ally/config/tsconfig/library.json",
+  "extends": "@ally/config/tsconfig/browser.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist"

@@ -1,0 +1,11 @@
+export { performAudit } from './audit.js';
+export type { AuditOutcome } from './audit.js';
+export { AVAILABLE_ENGINES, selectEngines } from './engines.js';
+export type { EngineSelection } from './engines.js';
+export { parseArgs, USAGE } from './options.js';
+export type { AuditOptions, ParseResult } from './options.js';
+export { buildReport } from './report-build.js';
+export type { BuildReportOptions, BuildReportResult } from './report-build.js';
+export { formatSummary } from './summary.js';
+export type { SummaryInput } from './summary.js';
+export { main } from './main.js';

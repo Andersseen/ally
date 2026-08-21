@@ -1,17 +1,20 @@
-import type { EngineDescriptor } from '@ally/core';
-
-/**
- * Scaffold for the QualWeb adapter.
- *
- * The adapter is not implemented yet, so this package deliberately exports
- * identity only — no stub engine that would pretend to run. Implementing it means adding an `AuditEngine` alongside this descriptor.
- *
- * QualWeb is consumed as a dependency and keeps its own ISC license.
- */
-export const QUALWEB_ENGINE: EngineDescriptor = {
-  id: 'qualweb',
-  name: 'QualWeb',
-  homepage: 'https://github.com/qualweb/core',
-  license: 'ISC',
-  status: 'planned',
-};
+export { createQualwebEngine } from './engine.js';
+export type { QualwebEngineOptions } from './engine.js';
+export {
+  QUALWEB_ENGINE,
+  QUALWEB_ENGINE_ID,
+  QUALWEB_MODULES,
+  QUALWEB_RULE_CATEGORIES,
+  QUALWEB_RUNTIME_PACKAGES,
+} from './metadata.js';
+export type { QualwebModule } from './metadata.js';
+export { countQualwebFailures, normalizeQualwebResults, qualwebPointersOf } from './normalize.js';
+export type {
+  QualwebAssertion,
+  QualwebElement,
+  QualwebModuleReport,
+  QualwebRawOutput,
+  QualwebSuccessCriterion,
+  QualwebTestResult,
+  QualwebVerdict,
+} from './normalize.js';

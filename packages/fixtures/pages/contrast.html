@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Insufficient contrast — Ally fixture</title>
+    <style>
+      body {
+        margin: 0;
+        background: #ffffff;
+        color: #111827;
+        font-family: system-ui, sans-serif;
+      }
+      .layout {
+        margin: 0 auto;
+        max-width: 40rem;
+        padding: 1.5rem;
+      }
+      /* 2.3:1 against white — below the 4.5:1 threshold for body text. */
+      .faint {
+        color: #9aa0a6;
+        background: #ffffff;
+        font-size: 1rem;
+      }
+      /* 1.6:1 — well below every threshold. */
+      .very-faint {
+        color: #cfd4d9;
+        background: #ffffff;
+        font-size: 1rem;
+      }
+      .washed-button {
+        background: #b7d3f2;
+        color: #ffffff;
+        border: 0;
+        padding: 0.5rem 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Colour-contrast failures. axe, IBM and Alfa all implement a contrast rule,
+      so the same elements should be reported by several engines at once.
+    -->
+    <main id="main" class="layout">
+      <h1>Insufficient contrast</h1>
+      <p id="faint-paragraph" class="faint">
+        This paragraph does not meet the 4.5:1 contrast threshold for body text.
+      </p>
+      <p id="very-faint-paragraph" class="very-faint">
+        This paragraph is far below every contrast threshold.
+      </p>
+      <p><button id="washed-button" class="washed-button" type="button">Buy now</button></p>
+    </main>
+  </body>
+</html>

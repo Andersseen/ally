@@ -1,0 +1,542 @@
+{
+  "engineVersion": "0.119.0",
+  "counts": {
+    "passed": 62,
+    "inapplicable": 61,
+    "failed": 9
+  },
+  "failed": [
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r11",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#link-purpose-in-context",
+              "chapter": "2.4.4",
+              "title": "Link Purpose (In Context)"
+            },
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#link-purpose-link-only",
+              "chapter": "2.4.9",
+              "title": "Link Purpose (Link Only)"
+            },
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#name-role-value",
+              "chapter": "4.1.2",
+              "title": "Name, Role, Value"
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            },
+            {
+              "type": "technique",
+              "uri": "https://www.w3.org/WAI/WCAG22/Techniques/general/G91",
+              "name": "G91",
+              "title": "Providing link text that describes the purpose of a link"
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "0a6b4b61fe56571df133b801b48f08ae",
+          "serializationId": "0a6b4b61fe56571df133b801b48f08ae",
+          "path": "/html[1]/body[1]/main[1]/a[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The link does not have an accessible name"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/a[1]",
+        "tagName": "a",
+        "html": "<a href=\"/home\">"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r12",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#name-role-value",
+              "chapter": "4.1.2",
+              "title": "Name, Role, Value"
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "ca5e8d43925800b25b048263e751c5e3",
+          "serializationId": "ca5e8d43925800b25b048263e751c5e3",
+          "path": "/html[1]/body[1]/main[1]/form[1]/button[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The button does not have an accessible name"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/form[1]/button[1]",
+        "tagName": "button",
+        "html": "<button type=\"submit\">"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r12",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#name-role-value",
+              "chapter": "4.1.2",
+              "title": "Name, Role, Value"
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "acbdea642189f992f3c208e6fd96e8f9",
+          "serializationId": "acbdea642189f992f3c208e6fd96e8f9",
+          "path": "/html[1]/body[1]/main[1]/button[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The button does not have an accessible name"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/button[1]",
+        "tagName": "button",
+        "html": "<button id=\"empty-button\" type=\"button\">"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r12",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#name-role-value",
+              "chapter": "4.1.2",
+              "title": "Name, Role, Value"
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "48e760dc6f3777c52823b4ab6cf06dc5",
+          "serializationId": "48e760dc6f3777c52823b4ab6cf06dc5",
+          "path": "/html[1]/body[1]/main[1]/div[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The button does not have an accessible name"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/div[1]",
+        "tagName": "div",
+        "html": "<div id=\"fake-button\" role=\"button\" tabindex=\"0\">"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r2",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#non-text-content",
+              "chapter": "1.1.1",
+              "title": "Non-text Content"
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            },
+            {
+              "type": "technique",
+              "uri": "https://www.w3.org/WAI/WCAG22/Techniques/general/G94",
+              "name": "G94",
+              "title": "Providing short text alternative for non-text content that serves the same purpose"
+            },
+            {
+              "type": "technique",
+              "uri": "https://www.w3.org/WAI/WCAG22/Techniques/general/G95",
+              "name": "G95",
+              "title": "Providing short text alternatives that provide a brief description of the non-text"
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "0867473d645e42ac9bb228ead0d6bc72",
+          "serializationId": "0867473d645e42ac9bb228ead0d6bc72",
+          "path": "/html[1]/body[1]/main[1]/img[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The image does not have an accessible name"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/img[1]",
+        "tagName": "img",
+        "html": "<img id=\"logo\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALA…\" width=\"32\" height=\"32\">"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r2",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#non-text-content",
+              "chapter": "1.1.1",
+              "title": "Non-text Content"
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            },
+            {
+              "type": "technique",
+              "uri": "https://www.w3.org/WAI/WCAG22/Techniques/general/G94",
+              "name": "G94",
+              "title": "Providing short text alternative for non-text content that serves the same purpose"
+            },
+            {
+              "type": "technique",
+              "uri": "https://www.w3.org/WAI/WCAG22/Techniques/general/G95",
+              "name": "G95",
+              "title": "Providing short text alternatives that provide a brief description of the non-text"
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "55765d773d7ff45a83d32b0a2dcab0e6",
+          "serializationId": "55765d773d7ff45a83d32b0a2dcab0e6",
+          "path": "/html[1]/body[1]/main[1]/a[1]/img[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The image does not have an accessible name"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/a[1]/img[1]",
+        "tagName": "img",
+        "html": "<img id=\"home-icon\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALA…\" width=\"32\" height=\"32\">"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r8",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#name-role-value",
+              "chapter": "4.1.2",
+              "title": "Name, Role, Value"
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "379fa8d9be5151a62ea797e3378f0fb1",
+          "serializationId": "379fa8d9be5151a62ea797e3378f0fb1",
+          "path": "/html[1]/body[1]/main[1]/form[1]/input[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The form field does not have an accessible name",
+                "role": "textbox"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/form[1]/input[1]",
+        "tagName": "input",
+        "html": "<input id=\"query\" name=\"query\" type=\"text\">"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r8",
+          "requirements": [
+            {
+              "type": "criterion",
+              "uri": "https://www.w3.org/TR/WCAG2/#name-role-value",
+              "chapter": "4.1.2",
+              "title": "Name, Role, Value"
+            },
+            {
+              "type": "eaa",
+              "uri": ""
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "component"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "element",
+          "internalId": "615110411614a750485358e7ecfd99d2",
+          "serializationId": "615110411614a750485358e7ecfd99d2",
+          "path": "/html[1]/body[1]/main[1]/form[1]/select[1]"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The form field does not have an accessible name",
+                "role": "listbox"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/html[1]/body[1]/main[1]/form[1]/select[1]",
+        "tagName": "select",
+        "html": "<select id=\"scope\" name=\"scope\">"
+      }
+    },
+    {
+      "outcome": {
+        "outcome": "failed",
+        "rule": {
+          "type": "atomic",
+          "uri": "https://alfa.siteimprove.com/rules/sia-r87",
+          "requirements": [
+            {
+              "type": "technique",
+              "uri": "https://www.w3.org/WAI/WCAG22/Techniques/general/G1",
+              "name": "G1",
+              "title": "Adding a link at the top of each page that goes directly to the main content area"
+            },
+            {
+              "type": "best practice",
+              "uri": "first-focusable-is-skip-link"
+            }
+          ],
+          "tags": [
+            {
+              "type": "scope",
+              "scope": "page"
+            },
+            {
+              "type": "stability",
+              "stability": "stable"
+            }
+          ]
+        },
+        "mode": "automatic",
+        "target": {
+          "type": "document",
+          "internalId": "ff7b7d7e6b2c44ccfbdbc815b635ba9f",
+          "serializationId": "ff7b7d7e6b2c44ccfbdbc815b635ba9f",
+          "path": "/"
+        },
+        "expectations": [
+          [
+            "1",
+            {
+              "type": "err",
+              "error": {
+                "message": "The first tabbable element in the document is not a semantic link"
+              }
+            }
+          ]
+        ]
+      },
+      "element": {
+        "path": "/"
+      }
+    }
+  ]
+}

@@ -1,8 +1,10 @@
 {
-  "extends": "@ally/config/tsconfig/library.json",
+  "extends": "@ally/config/tsconfig/browser.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    // The adapter resolves QualWeb's browser bundles from disk before injecting them.
+    "types": ["node"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["dist", "node_modules"]

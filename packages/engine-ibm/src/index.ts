@@ -1,17 +1,17 @@
-import type { EngineDescriptor } from '@ally/core';
-
-/**
- * Scaffold for the IBM Equal Access adapter.
- *
- * The adapter is not implemented yet, so this package deliberately exports
- * identity only — no stub engine that would pretend to run. Implementing it means adding an `AuditEngine` alongside this descriptor.
- *
- * IBM Equal Access is consumed as a dependency and keeps its own Apache-2.0 license.
- */
-export const IBM_ENGINE: EngineDescriptor = {
-  id: 'ibm-equal-access',
-  name: 'IBM Equal Access',
-  homepage: 'https://github.com/IBMa/equal-access',
-  license: 'Apache-2.0',
-  status: 'planned',
-};
+export { createIbmEngine } from './engine.js';
+export type { IbmEngineOptions } from './engine.js';
+export {
+  IBM_ENGINE,
+  IBM_ENGINE_ID,
+  IBM_GUIDELINE_ID,
+  IBM_MAPPING_GUIDELINES,
+  IBM_RULE_CATEGORIES,
+} from './metadata.js';
+export { countIbmFailures, normalizeIbmResults } from './normalize.js';
+export type {
+  IbmConfidence,
+  IbmIssue,
+  IbmPolicy,
+  IbmRawOutput,
+  IbmRuleMapping,
+} from './normalize.js';

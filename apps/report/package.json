@@ -21,9 +21,11 @@
     "tailwindcss": "catalog:"
   },
   "devDependencies": {
+    "@ally/engine-axe": "workspace:*",
     "@astrojs/check": "catalog:",
     "@playwright/test": "catalog:",
     "@types/node": "catalog:",
+    "axe-core": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:"
   }
