@@ -1,6 +1,7 @@
 import { performAudit } from './audit.js';
 import { parseArgs, USAGE } from './options.js';
 import { buildReport } from './report-build.js';
+import { startStudio } from './serve.js';
 import { formatSummary } from './summary.js';
 
 /** Ally's own version, reported by `--version`. */
@@ -9,6 +10,33 @@ export const ALLY_VERSION = '0.1.0';
 export interface Console {
   log(message: string): void;
   error(message: string): void;
+}
+
+/**
+ * Runs the local audit server until the process is interrupted.
+ *
+ * Resolves only on shutdown, so the caller's `await` keeps the process alive
+ * without a keep-alive timer of its own.
+ */
+async function serve(options: Parameters<typeof startStudio>[0], out: Console): Promise<number> {
+  const studio = await startStudio(options, out);
+
+  out.log(`\nAlly is listening on ${studio.url}`);
+  out.log(`Audits are written to ${options.outDir}`);
+  out.log('\nBound to 127.0.0.1. Do not expose this to a network — it opens a');
+  out.log('browser against any URL it is given and has no authentication.');
+  out.log('\nPress Ctrl+C to stop.');
+
+  await new Promise<void>((resolveShutdown) => {
+    const stop = (): void => {
+      out.log('\nShutting down …');
+      void studio.close().finally(resolveShutdown);
+    };
+    process.once('SIGINT', stop);
+    process.once('SIGTERM', stop);
+  });
+
+  return 0;
 }
 
 /**
@@ -37,6 +65,9 @@ export async function main(argv: readonly string[], out: Console, cwd: string): 
       out.error(`ally: ${parsed.message}\n`);
       out.error(USAGE);
       return 2;
+
+    case 'serve':
+      return serve(parsed.options, out);
 
     case 'audit':
       break;

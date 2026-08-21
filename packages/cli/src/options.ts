@@ -19,34 +19,57 @@ export interface AuditOptions {
   readonly timeoutMs: number;
 }
 
+/** Options for the local audit server. */
+export interface ServeOptions {
+  /** Port to listen on. Always bound to 127.0.0.1. */
+  readonly port: number;
+  /** Directory audits are written to and served from. */
+  readonly outDir: string;
+}
+
 export type ParseResult =
   | { readonly kind: 'audit'; readonly options: AuditOptions }
+  | { readonly kind: 'serve'; readonly options: ServeOptions }
   | { readonly kind: 'help' }
   | { readonly kind: 'version' }
   | { readonly kind: 'error'; readonly message: string };
 
 const DEFAULT_TIMEOUT_MS = 30_000;
+const DEFAULT_PORT = 4330;
+
+/** The one subcommand. Everything else is read as a URL to audit. */
+const SERVE_COMMAND = 'serve';
 
 export const USAGE = `ally — an accessibility audit orchestrator
 
 Usage
-  ally <url> [options]
+  ally <url> [options]      Audit a page and build its report
+  ally serve [options]      Run audits from a local page in your browser
 
-Options
+Audit options
   --out <dir>        Where to write the audit artifact  (default: ./audit)
   --only <ids>       Comma-separated engine ids to run  (default: all)
   --no-keyboard      Skip the keyboard/focus analysis
   --no-report        Write the artifact but do not build the static report
   --headed           Run Chromium with a visible window
   --timeout <ms>     Navigation and interaction timeout (default: 30000)
+
+Serve options
+  --port <n>         Port to listen on                  (default: 4330)
+  --out <dir>        Where audits are stored and served (default: ./audit)
+
   -h, --help         Show this message
   -v, --version      Show the Ally version
 
 Engines
   axe-core, ibm-equal-access, alfa, qualweb
 
-Example
+Examples
   ally https://example.com --out ./audit
+  ally serve --port 4330
+
+\`ally serve\` binds to 127.0.0.1 only. It runs a browser against any URL it is
+given, so it must never be exposed to a network.
 
 Ally reports automated results. It does not establish WCAG conformance.`;
 
@@ -64,6 +87,7 @@ export function parseArgs(argv: readonly string[], cwd: string): ParseResult {
   let buildReport = true;
   let headless = true;
   let timeoutMs = DEFAULT_TIMEOUT_MS;
+  let port = DEFAULT_PORT;
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
@@ -92,6 +116,7 @@ export function parseArgs(argv: readonly string[], cwd: string): ParseResult {
 
       case '--out':
       case '--only':
+      case '--port':
       case '--timeout': {
         const value = argv[index + 1];
         if (value === undefined || value.startsWith('-')) {
@@ -99,14 +124,20 @@ export function parseArgs(argv: readonly string[], cwd: string): ParseResult {
         }
         index += 1;
 
-        if (argument === '--out') outDir = value;
-        else if (argument === '--only') only = splitIds(value);
-        else {
+        if (argument === '--out') {
+          outDir = value;
+        } else if (argument === '--only') {
+          only = splitIds(value);
+        } else {
           const parsed = Number(value);
           if (!Number.isFinite(parsed) || parsed <= 0) {
-            return { kind: 'error', message: `--timeout needs a positive number, got "${value}".` };
+            return {
+              kind: 'error',
+              message: `${argument} needs a positive number, got "${value}".`,
+            };
           }
-          timeoutMs = parsed;
+          if (argument === '--port') port = parsed;
+          else timeoutMs = parsed;
         }
         break;
       }
@@ -119,8 +150,18 @@ export function parseArgs(argv: readonly string[], cwd: string): ParseResult {
     }
   }
 
+  if (positional[0] === SERVE_COMMAND) {
+    if (positional.length > 1) {
+      return {
+        kind: 'error',
+        message: `\`ally serve\` takes no arguments; got "${positional.slice(1).join(' ')}".`,
+      };
+    }
+    return { kind: 'serve', options: { port, outDir: resolveFrom(cwd, outDir) } };
+  }
+
   if (positional.length === 0) {
-    return { kind: 'error', message: 'Missing the URL to audit.' };
+    return { kind: 'error', message: 'Missing the URL to audit. Or run `ally serve`.' };
   }
   if (positional.length > 1) {
     return {

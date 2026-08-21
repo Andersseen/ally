@@ -100,6 +100,39 @@ describe('parseArgs', () => {
     );
   });
 
+  it('recognises the serve subcommand', () => {
+    const parsed = parseArgs(['serve'], CWD);
+
+    expect(parsed.kind).toBe('serve');
+    expect(parsed.kind === 'serve' ? parsed.options : undefined).toEqual({
+      port: 4330,
+      outDir: '/work/project/audit',
+    });
+  });
+
+  it('accepts a port and an output directory for serve', () => {
+    const parsed = parseArgs(['serve', '--port', '5000', '--out', './results'], CWD);
+
+    expect(parsed.kind === 'serve' ? parsed.options : undefined).toEqual({
+      port: 5000,
+      outDir: '/work/project/results',
+    });
+  });
+
+  it('rejects a port that is not a positive number', () => {
+    expect(errorMessage(parseArgs(['serve', '--port', 'soon'], CWD))).toContain('positive number');
+  });
+
+  it('refuses extra arguments after serve', () => {
+    expect(errorMessage(parseArgs(['serve', 'https://example.com'], CWD))).toContain(
+      'takes no arguments',
+    );
+  });
+
+  it('still reads a bare URL as an audit, not a subcommand', () => {
+    expect(parseArgs(['https://example.com'], CWD).kind).toBe('audit');
+  });
+
   it('recognises help and version before anything else', () => {
     expect(parseArgs(['--help'], CWD)).toEqual({ kind: 'help' });
     expect(parseArgs(['-h'], CWD)).toEqual({ kind: 'help' });

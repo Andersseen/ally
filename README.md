@@ -103,6 +103,25 @@ audit/
 | `--headed`       | Run Chromium with a visible window              |
 | `--timeout <ms>` | Navigation and interaction timeout              |
 
+### Running audits from a browser
+
+```bash
+pnpm ally serve            # http://127.0.0.1:4330
+```
+
+A local page with a URL field. Submitting it runs the same pipeline, writes the
+artifact to `audit/<host>-<timestamp>/`, and takes you to the generated report.
+Previous audits are listed with their scores.
+
+> **`ally serve` is local only.** It is bound to `127.0.0.1`, the host is not
+> configurable, and it has no authentication. It opens a browser against any URL
+> it is handed, which is a server-side request forgery primitive — do not expose
+> it to a network.
+
+The server depends on the report; the report knows nothing about the server.
+That direction is deliberate: `@ally/report` stays a portable file you can email
+someone, and it only stays that way as long as it never learns to run audits.
+
 ## The pipeline
 
 ```text
@@ -122,6 +141,13 @@ A failing engine never fails the audit. `EngineRun` is a discriminated union of
 the report shows it. A crashed engine reduces _coverage_; it never becomes a
 finding and never lowers the score.
 
+An engine can also succeed _partially_. QualWeb is three independent rule sets
+behind one name, and one rule throwing inside the page would otherwise take the
+other two modules with it. Each module runs isolated, and a partial loss is
+reported through `notes[]` — the CLI marks it `!` rather than `✓`, and the
+report says the engine ran with reduced coverage. Returning fewer findings in
+silence would misstate what the audit actually covered.
+
 ## Architecture
 
 Dependencies point in one direction. The audit core never depends on the UI, and
@@ -137,7 +163,7 @@ never on a concrete engine.
 | `@ally/engine-qualweb`    | QualWeb adapter.                                                  |
 | `@ally/analyzer-keyboard` | Ally's own keyboard/focus analyzer.                               |
 | `@ally/reporter-json`     | Writes `audit.json` plus per-engine raw output.                   |
-| `@ally/cli`               | `ally <url>` — argument parsing, orchestration, summary.          |
+| `@ally/cli`               | `ally <url>` and `ally serve` — parsing, orchestration, summary.  |
 | `@ally/fixtures`          | Local benchmark pages with known problems, and a server for them. |
 | `@ally/config`            | Shared TypeScript configuration.                                  |
 | `@ally/report`            | Static Astro report. Consumes the model; never runs audits.       |
@@ -249,6 +275,7 @@ It only navigates. It does not click, and does not press Enter, Space or Escape.
 | Command           | What it does                                        |
 | ----------------- | --------------------------------------------------- |
 | `pnpm ally <url>` | Audit a page and build its report                   |
+| `pnpm ally serve` | Run audits from a local page in your browser        |
 | `pnpm dev`        | Astro report in watch mode                          |
 | `pnpm build`      | Build every package and the report, in order        |
 | `pnpm test`       | Unit tests (Vitest)                                 |
