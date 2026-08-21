@@ -144,8 +144,9 @@ if (id === '') {
       '<and-alert variant="destructive"><and-icon slot="icon" name="alert-circle"></and-icon>Missing audit id.</and-alert>';
   }
 } else {
-  fetch(`${apiBase}/api/audits/${id}/result`)
+  fetch(`${apiBase}/api/audits/${id}/result`, { credentials: 'include' })
     .then(async (response) => {
+      if (response.status === 401) throw new Error('Sign in to view this audit report.');
       if (!response.ok) throw new Error('The report is not available yet.');
       return (await response.json()) as AuditResultJson;
     })

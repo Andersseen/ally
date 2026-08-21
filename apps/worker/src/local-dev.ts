@@ -22,7 +22,7 @@ import {
   transactionCookie,
   webOrigin,
 } from './auth.ts';
-import type { AuthEnv } from './auth.ts';
+import type { AuthEnv, AuthSession } from './auth.ts';
 
 const HOST = '127.0.0.1';
 const PORT = 8787;
@@ -42,6 +42,8 @@ interface LocalAudit {
   completedAt?: string;
   error?: string;
   result?: AuditResult;
+  readonly ownerUserId: string;
+  readonly ownerEmail: string;
 }
 
 const audits = new Map<string, LocalAudit>();
@@ -94,19 +96,25 @@ async function handle(request: IncomingMessage, response: ServerResponse): Promi
   }
 
   if (request.method === 'POST' && url.pathname === '/api/audits') {
-    await createAudit(request, response);
+    const session = await requireAuth(request, response);
+    if (session === null) return;
+    await createAudit(request, response, session);
     return;
   }
 
   const resultMatch = /^\/api\/audits\/([^/]+)\/result$/.exec(url.pathname);
   if (request.method === 'GET' && resultMatch?.[1] !== undefined) {
-    getAuditResult(resultMatch[1], request, response);
+    const session = await requireAuth(request, response);
+    if (session === null) return;
+    getAuditResult(resultMatch[1], request, response, session);
     return;
   }
 
   const auditMatch = /^\/api\/audits\/([^/]+)$/.exec(url.pathname);
   if (request.method === 'GET' && auditMatch?.[1] !== undefined) {
-    getAudit(auditMatch[1], request, response);
+    const session = await requireAuth(request, response);
+    if (session === null) return;
+    getAudit(auditMatch[1], request, response, session);
     return;
   }
 
@@ -189,7 +197,34 @@ async function completeAuthLogin(
   }
 }
 
-async function createAudit(request: IncomingMessage, response: ServerResponse): Promise<void> {
+async function requireAuth(
+  request: IncomingMessage,
+  response: ServerResponse,
+): Promise<AuthSession | null> {
+  if (!authIsConfigured(authEnv)) {
+    send(response, request, { error: 'Authentication is not configured' }, 503);
+    return null;
+  }
+
+  try {
+    const session = await readSession(request.headers.cookie, authEnv);
+    if (session !== null) return session;
+    send(response, request, { error: 'Authentication required' }, 401);
+    return null;
+  } catch (error) {
+    if (error instanceof AuthConfigurationError) {
+      send(response, request, { error: 'Authentication is not configured' }, 503);
+      return null;
+    }
+    throw error;
+  }
+}
+
+async function createAudit(
+  request: IncomingMessage,
+  response: ServerResponse,
+  session: AuthSession,
+): Promise<void> {
   const body = parseJsonObject(await readBody(request));
   const normalized = normalizePublicUrl(body?.url);
 
@@ -206,6 +241,8 @@ async function createAudit(request: IncomingMessage, response: ServerResponse): 
     status: 'queued',
     createdAt: now,
     updatedAt: now,
+    ownerUserId: session.user.id,
+    ownerEmail: session.user.email,
   };
 
   audits.set(id, audit);
@@ -213,9 +250,14 @@ async function createAudit(request: IncomingMessage, response: ServerResponse): 
   send(response, request, { id, status: audit.status }, 202);
 }
 
-function getAudit(id: string, request: IncomingMessage, response: ServerResponse): void {
+function getAudit(
+  id: string,
+  request: IncomingMessage,
+  response: ServerResponse,
+  session: AuthSession,
+): void {
   const audit = audits.get(id);
-  if (audit === undefined) {
+  if (audit === undefined || audit.ownerUserId !== session.user.id) {
     send(response, request, { error: 'Audit not found' }, 404);
     return;
   }
@@ -242,9 +284,14 @@ function getAudit(id: string, request: IncomingMessage, response: ServerResponse
   });
 }
 
-function getAuditResult(id: string, request: IncomingMessage, response: ServerResponse): void {
+function getAuditResult(
+  id: string,
+  request: IncomingMessage,
+  response: ServerResponse,
+  session: AuthSession,
+): void {
   const audit = audits.get(id);
-  if (audit === undefined) {
+  if (audit === undefined || audit.ownerUserId !== session.user.id) {
     send(response, request, { error: 'Audit not found' }, 404);
     return;
   }

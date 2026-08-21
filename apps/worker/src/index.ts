@@ -21,6 +21,7 @@ import {
   transactionCookie,
   webOrigin,
 } from './auth.js';
+import type { AuthSession } from './auth.js';
 import type { Env, AuditJob, MessageBatch } from './bindings.js';
 
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
@@ -39,6 +40,8 @@ interface AuditRow {
   readonly engines_succeeded: number | null;
   readonly engines_configured: number | null;
   readonly artifact_key: string | null;
+  readonly owner_user_id: string | null;
+  readonly owner_email: string | null;
 }
 
 export default {
@@ -67,20 +70,28 @@ export default {
       }
 
       if (request.method === 'POST' && url.pathname === '/api/audits') {
-        return withCors(await createAudit(request, env), request, env);
+        const session = await requireAuth(request, env);
+        if (session instanceof Response) return withCors(session, request, env);
+        return withCors(await createAudit(request, env, session), request, env);
       }
 
       const auditMatch = /^\/api\/audits\/([^/]+)$/.exec(url.pathname);
       if (request.method === 'GET' && auditMatch?.[1] !== undefined) {
-        return withCors(await getAudit(auditMatch[1], env), request, env);
+        const session = await requireAuth(request, env);
+        if (session instanceof Response) return withCors(session, request, env);
+        return withCors(await getAudit(auditMatch[1], env, session), request, env);
       }
 
       const resultMatch = /^\/api\/audits\/([^/]+)\/result$/.exec(url.pathname);
       if (request.method === 'GET' && resultMatch?.[1] !== undefined) {
-        return withCors(await getAuditResult(resultMatch[1], env), request, env);
+        const session = await requireAuth(request, env);
+        if (session instanceof Response) return withCors(session, request, env);
+        return withCors(await getAuditResult(resultMatch[1], env, session), request, env);
       }
 
       if (request.method === 'GET' && url.pathname === '/api/compatibility') {
+        const session = await requireAuth(request, env);
+        if (session instanceof Response) return withCors(session, request, env);
         return withCors(await runCompatibilitySpike(url, env), request, env);
       }
 
@@ -199,7 +210,24 @@ function logout(): Response {
   });
 }
 
-async function createAudit(request: Request, env: Env): Promise<Response> {
+async function requireAuth(request: Request, env: Env): Promise<AuthSession | Response> {
+  if (!authIsConfigured(env)) {
+    return json({ error: 'Authentication is not configured' }, 503);
+  }
+
+  try {
+    const session = await readSession(request.headers.get('cookie'), env);
+    if (session !== null) return session;
+    return json({ error: 'Authentication required' }, 401);
+  } catch (error) {
+    if (error instanceof AuthConfigurationError) {
+      return json({ error: 'Authentication is not configured' }, 503);
+    }
+    throw error;
+  }
+}
+
+async function createAudit(request: Request, env: Env, session: AuthSession): Promise<Response> {
   const body: unknown = await request.json().catch(() => undefined);
   const rawUrl = typeof body === 'object' && body !== null && 'url' in body ? body.url : undefined;
   const normalized = normalizePublicUrl(rawUrl);
@@ -210,10 +238,10 @@ async function createAudit(request: Request, env: Env): Promise<Response> {
   const now = new Date().toISOString();
 
   await env.DB.prepare(
-    `INSERT INTO audits (id, url, status, created_at, updated_at)
-     VALUES (?, ?, 'queued', ?, ?)`,
+    `INSERT INTO audits (id, url, status, created_at, updated_at, owner_user_id, owner_email)
+     VALUES (?, ?, 'queued', ?, ?, ?, ?)`,
   )
-    .bind(id, normalized.url, now, now)
+    .bind(id, normalized.url, now, now, session.user.id, session.user.email)
     .run();
 
   await env.AUDIT_QUEUE.send({ id, url: normalized.url, options: { keyboard: true } });
@@ -221,8 +249,8 @@ async function createAudit(request: Request, env: Env): Promise<Response> {
   return json({ id, status: 'queued' }, 202);
 }
 
-async function getAudit(id: string, env: Env): Promise<Response> {
-  const row = await findAudit(id, env);
+async function getAudit(id: string, env: Env, session: AuthSession): Promise<Response> {
+  const row = await findAudit(id, env, session);
   if (row === null) return json({ error: 'Audit not found' }, 404);
 
   return json({
@@ -247,8 +275,8 @@ async function getAudit(id: string, env: Env): Promise<Response> {
   });
 }
 
-async function getAuditResult(id: string, env: Env): Promise<Response> {
-  const row = await findAudit(id, env);
+async function getAuditResult(id: string, env: Env, session: AuthSession): Promise<Response> {
+  const row = await findAudit(id, env, session);
   if (row === null) return json({ error: 'Audit not found' }, 404);
   if (row.status !== 'completed' || row.artifact_key === null) {
     return json({ error: 'Audit result is not available yet' }, 409);
@@ -517,14 +545,15 @@ function normalizePublicUrl(value: unknown):
   return { status: 'ok', url: url.toString() };
 }
 
-async function findAudit(id: string, env: Env): Promise<AuditRow | null> {
+async function findAudit(id: string, env: Env, session: AuthSession): Promise<AuditRow | null> {
   return env.DB.prepare(
     `SELECT id, url, status, created_at, updated_at, started_at, completed_at, error,
-            score, unique_findings, engines_succeeded, engines_configured, artifact_key
+            score, unique_findings, engines_succeeded, engines_configured, artifact_key,
+            owner_user_id, owner_email
      FROM audits
-     WHERE id = ?`,
+     WHERE id = ? AND owner_user_id = ?`,
   )
-    .bind(id)
+    .bind(id, session.user.id)
     .first<AuditRow>();
 }
 

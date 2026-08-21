@@ -11,6 +11,8 @@
     "dev": "pnpm --filter @ally/cli... build && node --experimental-strip-types src/local-dev.ts",
     "dev:worker": "wrangler dev --port 8787",
     "deploy": "wrangler deploy",
+    "deploy:dry-run": "wrangler deploy --dry-run",
+    "migrate:remote": "wrangler d1 migrations apply ally-audits --remote",
     "clean": "rm -rf .turbo .wrangler"
   },
   "dependencies": {

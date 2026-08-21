@@ -2,6 +2,7 @@ import './design-system';
 
 const form = document.querySelector('#audit-form');
 const input = document.querySelector('#audit-url');
+const auditLockMessage = document.querySelector('#audit-lock-message');
 const authPanel = document.querySelector('#auth-panel');
 const authStatus = document.querySelector('#auth-status');
 const authLogin = document.querySelector('#auth-login');
@@ -11,12 +12,14 @@ const authLogout = document.querySelector<HTMLElement & { disabled?: boolean; lo
 const statusPanel = document.querySelector('#status-panel');
 const message = document.querySelector('#status-message');
 const reportLink = document.querySelector('#report-link');
+const targetPanel = document.querySelector('#target-panel');
 const button = document.querySelector<HTMLElement & { disabled?: boolean; loading?: boolean }>(
   '#run-button',
 );
 const steps = Array.from(document.querySelectorAll('[data-step]'));
 
 const apiBase = form?.getAttribute('data-api-base') ?? '';
+let isAuthenticated = false;
 type AuditStatus = 'queued' | 'running' | 'completed' | 'failed';
 type AuthSession = {
   readonly authenticated: boolean;
@@ -41,27 +44,47 @@ async function refreshAuth(): Promise<void> {
 
     if (!session.configured) {
       authStatus.textContent = 'dev-auth routes are ready. Add a session secret to enable login.';
-      setAuthActions(false);
+      setAuthActions(false, false);
+      setAuditAccess(false);
       return;
     }
 
     if (session.authenticated) {
       authStatus.textContent = `Signed in as ${session.user?.email || session.user?.name || 'Ally user'}.`;
-      setAuthActions(true);
+      setAuthActions(true, true);
+      setAuditAccess(true);
       return;
     }
 
     authStatus.textContent = `Not signed in. Provider: ${session.provider?.issuer ?? 'dev-auth'}.`;
-    setAuthActions(false);
+    setAuthActions(false, true);
+    setAuditAccess(false);
   } catch (error) {
     authStatus.textContent = error instanceof Error ? error.message : String(error);
-    setAuthActions(false);
+    setAuthActions(false, false);
+    setAuditAccess(false);
   }
 }
 
-function setAuthActions(isSignedIn: boolean): void {
+function setAuthActions(isSignedIn: boolean, canLogin: boolean): void {
   authLogin?.classList.toggle('hidden', isSignedIn);
   authLogout?.classList.toggle('hidden', !isSignedIn);
+  if ('disabled' in (authLogin ?? {})) {
+    (authLogin as HTMLElement & { disabled?: boolean }).disabled = !canLogin || isSignedIn;
+  }
+}
+
+function setAuditAccess(canAudit: boolean): void {
+  isAuthenticated = canAudit;
+  if (input instanceof HTMLInputElement) input.disabled = !canAudit;
+  if (button) button.disabled = !canAudit;
+  targetPanel?.setAttribute('data-locked', String(!canAudit));
+  targetPanel?.setAttribute('aria-disabled', String(!canAudit));
+  if (auditLockMessage) {
+    auditLockMessage.textContent = canAudit
+      ? 'Your session is active. This audit will be billed to the protected Cloudflare project.'
+      : 'Sign in to unlock hosted audits.';
+  }
 }
 
 function setStatus(status: AuditStatus, text: string): void {
@@ -128,6 +151,10 @@ function setButtonBusy(isBusy: boolean): void {
 form?.addEventListener('submit', (event) => {
   event.preventDefault();
   if (!(input instanceof HTMLInputElement)) return;
+  if (!isAuthenticated) {
+    setStatus('failed', 'Sign in before running a hosted audit.');
+    return;
+  }
   setButtonBusy(true);
   if (reportLink) reportLink.classList.add('hidden');
 

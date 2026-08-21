@@ -83,7 +83,7 @@ const loginUrl = `${apiBase}/api/auth/login?returnTo=${encodeURIComponent('/')}`
           </div>
         </and-card>
 
-        <and-card padded="true">
+        <and-card id="target-panel" padded="true" data-locked="true" aria-disabled="true">
           <div and-layout="vertical gap:md">
             <div and-layout="horizontal align:center justify:between gap:sm">
               <div>
@@ -98,6 +98,9 @@ const loginUrl = `${apiBase}/api/auth/login?returnTo=${encodeURIComponent('/')}`
             <label class="text-sm font-semibold text-[#14211e]" for="audit-url">
               Public URL
             </label>
+            <p id="audit-lock-message" class="text-sm text-[#5b675f]">
+              Sign in to unlock hosted audits.
+            </p>
             <input
               id="audit-url"
               name="url"
@@ -105,10 +108,11 @@ const loginUrl = `${apiBase}/api/auth/login?returnTo=${encodeURIComponent('/')}`
               inputmode="url"
               autocomplete="url"
               required
+              disabled
               placeholder="https://example.com"
               class="native-field"
             />
-            <and-button id="run-button" class="full-width" type="submit" size="lg">
+            <and-button id="run-button" class="full-width" type="submit" size="lg" disabled>
               <and-icon name="arrow-right" size="18"></and-icon>
               Run audit
             </and-button>

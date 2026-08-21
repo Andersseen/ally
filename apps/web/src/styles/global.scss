@@ -138,6 +138,14 @@ a {
     box-shadow 160ms ease;
 }
 
+#target-panel[data-locked="true"] {
+  opacity: 0.72;
+}
+
+#target-panel[data-locked="true"] .native-field {
+  background: #f5f1e9;
+}
+
 .native-field:focus {
   border-color: var(--ally-primary);
   box-shadow: 0 0 0 4px rgb(23 105 93 / 0.16);

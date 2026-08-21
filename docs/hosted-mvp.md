@@ -163,10 +163,11 @@ Required configuration:
 - `DEV_AUTH_CLIENT_ID`: OAuth client registered in dev-auth. The local default
   placeholder is `ally-dev`.
 - `DEV_AUTH_REDIRECT_URI`: callback registered in dev-auth, such as
-  `http://127.0.0.1:8787/api/auth/callback`.
+  `http://127.0.0.1:8787/api/auth/callback` locally or
+  `https://ally-api.andersseen.dev/api/auth/callback` in production.
 - `ALLY_SESSION_SECRET` or `DEV_AUTH_CLIENT_SECRET`: secret used to sign Ally's
   local app session. Store it as a Worker secret, not in `wrangler.jsonc`.
 
-This is only the first auth slice. Audit creation is intentionally still public
-while the provider client registration, production callback, and authorization
-policy are finalized.
+Hosted audit creation, status, results, and compatibility checks require a valid
+`ally_session` cookie. The provider client registration and production callback
+still need to be applied in `Andersseen/devflare`.
