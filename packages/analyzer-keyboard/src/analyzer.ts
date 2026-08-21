@@ -1,6 +1,8 @@
 import { createRequire } from 'node:module';
-import { ALLY_DOM_NAMESPACE, addScriptFile, installDomHelpers } from '@ally/browser';
-import type { AllyDomHelpers, Page } from '@ally/browser';
+import { ALLY_DOM_NAMESPACE, installDomHelpers } from '@ally/browser/dom';
+import type { AllyDomHelpers } from '@ally/browser/dom';
+import type { AllyPage as Page } from '@ally/browser/page';
+import { addScriptFile } from '@ally/browser/scripts';
 import type {
   AuditContext,
   FocusableElement,

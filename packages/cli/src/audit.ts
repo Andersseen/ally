@@ -1,11 +1,9 @@
-import { createKeyboardAnalyzer } from '@ally/analyzer-keyboard';
+import { auditPage } from '@ally/audit-runner';
 import { withPage } from '@ally/browser';
 import type { Page } from '@ally/browser';
-import { runAudit } from '@ally/core';
 import type { AuditRun } from '@ally/core';
 import { writeAuditReport } from '@ally/reporter-json';
 import type { AuditArtifacts } from '@ally/reporter-json';
-import { selectEngines } from './engines.js';
 import type { AuditOptions } from './options.js';
 
 export interface AuditOutcome {
@@ -23,21 +21,19 @@ export interface AuditOutcome {
  * having.
  */
 export async function performAudit(options: AuditOptions): Promise<AuditOutcome> {
-  const { engines, unknown } = selectEngines(options.only);
-  const keyboard = options.keyboard ? createKeyboardAnalyzer() : undefined;
-
-  const run = await withPage(
+  const outcome = await withPage(
     options.url,
     (page: Page) =>
-      runAudit({
-        context: { url: options.url, page },
-        engines,
-        ...(keyboard === undefined ? {} : { keyboard }),
+      auditPage({
+        url: options.url,
+        page,
+        only: options.only,
+        keyboard: options.keyboard,
       }),
     { headless: options.headless, timeoutMs: options.timeoutMs },
   );
 
-  const artifacts = await writeAuditReport(run, { outDir: options.outDir });
+  const artifacts = await writeAuditReport(outcome.run, { outDir: options.outDir });
 
-  return { run, artifacts, unknownEngines: unknown };
+  return { run: outcome.run, artifacts, unknownEngines: outcome.unknownEngines };
 }

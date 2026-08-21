@@ -1,12 +1,10 @@
 {
-  "name": "@ally/cli",
+  "name": "@ally/audit-runner",
   "version": "0.0.0",
   "type": "module",
-  "description": "Command-line entry point for Ally audits",
+  "description": "Shared audit composition for Ally runtimes",
   "license": "Apache-2.0",
-  "bin": {
-    "ally": "./dist/bin.js"
-  },
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -19,18 +17,20 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run",
-    "clean": "rm -rf dist .turbo"
+    "clean": "rm -rf dist .turbo",
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@ally/audit-runner": "workspace:*",
+    "@ally/analyzer-keyboard": "workspace:*",
     "@ally/browser": "workspace:*",
     "@ally/core": "workspace:*",
-    "@ally/reporter-json": "workspace:*"
+    "@ally/engine-alfa": "workspace:*",
+    "@ally/engine-axe": "workspace:*",
+    "@ally/engine-ibm": "workspace:*",
+    "@ally/engine-qualweb": "workspace:*"
   },
   "devDependencies": {
     "@ally/config": "workspace:*",
-    "@types/node": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

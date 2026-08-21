@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { readFile } from 'node:fs/promises';
-import { addScriptFile } from '@ally/browser';
-import type { Page } from '@ally/browser';
+import type { AllyPage as Page } from '@ally/browser/page';
+import { addScriptFile } from '@ally/browser/scripts';
 import type { AuditEngine, EngineOutput } from '@ally/core';
 import { IBM_ENGINE, IBM_GUIDELINE_ID, IBM_MAPPING_GUIDELINES } from './metadata.js';
 import { countIbmFailures, normalizeIbmResults } from './normalize.js';

@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@ally/analyzer-keyboard": "workspace:*",
+    "@ally/audit-runner": "workspace:*",
     "@ally/browser": "workspace:*",
     "@ally/cli": "workspace:*",
     "@ally/config": "workspace:*",

@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
+---
+
+<BaseLayout title="Ally report">
+  <main class="mx-auto min-h-screen w-full max-w-6xl px-5 py-6 sm:px-8">
+    <header class="flex items-center justify-between border-b border-[#d8c9b1] pb-4">
+      <a class="text-xl font-bold text-[#14211e]" href="/">Ally</a>
+      <a class="text-sm font-semibold text-[#1d5d52]" href="/">New audit</a>
+    </header>
+
+    <section id="report" class="py-8" data-api-base={apiBase} aria-live="polite">
+      <p class="text-[#5b675f]">Loading report…</p>
+    </section>
+  </main>
+
+  <script src="../scripts/report.ts"></script>
+</BaseLayout>

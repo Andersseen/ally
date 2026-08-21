@@ -1,5 +1,5 @@
-import type { Page } from 'playwright';
 import { BrowserError } from './errors.js';
+import type { AllyPage } from './page.js';
 
 /**
  * Name of the helper object Ally installs on `window`.
@@ -198,7 +198,7 @@ export const ALLY_DOM_SOURCE = `(function () {
  * Safe to call repeatedly: the script no-ops when the helpers are already
  * there, so every adapter can request them without coordinating.
  */
-export async function installDomHelpers(page: Page): Promise<void> {
+export async function installDomHelpers(page: AllyPage): Promise<void> {
   try {
     await page.addScriptTag({ content: ALLY_DOM_SOURCE });
   } catch (cause) {
@@ -215,7 +215,7 @@ export async function installDomHelpers(page: Page): Promise<void> {
  * omitted, so a caller can tell "no path" from "wrong path".
  */
 export async function resolveElementPaths(
-  page: Page,
+  page: AllyPage,
   selectors: readonly string[],
 ): Promise<Record<string, string>> {
   if (selectors.length === 0) return {};

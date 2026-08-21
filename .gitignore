@@ -19,6 +19,8 @@ blob-report/
 
 # Generated audit artifacts (see scripts/demo-audit.ts)
 audit/
+.local-audits/
+.wrangler/
 
 # Environment
 .env

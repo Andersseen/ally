@@ -6,7 +6,7 @@
   "description": "Static Astro report for Ally audits",
   "license": "Apache-2.0",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "astro dev --host 127.0.0.1 --port 4322 --force",
     "build": "astro build",
     "preview": "astro preview",
     "typecheck": "astro check",
