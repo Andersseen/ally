@@ -33,6 +33,8 @@ export type EngineRun =
       readonly rawFindingCount: number;
       /** Findings after translation into Ally's model. */
       readonly findingCount: number;
+      /** Ways this run was degraded without failing. See {@link EngineOutput}. */
+      readonly notes?: readonly string[];
     }
   | {
       readonly status: 'failed';

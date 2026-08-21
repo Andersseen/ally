@@ -7,7 +7,12 @@ import type { AuditEngine, EngineOutput } from '@ally/core';
 import { QUALWEB_ENGINE, QUALWEB_MODULES, QUALWEB_RUNTIME_PACKAGES } from './metadata.js';
 import type { QualwebModule } from './metadata.js';
 import { countQualwebFailures, normalizeQualwebResults, qualwebPointersOf } from './normalize.js';
-import type { QualwebAssertion, QualwebModuleReport, QualwebRawOutput } from './normalize.js';
+import type {
+  QualwebAssertion,
+  QualwebModuleFailure,
+  QualwebModuleReport,
+  QualwebRawOutput,
+} from './normalize.js';
 
 const require = createRequire(import.meta.url);
 
@@ -59,6 +64,7 @@ export function createQualwebEngine(
       const sourceHtml = await page.evaluate(() => document.documentElement.outerHTML);
 
       const reports: QualwebModuleReport[] = [];
+      const failures: QualwebModuleFailure[] = [];
       const engineVersions: Record<string, string> = {};
 
       for (const module of modules) {
@@ -67,46 +73,28 @@ export function createQualwebEngine(
         const version = await packageVersion(module.packageName);
         if (version !== undefined) engineVersions[module.id] = version;
 
-        const assertions = await page.evaluate(
-          ({ globalName, html, maxMarkup }) => {
-            const runners = window as unknown as Record<
-              string,
-              (new (options: Record<string, unknown>, locale: string) => QualwebRunner) | undefined
-            >;
-            const Runner = runners[globalName];
-            if (Runner === undefined) {
-              throw new Error(`The QualWeb bundle did not install \`${globalName}\`.`);
-            }
+        // Each module is isolated. QualWeb is three independent rule sets
+        // behind one name, and a single rule throwing inside the page takes
+        // down the whole `evaluate` — one broken rule must not cost the other
+        // two modules. Observed in the wild: QW-ACT-R76 throws on colour values
+        // it cannot parse, which otherwise loses ~60 unrelated rules with it.
+        try {
+          reports.push(await runModule(page, module, sourceHtml));
+        } catch (error) {
+          failures.push({
+            moduleId: module.id,
+            message: error instanceof Error ? error.message : String(error),
+          });
+        }
+      }
 
-            const runner = new Runner({}, 'en').configure({}).test({ sourceHtml: html });
-            const report = runner.getReport().assertions ?? {};
-
-            // QualWeb sets `htmlCode` to the target's full `outerHTML`. For a
-            // rule whose target is <html> that is the entire document —
-            // including the engine bundles Ally just injected — which turns a
-            // single result into a megabyte. The markup is kept for a human to
-            // read, so it is capped rather than stored whole.
-            for (const assertion of Object.values(report)) {
-              for (const result of assertion.results ?? []) {
-                for (const element of result.elements ?? []) {
-                  const markup = element.htmlCode;
-                  if (typeof markup === 'string' && markup.length > maxMarkup) {
-                    element.htmlCode = `${markup.slice(0, maxMarkup)}… [truncated from ${String(markup.length)} characters]`;
-                  }
-                }
-              }
-            }
-
-            return report;
-          },
-          { globalName: module.globalName, html: sourceHtml, maxMarkup: MAX_MARKUP_LENGTH },
+      // Only a total loss is an engine failure.
+      if (reports.length === 0) {
+        throw new Error(
+          `Every QualWeb module failed. ${failures
+            .map((failure) => `${failure.moduleId}: ${firstLine(failure.message)}`)
+            .join('; ')}`,
         );
-
-        reports.push({
-          moduleId: module.id,
-          bestPractice: module.bestPractice,
-          assertions,
-        });
       }
 
       // Resolved while the page is still open, so `normalize` stays pure.
@@ -114,14 +102,71 @@ export function createQualwebEngine(
       const version = describeVersion(engineVersions);
 
       return {
-        raw: { engineVersions, modules: reports, paths },
+        raw: { engineVersions, modules: reports, failures, paths },
         rawCount: countQualwebFailures(reports),
         ...(version === undefined ? {} : { version }),
+        ...(failures.length === 0
+          ? {}
+          : {
+              notes: failures.map(
+                (failure) =>
+                  `The ${failure.moduleId} module did not run: ${firstLine(failure.message)}`,
+              ),
+            }),
       };
     },
 
     normalize: normalizeQualwebResults,
   };
+}
+
+/** Runs one QualWeb module inside the page and returns its report. */
+async function runModule(
+  page: Page,
+  module: QualwebModule,
+  sourceHtml: string,
+): Promise<QualwebModuleReport> {
+  const assertions = await page.evaluate(
+    ({ globalName, html, maxMarkup }) => {
+      const runners = window as unknown as Record<
+        string,
+        (new (options: Record<string, unknown>, locale: string) => QualwebRunner) | undefined
+      >;
+      const Runner = runners[globalName];
+      if (Runner === undefined) {
+        throw new Error(`The QualWeb bundle did not install \`${globalName}\`.`);
+      }
+
+      const runner = new Runner({}, 'en').configure({}).test({ sourceHtml: html });
+      const report = runner.getReport().assertions ?? {};
+
+      // QualWeb sets `htmlCode` to the target's full `outerHTML`. For a
+      // rule whose target is <html> that is the entire document —
+      // including the engine bundles Ally just injected — which turns a
+      // single result into a megabyte. The markup is kept for a human to
+      // read, so it is capped rather than stored whole.
+      for (const assertion of Object.values(report)) {
+        for (const result of assertion.results ?? []) {
+          for (const element of result.elements ?? []) {
+            const markup = element.htmlCode;
+            if (typeof markup === 'string' && markup.length > maxMarkup) {
+              element.htmlCode = `${markup.slice(0, maxMarkup)}… [truncated from ${String(markup.length)} characters]`;
+            }
+          }
+        }
+      }
+
+      return report;
+    },
+    { globalName: module.globalName, html: sourceHtml, maxMarkup: MAX_MARKUP_LENGTH },
+  );
+
+  return { moduleId: module.id, bestPractice: module.bestPractice, assertions };
+}
+
+/** The first line of an error, which is the part worth showing a reader. */
+function firstLine(message: string): string {
+  return message.split('\n')[0]?.trim() ?? message;
 }
 
 /**

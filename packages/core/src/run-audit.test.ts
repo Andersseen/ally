@@ -200,6 +200,44 @@ describe('runAudit', () => {
     });
   });
 
+  it('carries an engine note through to the artifact', async () => {
+    const degraded: AuditEngine<TestPage, null> = {
+      id: 'partial',
+      name: 'Partially working',
+      homepage: 'https://example.com/partial',
+      license: 'MIT',
+      run: () =>
+        Promise.resolve({
+          raw: null,
+          rawCount: 2,
+          notes: ['The act-rules module did not run: it threw.'],
+        }),
+      normalize: () => [],
+    };
+
+    const { result } = await runAudit({ context, clock: frozenClock, engines: [degraded] });
+    const [run] = result.engines;
+
+    // An engine that ran but lost part of itself is neither `ok` nor `failed`
+    // on its own — the run succeeded, with less coverage than intended.
+    expect(run?.status).toBe('ok');
+    expect(run?.status === 'ok' ? run.notes : undefined).toEqual([
+      'The act-rules module did not run: it threw.',
+    ]);
+    expect(result.summary.enginesSucceeded).toBe(1);
+    expect(result.summary.enginesFailed).toBe(0);
+  });
+
+  it('omits notes entirely when a run was not degraded', async () => {
+    const { result } = await runAudit({
+      context,
+      clock: frozenClock,
+      engines: [fakeEngine('alpha', [])],
+    });
+
+    expect(result.engines[0]).not.toHaveProperty('notes');
+  });
+
   it('records the engine version an adapter resolved at run time', async () => {
     const { result } = await runAudit({
       context,

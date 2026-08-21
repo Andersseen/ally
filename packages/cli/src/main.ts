@@ -48,11 +48,22 @@ export async function main(argv: readonly string[], out: Console, cwd: string): 
   const { run, artifacts, unknownEngines } = await performAudit(options);
 
   for (const engine of run.result.engines) {
+    const degraded = engine.status === 'ok' && engine.notes !== undefined;
     const detail =
       engine.status === 'ok'
         ? `${String(engine.findingCount)} findings`
         : `failed — ${engine.error.message.split('\n')[0] ?? ''}`;
-    out.log(`  ${engine.status === 'ok' ? '✓' : '✕'} ${engine.engine.name.padEnd(20)}${detail}`);
+
+    // `!` rather than `✓` for an engine that ran with reduced coverage: the
+    // findings are real, but there are fewer of them than there should be.
+    const mark = engine.status === 'failed' ? '✕' : degraded ? '!' : '✓';
+    out.log(`  ${mark} ${engine.engine.name.padEnd(20)}${detail}`);
+
+    if (engine.status === 'ok' && engine.notes !== undefined) {
+      for (const note of engine.notes) {
+        out.log(`    ↳ ${note.split('\n')[0] ?? note}`);
+      }
+    }
   }
 
   if (run.result.keyboard !== undefined) {

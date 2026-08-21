@@ -57,6 +57,9 @@ export const SAMPLE_AUDIT: AuditResult = {
       durationMs: 243,
       rawFindingCount: 3,
       findingCount: 3,
+      notes: [
+        "The act-rules module did not run: page.evaluate: TypeError: Cannot read properties of undefined (reading 'red')",
+      ],
     },
     {
       status: 'failed',

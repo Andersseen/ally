@@ -53,6 +53,15 @@ export interface EngineOutput<TRaw = unknown> {
   readonly rawCount: number;
   /** Engine version, when the adapter resolved one at run time. */
   readonly version?: string;
+  /**
+   * Ways the run was degraded without failing.
+   *
+   * Some engines are several independent rule sets behind one name, and one of
+   * them can break while the rest work. "Succeeded" and "failed" cannot express
+   * that, and silently returning fewer results would misrepresent the audit's
+   * coverage — so a partial loss is stated instead.
+   */
+  readonly notes?: readonly string[];
 }
 
 /**

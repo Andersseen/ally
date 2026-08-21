@@ -113,6 +113,37 @@ describe('formatSummary', () => {
     expect(text).toContain('3/4');
   });
 
+  it('names an engine that ran with reduced coverage', () => {
+    const text = formatSummary({
+      result: result({
+        engines: [
+          {
+            status: 'ok',
+            engine: {
+              id: 'qualweb',
+              name: 'QualWeb',
+              homepage: 'https://github.com/qualweb/qualweb',
+              license: 'ISC',
+            },
+            durationMs: 310,
+            rawFindingCount: 17,
+            findingCount: 17,
+            notes: ['The act-rules module did not run: it threw.\n  at run()'],
+          },
+        ],
+      }),
+      auditFile: '/work/audit/audit.json',
+      unknownEngines: [],
+    });
+
+    // Findings were still produced, so this is not a failure — but reporting it
+    // as a plain success would overstate the audit's coverage.
+    expect(text).toContain('Engines that ran with reduced coverage');
+    expect(text).toContain('QualWeb: The act-rules module did not run: it threw.');
+    expect(text).not.toContain('at run()');
+    expect(text).not.toContain('Engines that failed');
+  });
+
   it('mentions engine ids it did not recognise', () => {
     const text = formatSummary({
       result: result(),

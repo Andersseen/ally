@@ -35,6 +35,19 @@ export function formatSummary(input: SummaryInput): string {
     row('Keyboard warnings', keyboardWarnings),
   );
 
+  const degraded = result.engines.filter(
+    (engine) => engine.status === 'ok' && engine.notes !== undefined,
+  );
+  if (degraded.length > 0) {
+    lines.push('', 'Engines that ran with reduced coverage');
+    for (const engine of degraded) {
+      if (engine.status !== 'ok') continue;
+      for (const note of engine.notes ?? []) {
+        lines.push(`  ${engine.engine.name}: ${firstLine(note)}`);
+      }
+    }
+  }
+
   const failed = result.engines.filter((engine) => engine.status === 'failed');
   if (failed.length > 0) {
     lines.push('', 'Engines that failed');

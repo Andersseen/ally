@@ -12,6 +12,7 @@ export { countQualwebFailures, normalizeQualwebResults, qualwebPointersOf } from
 export type {
   QualwebAssertion,
   QualwebElement,
+  QualwebModuleFailure,
   QualwebModuleReport,
   QualwebRawOutput,
   QualwebSuccessCriterion,

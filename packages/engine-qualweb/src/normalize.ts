@@ -63,10 +63,18 @@ export interface QualwebModuleReport {
   readonly assertions: Readonly<Record<string, QualwebAssertion>>;
 }
 
+/** A QualWeb module that threw instead of producing a report. */
+export interface QualwebModuleFailure {
+  readonly moduleId: string;
+  readonly message: string;
+}
+
 /** What the QualWeb adapter persists as raw output. */
 export interface QualwebRawOutput {
   readonly engineVersions: Readonly<Record<string, string>>;
   readonly modules: readonly QualwebModuleReport[];
+  /** Modules that failed. Empty when every module ran. */
+  readonly failures?: readonly QualwebModuleFailure[];
   /** CSS pointer → canonical element path, resolved while the page was open. */
   readonly paths: Readonly<Record<string, string>>;
 }

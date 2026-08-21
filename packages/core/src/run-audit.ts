@@ -63,6 +63,7 @@ export async function runAudit<TPage>(options: RunAuditOptions<TPage>): Promise<
         durationMs: clock() - engineStartedAt,
         rawFindingCount: output.rawCount,
         findingCount: engineFindings.length,
+        ...(output.notes === undefined || output.notes.length === 0 ? {} : { notes: output.notes }),
       });
     } catch (error) {
       engineRuns.push({
