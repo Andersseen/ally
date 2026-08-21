@@ -109,6 +109,67 @@ a {
   box-shadow: 0 14px 36px rgb(71 49 26 / 0.08);
 }
 
+.auth-shell {
+  display: grid;
+  min-height: min(680px, calc(100vh - 140px));
+  place-items: center;
+}
+
+.auth-card {
+  width: min(100%, 560px);
+}
+
+.auth-copy {
+  font-size: 1.05rem;
+}
+
+.action-link {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid #7f1d3a;
+  border-radius: 8px;
+  background: #e91b4f;
+  color: white;
+  font-weight: 800;
+  padding: 0 20px;
+  text-decoration: none;
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.action-link:hover {
+  background: #c51442;
+  transform: translateY(-1px);
+}
+
+.action-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgb(233 27 79 / 0.18);
+}
+
+.action-link-secondary {
+  border-color: #d9cdd0;
+  background: #fff7f8;
+  color: #2b1018;
+}
+
+.action-link-secondary:hover {
+  background: #f9ecef;
+}
+
+.action-link.is-disabled {
+  border-color: #d9cdd0;
+  background: #efe8ea;
+  color: #85787c;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .audit-card {
   position: relative;
   overflow: hidden;

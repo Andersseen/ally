@@ -45,7 +45,7 @@ paths:
                     provider:
                       issuer: https://auth-devflare.andersseen.dev
                       clientId: ally-dev
-                    loginUrl: /api/auth/login?returnTo=%2F
+                    loginUrl: /api/auth/login?returnTo=%2Fdashboard
   /api/auth/login:
     get:
       tags: [Auth]

@@ -1,5 +1,6 @@
 import { createServer } from 'node:http';
 import type { IncomingMessage, OutgoingHttpHeaders, ServerResponse } from 'node:http';
+import { readFileSync } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { performAudit } from '@ally/cli';
@@ -139,7 +140,7 @@ async function getAuthSession(request: IncomingMessage, response: ServerResponse
       issuer: config.issuer,
       clientId: config.clientId,
     },
-    loginUrl: `/api/auth/login?returnTo=${encodeURIComponent('/')}`,
+    loginUrl: `/api/auth/login?returnTo=${encodeURIComponent('/dashboard')}`,
   });
 }
 
@@ -439,22 +440,64 @@ function isSecureRequest(request: IncomingMessage): boolean {
 }
 
 function localAuthEnv(): AuthEnv {
+  const devVars = readDevVars();
   return {
-    PUBLIC_WEB_ORIGIN: process.env.PUBLIC_WEB_ORIGIN ?? 'http://127.0.0.1:4321',
-    ...(process.env.DEV_AUTH_URL === undefined
+    PUBLIC_WEB_ORIGIN:
+      process.env.PUBLIC_WEB_ORIGIN ?? devVars.PUBLIC_WEB_ORIGIN ?? 'http://127.0.0.1:4321',
+    ...((process.env.DEV_AUTH_URL ?? devVars.DEV_AUTH_URL) === undefined
       ? {}
-      : { DEV_AUTH_URL: process.env.DEV_AUTH_URL }),
-    ...(process.env.DEV_AUTH_CLIENT_ID === undefined
+      : { DEV_AUTH_URL: process.env.DEV_AUTH_URL ?? devVars.DEV_AUTH_URL }),
+    ...((process.env.DEV_AUTH_CLIENT_ID ?? devVars.DEV_AUTH_CLIENT_ID) === undefined
       ? {}
-      : { DEV_AUTH_CLIENT_ID: process.env.DEV_AUTH_CLIENT_ID }),
-    ...(process.env.DEV_AUTH_CLIENT_SECRET === undefined
+      : { DEV_AUTH_CLIENT_ID: process.env.DEV_AUTH_CLIENT_ID ?? devVars.DEV_AUTH_CLIENT_ID }),
+    ...((process.env.DEV_AUTH_CLIENT_SECRET ?? devVars.DEV_AUTH_CLIENT_SECRET) === undefined
       ? {}
-      : { DEV_AUTH_CLIENT_SECRET: process.env.DEV_AUTH_CLIENT_SECRET }),
-    ...(process.env.DEV_AUTH_REDIRECT_URI === undefined
+      : {
+          DEV_AUTH_CLIENT_SECRET:
+            process.env.DEV_AUTH_CLIENT_SECRET ?? devVars.DEV_AUTH_CLIENT_SECRET,
+        }),
+    ...((process.env.DEV_AUTH_REDIRECT_URI ?? devVars.DEV_AUTH_REDIRECT_URI) === undefined
       ? {}
-      : { DEV_AUTH_REDIRECT_URI: process.env.DEV_AUTH_REDIRECT_URI }),
-    ...(process.env.ALLY_SESSION_SECRET === undefined
-      ? {}
-      : { ALLY_SESSION_SECRET: process.env.ALLY_SESSION_SECRET }),
+      : {
+          DEV_AUTH_REDIRECT_URI:
+            process.env.DEV_AUTH_REDIRECT_URI ?? devVars.DEV_AUTH_REDIRECT_URI,
+        }),
+    ALLY_SESSION_SECRET:
+      process.env.ALLY_SESSION_SECRET ??
+      devVars.ALLY_SESSION_SECRET ??
+      'local-dev-only-insecure-ally-session-secret',
   };
+}
+
+function readDevVars(): Record<string, string> {
+  try {
+    return parseDevVars(readFileSync('.dev.vars', 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+function parseDevVars(contents: string): Record<string, string> {
+  const values: Record<string, string> = {};
+  for (const line of contents.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (trimmed === '' || trimmed.startsWith('#')) continue;
+    const equalsIndex = trimmed.indexOf('=');
+    if (equalsIndex <= 0) continue;
+
+    const key = trimmed.slice(0, equalsIndex).trim();
+    const rawValue = trimmed.slice(equalsIndex + 1).trim();
+    values[key] = stripQuotes(rawValue);
+  }
+  return values;
+}
+
+function stripQuotes(value: string): string {
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    return value.slice(1, -1);
+  }
+  return value;
 }

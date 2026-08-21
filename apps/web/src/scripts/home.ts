@@ -5,7 +5,7 @@ const input = document.querySelector('#audit-url');
 const auditLockMessage = document.querySelector('#audit-lock-message');
 const authPanel = document.querySelector('#auth-panel');
 const authStatus = document.querySelector('#auth-status');
-const authLogin = document.querySelector('#auth-login');
+const authLogin = document.querySelector<HTMLAnchorElement>('#auth-login');
 const authLogout = document.querySelector<HTMLElement & { disabled?: boolean; loading?: boolean }>(
   '#auth-logout',
 );
@@ -44,8 +44,8 @@ async function refreshAuth(): Promise<void> {
 
     if (!session.configured) {
       authStatus.textContent = 'dev-auth routes are ready. Add a session secret to enable login.';
-      setAuthActions(false, false);
       setAuditAccess(false);
+      redirectToAuth();
       return;
     }
 
@@ -57,21 +57,20 @@ async function refreshAuth(): Promise<void> {
     }
 
     authStatus.textContent = `Not signed in. Provider: ${session.provider?.issuer ?? 'dev-auth'}.`;
-    setAuthActions(false, true);
     setAuditAccess(false);
+    redirectToAuth();
   } catch (error) {
     authStatus.textContent = error instanceof Error ? error.message : String(error);
-    setAuthActions(false, false);
     setAuditAccess(false);
+    redirectToAuth();
   }
 }
 
 function setAuthActions(isSignedIn: boolean, canLogin: boolean): void {
   authLogin?.classList.toggle('hidden', isSignedIn);
   authLogout?.classList.toggle('hidden', !isSignedIn);
-  if ('disabled' in (authLogin ?? {})) {
-    (authLogin as HTMLElement & { disabled?: boolean }).disabled = !canLogin || isSignedIn;
-  }
+  authLogin?.setAttribute('aria-disabled', String(!canLogin || isSignedIn));
+  authLogin?.classList.toggle('is-disabled', !canLogin || isSignedIn);
 }
 
 function setAuditAccess(canAudit: boolean): void {
@@ -148,6 +147,10 @@ function setButtonBusy(isBusy: boolean): void {
   }
 }
 
+function redirectToAuth(): void {
+  window.location.replace('/');
+}
+
 form?.addEventListener('submit', (event) => {
   event.preventDefault();
   if (!(input instanceof HTMLInputElement)) return;
@@ -175,6 +178,10 @@ form?.addEventListener('submit', (event) => {
       return poll(body.id);
     })
     .catch(showError);
+});
+
+authLogin?.addEventListener('click', (event) => {
+  if (authLogin.getAttribute('aria-disabled') === 'true') event.preventDefault();
 });
 
 authLogout?.addEventListener('click', () => {

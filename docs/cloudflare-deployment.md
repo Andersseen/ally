@@ -26,6 +26,12 @@ The local callback can also be registered for development:
 http://127.0.0.1:8787/api/auth/callback
 ```
 
+For local development, the Node API has an insecure development-only session
+secret so the sign-in button is usable immediately. Copy
+`apps/worker/.dev.vars.example` to `apps/worker/.dev.vars` when you need to
+override provider URL, client ID, redirect URI, or use a stronger local secret.
+Production Workers do not use the development fallback.
+
 ## 2. Create Cloudflare resources
 
 Use Wrangler from `apps/worker`.
@@ -114,7 +120,7 @@ From the browser:
 
 1. Open `https://ally.andersseen.dev`.
 2. Sign in through dev-auth.
-3. Confirm the audit form unlocks.
+3. Open the protected dashboard from `/dashboard`.
 4. Submit one small public URL.
 5. Confirm status polling and report rendering.
 

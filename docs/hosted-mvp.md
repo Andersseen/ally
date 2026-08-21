@@ -169,5 +169,6 @@ Required configuration:
   local app session. Store it as a Worker secret, not in `wrangler.jsonc`.
 
 Hosted audit creation, status, results, and compatibility checks require a valid
-`ally_session` cookie. The provider client registration and production callback
-still need to be applied in `Andersseen/devflare`.
+`ally_session` cookie. The web root `/` is the sign-in gate, and `/dashboard`
+contains the protected audit form. The provider client registration and
+production callback still need to be applied in `Andersseen/devflare`.

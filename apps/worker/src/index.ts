@@ -153,7 +153,7 @@ async function getAuthSession(request: Request, env: Env): Promise<Response> {
       issuer: config.issuer,
       clientId: config.clientId,
     },
-    loginUrl: `/api/auth/login?returnTo=${encodeURIComponent('/')}`,
+    loginUrl: `/api/auth/login?returnTo=${encodeURIComponent('/dashboard')}`,
   });
 }
 

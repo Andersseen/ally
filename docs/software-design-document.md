@@ -9,7 +9,7 @@ and exposes a report-friendly JSON artifact.
 
 The current hosted implementation is intentionally narrow: it validates the
 architecture, UI flow, persistence shape, and authentication boundary before
-expanding into multi-page crawling, organization accounts, dashboards, or full
+    expanding into multi-page crawling, organization accounts, organization dashboards, or full
 claimable conformance workflows.
 
 ## 2. Goals
@@ -184,8 +184,9 @@ Flow:
 7. `GET /api/auth/session` reads only the Ally cookie.
 
 Audit creation, polling, result retrieval, and compatibility checks require this
-session. The browser UI starts locked and enables the audit form only after
-`GET /api/auth/session` confirms a valid session.
+session. The browser root route is an auth gate; `/dashboard` contains the audit
+form and redirects back to `/` unless `GET /api/auth/session` confirms a valid
+session.
 
 ## 10. Security Considerations
 
