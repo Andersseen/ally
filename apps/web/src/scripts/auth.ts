@@ -13,6 +13,7 @@ const apiBase = gate?.getAttribute('data-api-base') ?? '';
 type AuthSession = {
   readonly authenticated: boolean;
   readonly configured: boolean;
+  readonly missingConfiguration?: readonly string[];
   readonly user?: {
     readonly email: string;
     readonly name: string;
@@ -31,8 +32,7 @@ async function refreshAuth(): Promise<void> {
     const session = (await response.json()) as AuthSession;
 
     if (!session.configured) {
-      authStatus.textContent =
-        'Local auth is not configured. Add ALLY_SESSION_SECRET to apps/worker/.dev.vars.';
+      authStatus.textContent = authConfigurationMessage(session.missingConfiguration);
       setSignedOut(false);
       return;
     }
@@ -49,6 +49,13 @@ async function refreshAuth(): Promise<void> {
     authStatus.textContent = error instanceof Error ? error.message : String(error);
     setSignedOut(false);
   }
+}
+
+function authConfigurationMessage(missingConfiguration: readonly string[] = []): string {
+  const missing = missingConfiguration.length > 0
+    ? missingConfiguration.join(', ')
+    : 'ALLY_SESSION_SECRET, DEV_AUTH_CLIENT_SECRET';
+  return `Local auth is not configured. Copy apps/worker/.dev.vars.example to apps/worker/.dev.vars and set: ${missing}.`;
 }
 
 function setSignedIn(): void {

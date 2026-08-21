@@ -10,6 +10,8 @@ import {
   LOADER,
   PLAY,
   SUCCESS,
+  MOON,
+  SUN,
   WARNING,
   registerIcons,
 } from '@andersseen/icon';
@@ -26,8 +28,10 @@ registerIcons({
   'file-text': FILE_TEXT,
   info: INFO,
   loader: LOADER,
+  moon: MOON,
   play: PLAY,
   success: SUCCESS,
+  sun: SUN,
   warning: WARNING,
 });
 

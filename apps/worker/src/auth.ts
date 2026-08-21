@@ -352,7 +352,14 @@ export function clearSessionCookie(): string {
 }
 
 export function authIsConfigured(env: AuthEnv): boolean {
-  return sessionSecretValue(env) !== undefined && clientSecretValue(env) !== undefined;
+  return authMissingConfiguration(env).length === 0;
+}
+
+export function authMissingConfiguration(env: AuthEnv): readonly string[] {
+  const missing: string[] = [];
+  if (sessionSecretValue(env) === undefined) missing.push('ALLY_SESSION_SECRET');
+  if (clientSecretValue(env) === undefined) missing.push('DEV_AUTH_CLIENT_SECRET');
+  return missing;
 }
 
 function sessionSecret(env: AuthEnv): string {

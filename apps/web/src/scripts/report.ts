@@ -46,8 +46,8 @@ function render(result: AuditResultJson): void {
       <p class="eyebrow">
         Automated accessibility audit
       </p>
-      <h1 class="break-words text-3xl font-bold text-[#14211e]">${escapeHtml(result.target.url)}</h1>
-      <p class="mt-3 text-sm text-[#5b675f]">
+      <h1 class="text-ally-ink break-words text-3xl font-bold">${escapeHtml(result.target.url)}</h1>
+      <p class="text-ally-muted mt-3 text-sm">
         Audited ${escapeHtml(new Date(result.finishedAt).toUTCString())}
       </p>
 
@@ -64,17 +64,17 @@ function render(result: AuditResultJson): void {
       </and-alert>
 
       <section class="mt-8">
-        <h2 class="text-xl font-bold text-[#14211e]">Engine runs</h2>
+        <h2 class="text-ally-ink text-xl font-bold">Engine runs</h2>
         <and-card class="mt-3 block" padded="true">
           ${engines
             .map(
               (run) => `
                 <article class="engine-row py-4">
                   <div class="flex flex-wrap items-center justify-between gap-3">
-                    <h3 class="font-semibold text-[#14211e]">${escapeHtml(run.engine.name)}</h3>
+                    <h3 class="text-ally-ink font-semibold">${escapeHtml(run.engine.name)}</h3>
                     <and-badge variant="${run.status === 'ok' ? 'default' : 'destructive'}">${escapeHtml(run.status)}</and-badge>
                   </div>
-                  <p class="mt-2 text-sm text-[#5b675f]">
+                  <p class="text-ally-muted mt-2 text-sm">
                     ${
                       run.status === 'ok'
                         ? `${escapeHtml(run.findingCount)} normalized findings`
@@ -89,11 +89,11 @@ function render(result: AuditResultJson): void {
       </section>
 
       <section class="mt-8">
-        <h2 class="text-xl font-bold text-[#14211e]">Findings</h2>
+        <h2 class="text-ally-ink text-xl font-bold">Findings</h2>
         <div class="mt-3 space-y-3" and-motion="fade-in-up" and-motion-trigger="enter">
           ${
             findings.length === 0
-              ? '<and-card padded="true"><p class="text-[#5b675f]">No automated findings were reported.</p></and-card>'
+              ? '<and-card padded="true"><p class="text-ally-muted">No automated findings were reported.</p></and-card>'
               : findings
                   .map(
                     (finding) => `
@@ -103,11 +103,11 @@ function render(result: AuditResultJson): void {
                           <and-badge variant="secondary">${escapeHtml(finding.severity)}</and-badge>
                           <and-badge variant="outline">${escapeHtml(finding.engineIds.join(', '))}</and-badge>
                         </div>
-                        <h3 class="mt-3 font-semibold text-[#14211e]">${escapeHtml(finding.title)}</h3>
+                        <h3 class="text-ally-ink mt-3 font-semibold">${escapeHtml(finding.title)}</h3>
                         <p class="mt-2 text-sm leading-6 text-[#38443f]">${escapeHtml(finding.description)}</p>
                         ${
                           finding.target?.path
-                            ? `<p class="mt-2 break-all font-mono text-xs text-[#5b675f]">${escapeHtml(finding.target.path)}</p>`
+                            ? `<p class="text-ally-muted mt-2 break-all font-mono text-xs">${escapeHtml(finding.target.path)}</p>`
                             : ''
                         }
                       </article>
@@ -127,7 +127,7 @@ function renderMetric(label: string, value: unknown, icon: string): string {
     <and-card padded="true">
       <div and-layout="horizontal align:center justify:between gap:sm">
         <div>
-          <p class="text-sm text-[#5b675f]">${escapeHtml(label)}</p>
+          <p class="text-ally-muted text-sm">${escapeHtml(label)}</p>
           <p class="metric-value mt-2">${escapeHtml(value)}</p>
         </div>
         <span class="brand-icon" aria-hidden="true">

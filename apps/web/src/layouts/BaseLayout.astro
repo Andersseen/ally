@@ -23,8 +23,9 @@ const socialImage = new URL('/social-card.svg', siteUrl).toString();
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#17695d" />
-    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#17695d" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1412" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/logo.svg" />
@@ -40,8 +41,22 @@ const socialImage = new URL('/social-card.svg', siteUrl).toString();
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
     <title>{fullTitle}</title>
+    <script is:inline>
+      (() => {
+        const key = 'ally-theme-mode';
+        const stored = window.localStorage.getItem(key);
+        const mode = stored === 'light' || stored === 'dark'
+          ? stored
+          : window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+        document.documentElement.dataset.themeMode = mode;
+        document.documentElement.style.colorScheme = mode;
+      })();
+    </script>
   </head>
   <body>
     <slot />
+    <script src="../scripts/theme.ts"></script>
   </body>
 </html>

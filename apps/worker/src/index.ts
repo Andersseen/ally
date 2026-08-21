@@ -7,6 +7,7 @@ import {
   AuthConfigurationError,
   OidcError,
   authIsConfigured,
+  authMissingConfiguration,
   authorizationUrl,
   clearSessionCookie,
   clearTransactionCookie,
@@ -153,6 +154,7 @@ async function getAuthSession(request: Request, env: Env): Promise<Response> {
     user: session?.user,
     expiresAt: session?.expiresAt,
     configured: authIsConfigured(env),
+    missingConfiguration: authMissingConfiguration(env),
     provider: {
       issuer: config.issuer,
       clientId: config.clientId,
@@ -163,6 +165,9 @@ async function getAuthSession(request: Request, env: Env): Promise<Response> {
 
 async function startAuthLogin(request: Request, env: Env): Promise<Response> {
   const requestUrl = new URL(request.url);
+  if (!authIsConfigured(env)) {
+    return redirect(authRedirectUrl(env, '/', 'auth_not_configured'));
+  }
   const config = resolveOidcConfig(env);
   const transaction = createLoginTransaction(requestUrl.searchParams.get('returnTo') ?? '/');
   return redirect(await authorizationUrl(config, transaction), [
