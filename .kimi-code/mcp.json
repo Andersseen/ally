@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "codebase-memory": {
+      "args": [],
+      "command": "codebase-memory-mcp",
+      "env": {}
+    },
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "playwright": {
+      "args": [
+        "@playwright/mcp@latest"
+      ],
+      "command": "npx",
+      "env": {}
+    }
+  }
+}

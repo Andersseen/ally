@@ -1,0 +1,37 @@
+{
+  "name": "@ally/audit-runner",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Shared audit composition for Ally runtimes",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist .turbo",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@ally/analyzer-keyboard": "workspace:*",
+    "@ally/browser": "workspace:*",
+    "@ally/core": "workspace:*",
+    "@ally/engine-alfa": "workspace:*",
+    "@ally/engine-axe": "workspace:*",
+    "@ally/engine-ibm": "workspace:*",
+    "@ally/engine-qualweb": "workspace:*"
+  },
+  "devDependencies": {
+    "@ally/config": "workspace:*",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

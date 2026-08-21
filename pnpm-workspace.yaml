@@ -5,6 +5,7 @@ packages:
 # Single source of truth for third-party versions across the workspace.
 # Packages reference these with the "catalog:" protocol.
 catalog:
+  '@cloudflare/playwright': ^1.3.0
   '@astrojs/check': ^0.9.10
   '@playwright/test': ^1.62.1
   '@qualweb/act-rules': ^0.8.5
@@ -37,6 +38,7 @@ catalog:
   typescript-eslint: ^8.67.0
   vite: ^8.2.2
   vitest: ^4.1.11
+  wrangler: ^4.33.0
 
 # esbuild ships a platform binary via its install script; Vite needs it.
 onlyBuiltDependencies:

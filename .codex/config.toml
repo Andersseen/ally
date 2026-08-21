@@ -1,0 +1,15 @@
+[mcp_servers.codebase-memory]
+args = [ ]
+command = "codebase-memory-mcp"
+enabled = true
+env = { }
+
+[mcp_servers.github]
+enabled = true
+url = "https://api.githubcopilot.com/mcp/"
+
+[mcp_servers.playwright]
+args = [ "@playwright/mcp@latest" ]
+command = "npx"
+enabled = true
+env = { }

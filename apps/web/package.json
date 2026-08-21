@@ -1,0 +1,31 @@
+{
+  "name": "@ally/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Hosted Ally audit web interface",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1 --port 4321 --force",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check",
+    "clean": "rm -rf dist .astro .turbo"
+  },
+  "dependencies": {
+    "@andersseen/astro": "^0.0.2",
+    "@andersseen/icon": "^0.1.1",
+    "@andersseen/layout": "^0.0.1",
+    "@andersseen/motion": "^0.2.0",
+    "@andersseen/web-components": "^0.4.1",
+    "@astrojs/check": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "astro": "catalog:",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  },
+  "devDependencies": {
+    "sass": "^1.103.1"
+  }
+}

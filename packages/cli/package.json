@@ -23,13 +23,9 @@
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
-    "@ally/analyzer-keyboard": "workspace:*",
+    "@ally/audit-runner": "workspace:*",
     "@ally/browser": "workspace:*",
     "@ally/core": "workspace:*",
-    "@ally/engine-alfa": "workspace:*",
-    "@ally/engine-axe": "workspace:*",
-    "@ally/engine-ibm": "workspace:*",
-    "@ally/engine-qualweb": "workspace:*",
     "@ally/reporter-json": "workspace:*"
   },
   "devDependencies": {

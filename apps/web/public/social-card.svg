@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Ally hosted web audit</title>
+  <desc id="desc">A social preview image for Ally.</desc>
+  <rect width="1200" height="630" fill="#fffaf1"/>
+  <path d="M0 0h1200v630H0z" fill="#fffaf1"/>
+  <path d="M0 0h1200v14H0z" fill="#17695d"/>
+  <path d="M412 490 548 145h48l137 345h-69l-29-76H509l-29 76h-68Z" fill="#14211e"/>
+  <path d="M530 360h83l-42-109-41 109Z" fill="#fffaf1"/>
+  <circle cx="572" cy="156" r="34" fill="#17695d"/>
+  <path d="M485 223c48 31 126 31 174 0" fill="none" stroke="#17695d" stroke-width="34" stroke-linecap="round"/>
+  <path d="M572 190v116" fill="none" stroke="#17695d" stroke-width="34" stroke-linecap="round"/>
+  <text x="80" y="122" fill="#8a542f" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="6">HOSTED WEB AUDIT</text>
+  <text x="80" y="225" fill="#14211e" font-family="Inter, Arial, sans-serif" font-size="104" font-weight="800">Ally</text>
+  <text x="80" y="308" fill="#33413c" font-family="Inter, Arial, sans-serif" font-size="38">Automated accessibility checks for public pages.</text>
+  <text x="80" y="552" fill="#17695d" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">axe-core · IBM Equal Access · Alfa · QualWeb · keyboard analyzer</text>
+</svg>

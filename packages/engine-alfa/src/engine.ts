@@ -1,4 +1,4 @@
-import type { Page } from '@ally/browser';
+import type { AllyPage as Page } from '@ally/browser/page';
 import type { AuditEngine, EngineOutput } from '@ally/core';
 import { Audit } from '@siteimprove/alfa-act';
 import { Playwright } from '@siteimprove/alfa-playwright';
@@ -38,7 +38,7 @@ export function createAlfaEngine(): AuditEngine<Page, AlfaRawOutput> {
       let outcomes: readonly AlfaOutcome[];
 
       try {
-        const alfaPage = await Playwright.toPage(handle);
+        const alfaPage = await Playwright.toPage(handle as Parameters<typeof Playwright.toPage>[0]);
         outcomes = [...(await Audit.of(alfaPage, rules).evaluate())] as readonly AlfaOutcome[];
       } finally {
         await handle.dispose();

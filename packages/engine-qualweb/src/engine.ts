@@ -1,8 +1,9 @@
 import { createRequire } from 'node:module';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { addScriptFile, resolveElementPaths } from '@ally/browser';
-import type { Page } from '@ally/browser';
+import { resolveElementPaths } from '@ally/browser/dom';
+import type { AllyPage as Page } from '@ally/browser/page';
+import { addScriptFile } from '@ally/browser/scripts';
 import type { AuditEngine, EngineOutput } from '@ally/core';
 import { QUALWEB_ENGINE, QUALWEB_MODULES, QUALWEB_RUNTIME_PACKAGES } from './metadata.js';
 import type { QualwebModule } from './metadata.js';

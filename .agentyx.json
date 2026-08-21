@@ -1,0 +1,21 @@
+{
+  "packs": [
+    "typescript",
+    "efficiency",
+    "testing",
+    "accessibility",
+    "performance",
+    "git",
+    "devops"
+  ],
+  "enable": [
+    "codebase-memory",
+    "playwright",
+    "github"
+  ],
+  "targets": [
+    "codex",
+    "kimi",
+    "claude"
+  ]
+}

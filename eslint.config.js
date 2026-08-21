@@ -9,6 +9,7 @@ export default tseslint.config(
       '**/dist/**',
       '**/.astro/**',
       '**/.turbo/**',
+      '**/.wrangler/**',
       '**/coverage/**',
       '**/playwright-report/**',
       '**/test-results/**',

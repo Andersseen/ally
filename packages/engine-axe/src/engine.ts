@@ -1,5 +1,5 @@
-import { installDomHelpers, resolveElementPaths } from '@ally/browser';
-import type { Page } from '@ally/browser';
+import { installDomHelpers, resolveElementPaths } from '@ally/browser/dom';
+import type { AllyPage as Page } from '@ally/browser/page';
 import type { AuditEngine, EngineOutput } from '@ally/core';
 import axe from 'axe-core';
 import type { AxeResults, RunOptions } from 'axe-core';

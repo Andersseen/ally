@@ -8,6 +8,7 @@ export {
 export type { AllyDomHelpers, ElementDescription } from './dom-helpers.js';
 export { addScriptFile, openPage, withPage } from './session.js';
 export type { OpenPageOptions, PageSession } from './session.js';
+export type { AllyPage } from './page.js';
 
 /**
  * Re-exported so engine adapters can type their page parameter without taking

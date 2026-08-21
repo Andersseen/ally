@@ -1,0 +1,165 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
+const loginUrl = `${apiBase}/api/auth/login?returnTo=${encodeURIComponent('/dashboard')}`;
+---
+
+<BaseLayout title="Dashboard">
+  <main class="shell" and-layout="vertical gap:xl">
+    <header class="topbar" and-layout="horizontal align:center justify:between gap:md wrap:wrap">
+      <a class="brand-mark" href="/">
+        <span class="brand-icon" aria-hidden="true">
+          <img class="brand-logo" src="/logo.svg" alt="" width="28" height="28" />
+        </span>
+        <span>Ally</span>
+      </a>
+      <and-badge variant="secondary">Automated audit MVP</and-badge>
+    </header>
+
+    <section class="grid flex-1 items-center gap-8 py-10 md:grid-cols-[1.04fr_0.96fr]">
+      <div and-layout="vertical gap:lg" and-motion="fade-in-up" and-motion-trigger="enter">
+        <p class="eyebrow">
+          Hosted web audit
+        </p>
+        <h1 class="hero-title">
+          Ally
+        </h1>
+        <p class="hero-copy">
+          Run axe-core, IBM Equal Access, Siteimprove Alfa, QualWeb, and Ally's keyboard
+          analyzer against one public page, then normalize, deduplicate, and score the findings.
+        </p>
+        <div and-layout="horizontal gap:sm wrap:wrap">
+          <and-badge variant="outline">
+            <and-icon name="activity" size="14"></and-icon>
+            5 engines
+          </and-badge>
+          <and-badge variant="outline">
+            <and-icon name="file-text" size="14"></and-icon>
+            JSON report
+          </and-badge>
+          <and-badge variant="outline">
+            <and-icon name="success" size="14"></and-icon>
+            Normalized findings
+          </and-badge>
+        </div>
+        <and-alert variant="default">
+          <and-icon slot="icon" name="info"></and-icon>
+          Automated auditing does not prove WCAG conformance. A clean automated result still
+          requires manual review before you can claim accessibility.
+        </and-alert>
+      </div>
+
+      <form
+        id="audit-form"
+        class="surface audit-card p-5"
+        data-api-base={apiBase}
+        and-layout="vertical gap:md"
+        and-motion="fade-in-up"
+        and-motion-trigger="enter"
+        and-motion-delay="120ms"
+      >
+        <and-card id="auth-panel" padded="true" data-api-base={apiBase}>
+          <div and-layout="vertical gap:md">
+            <div and-layout="horizontal align:center justify:between gap:sm">
+              <div>
+                <p class="eyebrow">Identity</p>
+                <h2 class="mt-1 text-xl font-bold text-[#14211e]">dev-auth</h2>
+              </div>
+              <span class="brand-icon" aria-hidden="true">
+                <and-icon name="check" size="18"></and-icon>
+              </span>
+            </div>
+            <p id="auth-status" class="text-sm text-[#5b675f]">Checking sign-in...</p>
+            <div and-layout="horizontal gap:sm wrap:wrap">
+              <a id="auth-login" class="action-link action-link-secondary" href={loginUrl}>
+                <and-icon name="arrow-right" size="16"></and-icon>
+                Sign in
+              </a>
+              <and-button id="auth-logout" class="hidden" type="button" variant="ghost">
+                Sign out
+              </and-button>
+            </div>
+          </div>
+        </and-card>
+
+        <and-card id="target-panel" padded="true" data-locked="true" aria-disabled="true">
+          <div and-layout="vertical gap:md">
+            <div and-layout="horizontal align:center justify:between gap:sm">
+              <div>
+                <p class="eyebrow">Target</p>
+                <h2 class="mt-1 text-xl font-bold text-[#14211e]">Public URL</h2>
+              </div>
+              <span class="brand-icon" aria-hidden="true">
+                <and-icon name="play" size="18"></and-icon>
+              </span>
+            </div>
+
+            <label class="text-sm font-semibold text-[#14211e]" for="audit-url">
+              Public URL
+            </label>
+            <p id="audit-lock-message" class="text-sm text-[#5b675f]">
+              Sign in to unlock hosted audits.
+            </p>
+            <input
+              id="audit-url"
+              name="url"
+              type="url"
+              inputmode="url"
+              autocomplete="url"
+              required
+              disabled
+              placeholder="https://example.com"
+              class="native-field"
+            />
+            <and-button id="run-button" class="full-width" type="submit" size="lg" disabled>
+              <and-icon name="arrow-right" size="18"></and-icon>
+              Run audit
+            </and-button>
+          </div>
+        </and-card>
+
+        <and-card id="status-panel" class="hidden" padded="true" aria-live="polite">
+          <ol class="space-y-3 text-sm">
+            <li class="flex items-center gap-3" data-step="queued">
+              <span class="status-dot">
+                <and-icon name="check" size="15"></and-icon>
+              </span>
+              <span>Audit queued</span>
+            </li>
+            <li class="flex items-center gap-3" data-step="running">
+              <span class="status-dot">
+                <and-icon name="loader" size="15"></and-icon>
+              </span>
+              <span>Running</span>
+            </li>
+            <li class="flex items-center gap-3" data-step="completed">
+              <span class="status-dot">
+                <and-icon name="success" size="15"></and-icon>
+              </span>
+              <span>Completed</span>
+            </li>
+            <li class="hidden items-center gap-3" data-step="failed">
+              <span class="status-dot">
+                <and-icon name="alert-circle" size="15"></and-icon>
+              </span>
+              <span>Failed</span>
+            </li>
+          </ol>
+          <p id="status-message" class="mt-4 text-sm text-[#5b675f]"></p>
+          <and-button
+            id="report-link"
+            class="mt-4 hidden"
+            href="/reports"
+            variant="outline"
+          >
+            <and-icon name="external-link" size="16"></and-icon>
+            View report
+          </and-button>
+        </and-card>
+      </form>
+    </section>
+  </main>
+
+  <script src="../scripts/home.ts"></script>
+</BaseLayout>

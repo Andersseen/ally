@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Ally</title>
+  <desc id="desc">A stylized accessibility audit mark.</desc>
+  <rect width="128" height="128" rx="28" fill="#fffaf1"/>
+  <path d="M24 104 58 24h12l34 80H87l-7-18H48l-7 18H24Z" fill="#14211e"/>
+  <path d="M53 72h22L64 43 53 72Z" fill="#fffaf1"/>
+  <circle cx="64" cy="26" r="9" fill="#17695d"/>
+  <path d="M42 42c12 8 32 8 44 0" fill="none" stroke="#17695d" stroke-width="9" stroke-linecap="round"/>
+  <path d="M64 36v28" fill="none" stroke="#17695d" stroke-width="9" stroke-linecap="round"/>
+  <path d="M37 101h54" fill="none" stroke="#b9975b" stroke-width="8" stroke-linecap="round"/>
+</svg>

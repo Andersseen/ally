@@ -1,0 +1,464 @@
+openapi: 3.1.0
+info:
+  title: Ally Hosted Web Audit API
+  summary: API for the hosted Ally accessibility audit MVP.
+  version: 0.1.0
+  description: |
+    Ally accepts a public URL, queues an automated accessibility audit, exposes
+    status polling, and returns the normalized audit artifact when complete.
+
+    Authentication routes use DevFlare dev-auth. Hosted audit routes require a
+    valid Ally app session to protect Cloudflare free-tier resources.
+servers:
+  - url: http://127.0.0.1:8787
+    description: Local Node audit API used by pnpm dev.
+  - url: https://ally-api.andersseen.dev
+    description: Planned production API origin. Update this when the deployed domain is final.
+tags:
+  - name: Auth
+    description: dev-auth OIDC client routes and Ally app session state.
+  - name: Audits
+    description: Hosted audit queue, polling, and result retrieval.
+  - name: Compatibility
+    description: Cloudflare Worker adapter compatibility spike.
+paths:
+  /api/auth/session:
+    get:
+      tags: [Auth]
+      operationId: getAuthSession
+      summary: Read the current Ally app session.
+      description: |
+        Returns whether the browser has a valid signed Ally session cookie.
+        This endpoint does not contact dev-auth on every request.
+      responses:
+        "200":
+          description: Current auth session status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSessionStatus"
+              examples:
+                unauthenticated:
+                  value:
+                    authenticated: false
+                    configured: true
+                    provider:
+                      issuer: https://auth-devflare.andersseen.dev
+                      clientId: ally-dev
+                    loginUrl: /api/auth/login?returnTo=%2Fdashboard
+  /api/auth/login:
+    get:
+      tags: [Auth]
+      operationId: startAuthLogin
+      summary: Start a dev-auth OIDC login.
+      parameters:
+        - name: returnTo
+          in: query
+          required: false
+          schema:
+            type: string
+            default: /
+          description: Same-site path to return to after login. Absolute URLs are rejected.
+      responses:
+        "302":
+          description: Redirects to dev-auth authorize endpoint and sets the OAuth transaction cookie.
+          headers:
+            Location:
+              schema:
+                type: string
+              description: dev-auth authorization URL.
+            Set-Cookie:
+              schema:
+                type: string
+              description: Signed-in flow transaction cookie.
+  /api/auth/callback:
+    get:
+      tags: [Auth]
+      operationId: completeAuthLogin
+      summary: Complete the dev-auth authorization code flow.
+      parameters:
+        - name: code
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: error
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Redirects back to the web app and sets or clears Ally cookies.
+        "503":
+          description: Missing session secret configuration.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/auth/logout:
+    post:
+      tags: [Auth]
+      operationId: logout
+      summary: Clear the Ally app session cookie.
+      responses:
+        "200":
+          description: Session cookie cleared.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok]
+                properties:
+                  ok:
+                    type: boolean
+                    const: true
+  /api/audits:
+    post:
+      tags: [Audits]
+      operationId: createAudit
+      summary: Queue an audit for a public URL.
+      security:
+        - AllySession: []
+      description: |
+        The URL must be absolute, use http or https, and must not contain
+        credentials. The queue consumer performs the audit asynchronously.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              additionalProperties: false
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  examples:
+                    - https://www.andriipap.dev/
+      responses:
+        "202":
+          description: Audit job accepted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateAuditResponse"
+        "400":
+          description: Invalid URL input.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/AuthNotConfigured"
+  /api/audits/{id}:
+    get:
+      tags: [Audits]
+      operationId: getAudit
+      summary: Read an audit status row.
+      security:
+        - AllySession: []
+      parameters:
+        - $ref: "#/components/parameters/AuditId"
+      responses:
+        "200":
+          description: Audit status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Audit"
+        "404":
+          description: Audit ID was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/AuthNotConfigured"
+  /api/audits/{id}/result:
+    get:
+      tags: [Audits]
+      operationId: getAuditResult
+      summary: Read the completed normalized audit artifact.
+      security:
+        - AllySession: []
+      parameters:
+        - $ref: "#/components/parameters/AuditId"
+      responses:
+        "200":
+          description: Shared Ally AuditResult JSON artifact.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Serialized @ally/core AuditResult.
+                additionalProperties: true
+        "404":
+          description: Audit or artifact was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Audit has not completed yet.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/AuthNotConfigured"
+  /api/compatibility:
+    get:
+      tags: [Compatibility]
+      operationId: runCompatibilitySpike
+      summary: Test Worker runtime compatibility for audit adapters.
+      security:
+        - AllySession: []
+      parameters:
+        - name: url
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uri
+      responses:
+        "200":
+          description: Adapter compatibility report.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompatibilityReport"
+        "400":
+          description: Invalid URL input.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/AuthNotConfigured"
+components:
+  securitySchemes:
+    AllySession:
+      type: apiKey
+      in: cookie
+      name: ally_session
+      description: Signed Ally app session cookie issued after dev-auth login.
+  responses:
+    Unauthorized:
+      description: Missing or invalid Ally app session.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            required:
+              value:
+                error: Authentication required
+    AuthNotConfigured:
+      description: Ally auth secrets are not configured, so protected routes fail closed.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            missingSecret:
+              value:
+                error: Authentication is not configured
+  parameters:
+    AuditId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    AuthSessionStatus:
+      type: object
+      required: [authenticated, configured, provider, loginUrl]
+      properties:
+        authenticated:
+          type: boolean
+        configured:
+          type: boolean
+          description: True when Ally has a session-signing secret configured.
+        user:
+          $ref: "#/components/schemas/AuthUser"
+        expiresAt:
+          type: string
+          format: date-time
+        provider:
+          type: object
+          required: [issuer, clientId]
+          properties:
+            issuer:
+              type: string
+              format: uri
+            clientId:
+              type: string
+        loginUrl:
+          type: string
+    AuthUser:
+      type: object
+      required: [id, email, name, image]
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        image:
+          type:
+            - string
+            - "null"
+          format: uri
+    CreateAuditResponse:
+      type: object
+      required: [id, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          const: queued
+    Audit:
+      type: object
+      required:
+        - id
+        - url
+        - status
+        - createdAt
+        - updatedAt
+        - startedAt
+        - completedAt
+        - error
+      properties:
+        id:
+          type: string
+          format: uuid
+        url:
+          type: string
+          format: uri
+        status:
+          $ref: "#/components/schemas/AuditStatus"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        startedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+        completedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+        error:
+          type:
+            - string
+            - "null"
+        summary:
+          $ref: "#/components/schemas/AuditSummary"
+        resultUrl:
+          type: string
+    AuditStatus:
+      type: string
+      enum: [queued, running, completed, failed]
+    AuditSummary:
+      type: object
+      required: [score, uniqueFindings, enginesSucceeded, enginesConfigured]
+      properties:
+        score:
+          type:
+            - integer
+            - "null"
+        uniqueFindings:
+          type:
+            - integer
+            - "null"
+        enginesSucceeded:
+          type:
+            - integer
+            - "null"
+        enginesConfigured:
+          type:
+            - integer
+            - "null"
+    CompatibilityReport:
+      type: object
+      required: [url, runtime, generatedAt, checks]
+      properties:
+        url:
+          type: string
+          format: uri
+        runtime:
+          type: string
+          const: cloudflare-workers-browser-run
+        generatedAt:
+          type: string
+          format: date-time
+        loadError:
+          type: string
+        checks:
+          type: array
+          items:
+            $ref: "#/components/schemas/CompatibilityCheck"
+    CompatibilityCheck:
+      type: object
+      required: [id, runsDirectlyInWorker]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        runsDirectlyInWorker:
+          type: boolean
+        durationMs:
+          type: integer
+        rawCount:
+          type: integer
+        normalizedCount:
+          type: integer
+        error:
+          type: string
+        requiresNodeApis:
+          type: boolean
+        requiresFilesystem:
+          type: boolean
+        requiresBrowserInjection:
+          type: boolean
+        notes:
+          type: array
+          items:
+            type: string
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string

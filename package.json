@@ -23,11 +23,15 @@
     "format:check": "prettier --check .",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm test:e2e",
     "ally": "node scripts/ally.ts",
+    "build:web:production": "PUBLIC_SITE_URL=https://ally.andersseen.dev PUBLIC_ALLY_API_BASE=https://ally-api.andersseen.dev pnpm --filter @ally/web build",
+    "deploy:web": "pnpm --dir apps/worker exec wrangler pages deploy ../web/dist --project-name ally-web",
+    "deploy:worker:dry-run": "pnpm --filter @ally/worker run deploy:dry-run",
     "e2e:install": "playwright install chromium",
     "clean": "turbo run clean && rm -rf node_modules/.cache .turbo"
   },
   "devDependencies": {
     "@ally/analyzer-keyboard": "workspace:*",
+    "@ally/audit-runner": "workspace:*",
     "@ally/browser": "workspace:*",
     "@ally/cli": "workspace:*",
     "@ally/config": "workspace:*",

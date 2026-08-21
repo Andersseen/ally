@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
+const loginUrl = `${apiBase}/api/auth/login?returnTo=${encodeURIComponent('/dashboard')}`;
+---
+
+<BaseLayout title="Sign in">
+  <main class="shell" and-layout="vertical gap:xl">
+    <header class="topbar" and-layout="horizontal align:center justify:between gap:md wrap:wrap">
+      <a class="brand-mark" href="/">
+        <span class="brand-icon" aria-hidden="true">
+          <img class="brand-logo" src="/logo.svg" alt="" width="28" height="28" />
+        </span>
+        <span>Ally</span>
+      </a>
+      <and-badge variant="secondary">Protected audit dashboard</and-badge>
+    </header>
+
+    <section class="auth-shell py-10" and-motion="fade-in-up" and-motion-trigger="enter">
+      <and-card id="auth-gate" class="auth-card" padded="true" data-api-base={apiBase}>
+        <div and-layout="vertical gap:lg">
+          <div and-layout="horizontal align:center justify:between gap:sm">
+            <div>
+              <p class="eyebrow">Identity</p>
+              <h1 class="mt-2 text-4xl font-bold text-[#14211e]">Sign in to Ally</h1>
+            </div>
+            <span class="brand-icon" aria-hidden="true">
+              <img class="brand-logo" src="/logo.svg" alt="" width="28" height="28" />
+            </span>
+          </div>
+
+          <p class="hero-copy auth-copy">
+            Hosted audits use Cloudflare resources, so the dashboard is available only after
+            dev-auth verifies your session.
+          </p>
+
+          <p id="auth-status" class="text-sm text-[#5b675f]" aria-live="polite">
+            Checking sign-in...
+          </p>
+
+          <div and-layout="horizontal gap:sm wrap:wrap">
+            <a id="auth-login" class="action-link" href={loginUrl}>
+              <and-icon name="arrow-right" size="18"></and-icon>
+              Sign in
+            </a>
+            <a id="dashboard-link" class="action-link action-link-secondary hidden" href="/dashboard">
+              Open dashboard
+            </a>
+            <and-button id="auth-logout" class="hidden" type="button" variant="ghost">
+              Sign out
+            </and-button>
+          </div>
+        </div>
+      </and-card>
+    </section>
+  </main>
+
+  <script src="../scripts/auth.ts"></script>
+</BaseLayout>

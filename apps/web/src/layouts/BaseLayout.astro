@@ -1,0 +1,47 @@
+---
+import '../styles/tailwind.css';
+import '../styles/global.scss';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Run automated accessibility audits against public web pages with normalized findings and report-ready output.',
+} = Astro.props;
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL ?? 'https://ally.andersseen.dev').replace(/\/$/, '');
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
+const fullTitle = title === 'Ally' ? 'Ally - Hosted Web Audit' : `${title} - Ally`;
+const socialImage = new URL('/social-card.svg', siteUrl).toString();
+---
+
+<!doctype html>
+<html lang="en" and-theme="compact" and-color="rose-teal">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#17695d" />
+    <meta name="color-scheme" content="light" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/logo.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Ally" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

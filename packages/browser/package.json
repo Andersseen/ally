@@ -9,6 +9,18 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./dom": {
+      "types": "./dist/dom-helpers.d.ts",
+      "default": "./dist/dom-helpers.js"
+    },
+    "./page": {
+      "types": "./dist/page.d.ts",
+      "default": "./dist/page.js"
+    },
+    "./scripts": {
+      "types": "./dist/scripts.d.ts",
+      "default": "./dist/scripts.js"
     }
   },
   "files": [

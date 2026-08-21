@@ -1,0 +1,9 @@
+{
+  "extends": "@ally/config/tsconfig/base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "lib": ["ES2023", "WebWorker"],
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts"]
+}
