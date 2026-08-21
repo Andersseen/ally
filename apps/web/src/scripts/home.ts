@@ -24,6 +24,7 @@ type AuditStatus = 'queued' | 'running' | 'completed' | 'failed';
 type AuthSession = {
   readonly authenticated: boolean;
   readonly configured: boolean;
+  readonly missingConfiguration?: readonly string[];
   readonly user?: {
     readonly email: string;
     readonly name: string;
@@ -43,7 +44,7 @@ async function refreshAuth(): Promise<void> {
     const session = (await response.json()) as AuthSession;
 
     if (!session.configured) {
-      authStatus.textContent = 'dev-auth routes are ready. Add a session secret to enable login.';
+      authStatus.textContent = authConfigurationMessage(session.missingConfiguration);
       setAuditAccess(false);
       redirectToAuth();
       return;
@@ -64,6 +65,13 @@ async function refreshAuth(): Promise<void> {
     setAuditAccess(false);
     redirectToAuth();
   }
+}
+
+function authConfigurationMessage(missingConfiguration: readonly string[] = []): string {
+  const missing = missingConfiguration.length > 0
+    ? missingConfiguration.join(', ')
+    : 'ALLY_SESSION_SECRET, DEV_AUTH_CLIENT_SECRET';
+  return `dev-auth routes are ready. Set ${missing} in apps/worker/.dev.vars to enable local login.`;
 }
 
 function setAuthActions(isSignedIn: boolean, canLogin: boolean): void {

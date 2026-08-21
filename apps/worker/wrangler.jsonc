@@ -8,6 +8,12 @@
     "enabled": true,
     "head_sampling_rate": 1
   },
+  "routes": [
+    {
+      "pattern": "ally.andersseen.dev/api/*",
+      "zone_name": "andersseen.dev"
+    }
+  ],
   "browser": {
     "binding": "BROWSER"
   },
@@ -42,7 +48,7 @@
   "vars": {
     "DEV_AUTH_URL": "https://auth-devflare.andersseen.dev",
     "DEV_AUTH_CLIENT_ID": "ally-dev",
-    "DEV_AUTH_REDIRECT_URI": "https://ally-api.andersseen.dev/api/auth/callback",
+    "DEV_AUTH_REDIRECT_URI": "https://ally.andersseen.dev/api/auth/callback",
     "PUBLIC_WEB_ORIGIN": "https://ally.andersseen.dev"
   }
 }

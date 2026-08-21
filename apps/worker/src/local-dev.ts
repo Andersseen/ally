@@ -9,19 +9,24 @@ import {
   AuthConfigurationError,
   OidcError,
   authIsConfigured,
+  authMissingConfiguration,
   authorizationUrl,
   clearSessionCookie,
   clearTransactionCookie,
   createLoginTransaction,
   exchangeCode,
   fetchUserInfo,
+  mergeAuthUsers,
   readSession,
   readTransaction,
   resolveOidcConfig,
   safeReturnTo,
   sessionCookie,
   transactionCookie,
+  validateCallbackIssuer,
+  verifyIdToken,
   webOrigin,
+  discoverOidc,
 } from './auth.ts';
 import type { AuthEnv, AuthSession } from './auth.ts';
 
@@ -136,6 +141,7 @@ async function getAuthSession(request: IncomingMessage, response: ServerResponse
     user: session?.user,
     expiresAt: session?.expiresAt,
     configured: authIsConfigured(authEnv),
+    missingConfiguration: authMissingConfiguration(authEnv),
     provider: {
       issuer: config.issuer,
       clientId: config.clientId,
@@ -149,6 +155,10 @@ async function startAuthLogin(
   request: IncomingMessage,
   response: ServerResponse,
 ): Promise<void> {
+  if (!authIsConfigured(authEnv)) {
+    redirect(response, authRedirectUrl('/', 'auth_not_configured'));
+    return;
+  }
   const config = resolveOidcConfig(authEnv);
   const transaction = createLoginTransaction(url.searchParams.get('returnTo') ?? '/');
   redirect(response, await authorizationUrl(config, transaction), [
@@ -166,6 +176,7 @@ async function completeAuthLogin(
   const providerError = url.searchParams.get('error');
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
+  const issuer = url.searchParams.get('iss');
 
   if (providerError !== null) {
     redirect(response, authRedirectUrl('/', providerError), [clearTransaction]);
@@ -179,8 +190,16 @@ async function completeAuthLogin(
 
   try {
     const config = resolveOidcConfig(authEnv);
-    const accessToken = await exchangeCode(config, code, transaction.verifier);
-    const user = await fetchUserInfo(config, accessToken);
+    if (!validateCallbackIssuer(issuer, config)) {
+      redirect(response, authRedirectUrl('/', 'invalid_issuer'), [clearTransaction]);
+      return;
+    }
+
+    const endpoints = await discoverOidc(config);
+    const tokens = await exchangeCode(config, endpoints, code, transaction.verifier);
+    const idTokenUser = await verifyIdToken(config, endpoints, tokens.idToken, transaction.nonce);
+    const userInfo = await fetchUserInfo(endpoints, tokens.accessToken);
+    const user = mergeAuthUsers(idTokenUser, userInfo);
     redirect(response, authRedirectUrl(safeReturnTo(transaction.returnTo)), [
       clearTransaction,
       await sessionCookie(user, authEnv, isSecureRequest(request)),

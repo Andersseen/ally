@@ -16,7 +16,8 @@ claimable conformance workflows.
 
 - Reuse the same audit domain model across CLI, local development, and hosted
   execution.
-- Keep the static web UI independent from the Worker API origin.
+- Keep the static web UI and Worker API under one production site origin so
+  OAuth callbacks and app cookies match exactly.
 - Queue long-running audits instead of performing them in the request path.
 - Persist audit metadata in D1 and complete artifacts in R2.
 - Prepare app-owned sessions through DevFlare `dev-auth` without coupling Ally
@@ -55,7 +56,7 @@ claimable conformance workflows.
 ```text
 Browser
   -> apps/web static Astro UI
-  -> apps/worker HTTP API
+  -> apps/worker HTTP API at /api/*
   -> D1 audit metadata
   -> Queue audit job
   -> Worker consumer or local Node runner
@@ -71,7 +72,7 @@ Browser
   -> Ally /api/auth/login
   -> dev-auth /api/auth/oauth2/authorize
   -> Ally /api/auth/callback
-  -> dev-auth token + userinfo endpoints
+  -> dev-auth discovery, token, JWKS, and userinfo endpoints
   -> Ally signed app session cookie
 ```
 
@@ -93,8 +94,9 @@ Current routes:
 - `GET /api/audits/:id/result`
 - `GET /api/compatibility?url=...`
 
-The API allows credentialed CORS from the configured web origin so the static UI
-can call the API across local ports and future production domains.
+The API allows credentialed CORS from the configured web origin so local
+development can cross ports. Production uses `https://ally.andersseen.dev/api/*`
+under the same site origin.
 
 The audit and compatibility routes require `ally_session`. Auth endpoints remain
 public so a browser can start and complete login. Protected routes fail closed:
@@ -161,7 +163,7 @@ the decision point between a fully Worker-native runner and a hybrid Node runner
 
 ## 9. Authentication Design
 
-Ally is prepared as a confidential OIDC client of DevFlare `dev-auth`.
+Ally is a confidential OIDC client of DevFlare `dev-auth`.
 
 Configuration:
 
@@ -177,11 +179,15 @@ Flow:
 1. Browser opens `GET /api/auth/login`.
 2. Ally creates `state`, PKCE verifier, nonce, and an `ally_oauth_tx` transaction
    cookie.
-3. Browser redirects to dev-auth authorize endpoint.
+3. Ally reads provider discovery and redirects to the dev-auth authorize endpoint.
 4. dev-auth redirects to `GET /api/auth/callback`.
-5. Ally validates `state`, exchanges the code server side, and fetches userinfo.
-6. Ally sets a signed `ally_session` cookie containing user summary and expiry.
-7. `GET /api/auth/session` reads only the Ally cookie.
+5. Ally validates `state` and the RFC 9207 `iss` callback parameter.
+6. Ally exchanges the code server side with PKCE and client secret.
+7. Ally verifies the ES256 ID token against dev-auth JWKS, checking `iss`,
+   `aud`, `exp`, and `nonce`, then fetches userinfo and confirms the same `sub`.
+8. Ally discards provider tokens and sets a signed `ally_session` cookie
+   containing user summary and expiry.
+9. `GET /api/auth/session` reads only the Ally cookie.
 
 Audit creation, polling, result retrieval, and compatibility checks require this
 session. The browser root route is an auth gate; `/dashboard` contains the audit
@@ -193,7 +199,8 @@ session.
 - Audit URLs are restricted to absolute `http` or `https` URLs.
 - URL credentials are rejected.
 - OAuth `returnTo` accepts only same-site paths to avoid open redirects.
-- OAuth code flow uses PKCE and `state`.
+- OAuth code flow uses PKCE S256, `state`, `nonce`, discovery, callback issuer
+  validation, and ID token verification.
 - Session cookies are `HttpOnly` and `SameSite=Lax`.
 - CORS uses an allowlist and `Access-Control-Allow-Credentials: true`.
 - Secrets must be stored as Worker secrets or local `.dev.vars`, not in tracked
@@ -251,15 +258,16 @@ Recommended next tests:
 - Several audit adapters are not fully Worker-native yet.
 - Auth client registration must be done in `Andersseen/devflare` before real
   sign-in can complete.
-- The production domains in docs/config are planned placeholders until the
-  Cloudflare custom domains are created:
-  `ally.andersseen.dev` for the web UI and `ally-api.andersseen.dev` for the API.
+- Production routes the static UI and `/api/*` Worker under
+  `ally.andersseen.dev`; the dev-auth callback is registered exactly as
+  `https://ally.andersseen.dev/api/auth/callback`.
 - Report artifact schema is typed in `@ally/core` but represented loosely in
   OpenAPI until a stable public schema is generated from the TypeScript model.
 
 ## 15. Next Decisions
 
-- Choose production Ally domain and register exact callback in dev-auth.
+- Keep Cloudflare routing aligned so Pages serves the UI and the Worker owns
+  `/api/*` on the registered Ally domain.
 - Decide whether hosted production uses Worker-native Browser Run or a hybrid
   Node runner behind the Cloudflare API.
 - Add rate limits and persistence for user-owned audit history.

@@ -18,10 +18,10 @@ Client to add:
 - type: web
 - redirectURIs:
   - http://127.0.0.1:8787/api/auth/callback
-  - https://ally-api.andersseen.dev/api/auth/callback
+  - https://ally.andersseen.dev/api/auth/callback
 
 If the production Ally domain is different, replace
-https://ally-api.andersseen.dev/api/auth/callback with the exact deployed callback.
+https://ally.andersseen.dev/api/auth/callback with the exact deployed callback.
 Redirect URIs must match byte-for-byte; no wildcard and no trailing slash unless
 the Ally Worker uses it.
 

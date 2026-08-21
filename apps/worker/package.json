@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
     "dev": "pnpm --filter @ally/cli... build && node --experimental-strip-types src/local-dev.ts",
     "dev:worker": "wrangler dev --port 8787",
     "deploy": "wrangler deploy",
@@ -27,6 +28,7 @@
     "@ally/config": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:",
+    "vitest": "catalog:",
     "wrangler": "catalog:"
   }
 }

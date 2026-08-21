@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 
 const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
 ---
@@ -13,17 +14,20 @@ const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
         </span>
         <span>Ally</span>
       </a>
-      <and-button href="/dashboard" variant="outline" size="sm">
-        <and-icon name="arrow-right" size="15"></and-icon>
-        New audit
-      </and-button>
+      <div and-layout="horizontal align:center gap:sm wrap:wrap">
+        <and-button href="/dashboard" variant="outline" size="sm">
+          <and-icon name="arrow-right" size="15"></and-icon>
+          New audit
+        </and-button>
+        <ThemeToggle />
+      </div>
     </header>
 
     <section id="report" class="py-8" data-api-base={apiBase} aria-live="polite">
       <and-card padded="true">
         <div and-layout="horizontal align:center gap:sm">
           <and-icon name="loader" size="18"></and-icon>
-          <p class="text-[#5b675f]">Loading report...</p>
+          <p class="text-ally-muted">Loading report...</p>
         </div>
       </and-card>
     </section>
