@@ -11,6 +11,7 @@ import { dedupeFindings } from './dedupe.js';
 import type { AllyFinding } from './dedupe.js';
 import type { AuditContext, AuditEngine, EngineMetadata } from './engine.js';
 import type { NormalizedFinding } from './finding.js';
+import type { AuditHooks } from './hooks.js';
 import { summarizeKeyboard } from './keyboard.js';
 import type { KeyboardAnalyzer, KeyboardReport } from './keyboard.js';
 import { scoreAudit } from './score.js';
@@ -25,6 +26,12 @@ export interface RunAuditOptions<TPage> {
   readonly keyboard?: KeyboardAnalyzer<TPage>;
   /** Epoch-millisecond clock. Injectable so tests stay deterministic. */
   readonly clock?: () => number;
+  /**
+   * Optional progress observer, fired around each engine and the keyboard
+   * analyzer. Unused by default, so callers that don't care about progress
+   * (the CLI today) see no behavioural change.
+   */
+  readonly hooks?: AuditHooks;
 }
 
 /**
@@ -49,6 +56,7 @@ export async function runAudit<TPage>(options: RunAuditOptions<TPage>): Promise<
   // scripts into it, so running them concurrently would corrupt page state.
   for (const engine of options.engines) {
     const engineStartedAt = clock();
+    options.hooks?.onStage?.({ stage: engine.id, status: 'started' });
 
     try {
       const output = await engine.run(options.context);
@@ -57,21 +65,26 @@ export async function runAudit<TPage>(options: RunAuditOptions<TPage>): Promise<
       const engineFindings = engine.normalize(output.raw);
       findings.push(...engineFindings);
 
+      const durationMs = clock() - engineStartedAt;
       engineRuns.push({
         status: 'ok',
         engine: toMetadata(engine, output.version),
-        durationMs: clock() - engineStartedAt,
+        durationMs,
         rawFindingCount: output.rawCount,
         findingCount: engineFindings.length,
         ...(output.notes === undefined || output.notes.length === 0 ? {} : { notes: output.notes }),
       });
+      options.hooks?.onStage?.({ stage: engine.id, status: 'ok', durationMs });
     } catch (error) {
+      const durationMs = clock() - engineStartedAt;
+      const failure = toEngineFailure(error);
       engineRuns.push({
         status: 'failed',
         engine: toMetadata(engine),
-        durationMs: clock() - engineStartedAt,
-        error: toEngineFailure(error),
+        durationMs,
+        error: failure,
       });
+      options.hooks?.onStage?.({ stage: engine.id, status: 'failed', durationMs, error: failure });
     }
   }
 
@@ -116,16 +129,21 @@ async function runKeyboard<TPage>(
   if (analyzer === undefined) return undefined;
 
   const startedAt = clock();
+  options.hooks?.onStage?.({ stage: 'keyboard', status: 'started' });
   try {
     const analysis = await analyzer.analyze(options.context);
     raw.set(analyzer.id, analysis);
     findings.push(...analyzer.toFindings(analysis));
+    options.hooks?.onStage?.({ stage: 'keyboard', status: 'ok', durationMs: clock() - startedAt });
     return analysis;
   } catch (error) {
+    const durationMs = clock() - startedAt;
+    const failure = toEngineFailure(error);
+    options.hooks?.onStage?.({ stage: 'keyboard', status: 'failed', durationMs, error: failure });
     return {
       status: 'failed',
-      durationMs: clock() - startedAt,
-      error: toEngineFailure(error),
+      durationMs,
+      error: failure,
     };
   }
 }

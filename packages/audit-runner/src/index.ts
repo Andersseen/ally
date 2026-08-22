@@ -1,7 +1,13 @@
 import { createKeyboardAnalyzer } from '@ally/analyzer-keyboard';
 import type { AllyPage } from '@ally/browser/page';
 import { runAudit } from '@ally/core';
-import type { AuditEngine, AuditRun, EngineDescriptor, KeyboardAnalyzer } from '@ally/core';
+import type {
+  AuditEngine,
+  AuditHooks,
+  AuditRun,
+  EngineDescriptor,
+  KeyboardAnalyzer,
+} from '@ally/core';
 import { AXE_ENGINE, createAxeEngine } from '@ally/engine-axe';
 import { ALFA_ENGINE, createAlfaEngine } from '@ally/engine-alfa';
 import { IBM_ENGINE, createIbmEngine } from '@ally/engine-ibm';
@@ -40,6 +46,8 @@ export interface AuditPageOptions {
   readonly page: AllyPage;
   readonly only?: readonly string[];
   readonly keyboard?: boolean;
+  /** Forwarded to `runAudit` unchanged. See `@ally/core`'s `AuditHooks`. */
+  readonly hooks?: AuditHooks;
 }
 
 export interface AuditPageOutcome {
@@ -80,12 +88,13 @@ export function selectEngines(only: readonly string[] = []): EngineSelection {
 export async function auditPage(options: AuditPageOptions): Promise<AuditPageOutcome> {
   const { engines, unknown } = selectEngines(options.only ?? []);
   const keyboard: KeyboardAnalyzer<AllyPage> | undefined =
-    options.keyboard ?? true ? createKeyboardAnalyzer() : undefined;
+    (options.keyboard ?? true) ? createKeyboardAnalyzer() : undefined;
 
   const run = await runAudit({
     context: { url: options.url, page: options.page },
     engines,
     ...(keyboard === undefined ? {} : { keyboard }),
+    ...(options.hooks === undefined ? {} : { hooks: options.hooks }),
   });
 
   return { run, unknownEngines: unknown };

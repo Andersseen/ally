@@ -1,0 +1,28 @@
+# Build context for apps/runner/Dockerfile, which builds from the repo root
+# (it needs the whole pnpm workspace before `turbo prune` narrows it down).
+# Mirrors .gitignore for everything that should never end up in an image.
+node_modules/
+.pnpm-store/
+dist/
+.astro/
+.turbo/
+.wrangler/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+.playwright-mcp/
+audit/
+.local-audits/
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.DS_Store
+.idea/
+.vscode/
+*.log
+.git/

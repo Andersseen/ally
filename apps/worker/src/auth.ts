@@ -90,7 +90,10 @@ export function createLoginTransaction(returnTo: string): OAuthTransaction {
   };
 }
 
-export async function authorizationUrl(config: OidcConfig, transaction: OAuthTransaction): Promise<string> {
+export async function authorizationUrl(
+  config: OidcConfig,
+  transaction: OAuthTransaction,
+): Promise<string> {
   const endpoints = await discoverOidc(config);
   const url = new URL(endpoints.authorizationEndpoint);
   url.search = new URLSearchParams({
@@ -107,13 +110,17 @@ export async function authorizationUrl(config: OidcConfig, transaction: OAuthTra
 }
 
 export function transactionCookie(transaction: OAuthTransaction, secure: boolean): string {
-  return serializeCookie(OAUTH_TRANSACTION_COOKIE, encodeURIComponent(JSON.stringify(transaction)), {
-    httpOnly: true,
-    sameSite: 'Lax',
-    secure,
-    path: '/',
-    maxAge: 10 * 60,
-  });
+  return serializeCookie(
+    OAUTH_TRANSACTION_COOKIE,
+    encodeURIComponent(JSON.stringify(transaction)),
+    {
+      httpOnly: true,
+      sameSite: 'Lax',
+      secure,
+      path: '/',
+      maxAge: 10 * 60,
+    },
+  );
 }
 
 export function readTransaction(cookieHeader: string | null | undefined): OAuthTransaction | null {
@@ -199,12 +206,7 @@ export async function verifyIdToken(
   idToken: string,
   expectedNonce: string,
 ): Promise<AuthUser> {
-  return verifyIdTokenWithJwks(
-    config,
-    await fetchJwks(endpoints.jwksUri),
-    idToken,
-    expectedNonce,
-  );
+  return verifyIdTokenWithJwks(config, await fetchJwks(endpoints.jwksUri), idToken, expectedNonce);
 }
 
 export async function verifyIdTokenWithJwks(
@@ -276,9 +278,7 @@ export async function discoverOidc(config: OidcConfig): Promise<OidcEndpoints> {
     authorizationEndpoint,
     tokenEndpoint,
     jwksUri,
-    ...(typeof rawUserInfoEndpoint === 'string'
-      ? { userInfoEndpoint: rawUserInfoEndpoint }
-      : {}),
+    ...(typeof rawUserInfoEndpoint === 'string' ? { userInfoEndpoint: rawUserInfoEndpoint } : {}),
   };
 }
 
@@ -302,7 +302,11 @@ function parseTokenResponse(value: unknown): TokenResponse {
   return { accessToken, idToken };
 }
 
-export async function sessionCookie(user: AuthUser, env: AuthEnv, secure: boolean): Promise<string> {
+export async function sessionCookie(
+  user: AuthUser,
+  env: AuthEnv,
+  secure: boolean,
+): Promise<string> {
   const secret = sessionSecret(env);
   const expiresAt = new Date(Date.now() + SESSION_TTL_SECONDS * 1000).toISOString();
   const payload = base64UrlEncode(
@@ -481,9 +485,7 @@ function authUserFromClaims(value: unknown, missingSubjectError: string): AuthUs
 
   const email = typeof value.email === 'string' ? value.email : '';
   const name =
-    typeof value.name === 'string' && value.name !== ''
-      ? value.name
-      : email || 'Ally user';
+    typeof value.name === 'string' && value.name !== '' ? value.name : email || 'Ally user';
   const picture = typeof value.picture === 'string' ? value.picture : undefined;
   const image = typeof value.image === 'string' ? value.image : undefined;
 
@@ -553,7 +555,7 @@ function toArrayBuffer(value: Uint8Array): ArrayBuffer {
   return buffer;
 }
 
-function constantTimeEqual(left: string, right: string): boolean {
+export function constantTimeEqual(left: string, right: string): boolean {
   const leftBytes = new TextEncoder().encode(left);
   const rightBytes = new TextEncoder().encode(right);
   if (leftBytes.length !== rightBytes.length) return false;
@@ -576,10 +578,10 @@ function base64UrlEncode(bytes: Uint8Array): string {
 }
 
 function base64UrlDecode(value: string): Uint8Array {
-  const padded = value.replace(/-/g, '+').replace(/_/g, '/').padEnd(
-    Math.ceil(value.length / 4) * 4,
-    '=',
-  );
+  const padded = value
+    .replace(/-/g, '+')
+    .replace(/_/g, '/')
+    .padEnd(Math.ceil(value.length / 4) * 4, '=');
   const binary = atob(padded);
   return Uint8Array.from(binary, (char) => char.charCodeAt(0));
 }

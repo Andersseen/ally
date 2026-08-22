@@ -214,6 +214,28 @@ importers:
         specifier: 'catalog:'
         version: 8.2.2(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.1)(yaml@2.9.0)
 
+  apps/runner:
+    dependencies:
+      '@ally/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@ally/runner-core':
+        specifier: workspace:*
+        version: link:../../packages/runner-core
+    devDependencies:
+      '@ally/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.1
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@22.20.1)(vite@8.2.2(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.1)(yaml@2.9.0))
+
   apps/web:
     dependencies:
       '@andersseen/astro':
@@ -265,19 +287,25 @@ importers:
       '@ally/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@ally/net-guard':
+        specifier: workspace:*
+        version: link:../../packages/net-guard
       '@ally/reporter-json':
         specifier: workspace:*
         version: link:../../packages/reporter-json
+      '@ally/runner-core':
+        specifier: workspace:*
+        version: link:../../packages/runner-core
       '@cloudflare/playwright':
         specifier: 'catalog:'
         version: 1.3.6(playwright-core@1.62.1)
     devDependencies:
-      '@ally/cli':
-        specifier: workspace:*
-        version: link:../../packages/cli
       '@ally/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@ally/fixtures':
+        specifier: workspace:*
+        version: link:../../packages/fixtures
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.1
@@ -541,11 +569,58 @@ importers:
         specifier: 'catalog:'
         version: 4.1.11(@types/node@22.20.1)(vite@8.2.2(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.1)(yaml@2.9.0))
 
+  packages/net-guard:
+    dependencies:
+      playwright:
+        specifier: 'catalog:'
+        version: 1.62.1
+    devDependencies:
+      '@ally/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.1
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@22.20.1)(vite@8.2.2(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.1)(yaml@2.9.0))
+
   packages/reporter-json:
     dependencies:
       '@ally/core':
         specifier: workspace:*
         version: link:../core
+    devDependencies:
+      '@ally/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.1
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@22.20.1)(vite@8.2.2(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.1)(yaml@2.9.0))
+
+  packages/runner-core:
+    dependencies:
+      '@ally/audit-runner':
+        specifier: workspace:*
+        version: link:../audit-runner
+      '@ally/browser':
+        specifier: workspace:*
+        version: link:../browser
+      '@ally/core':
+        specifier: workspace:*
+        version: link:../core
+      '@ally/net-guard':
+        specifier: workspace:*
+        version: link:../net-guard
     devDependencies:
       '@ally/config':
         specifier: workspace:*

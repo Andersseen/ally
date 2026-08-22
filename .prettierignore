@@ -12,3 +12,12 @@ LICENSE
 # Recorded engine output. Written by scripts/capture-fixtures.ts and read
 # verbatim by the normalizer tests, so it is not ours to reformat.
 packages/*/src/__fixtures__
+
+# AI coding tool/session configuration, not application source. Some of
+# these are written by the tools themselves at runtime.
+.agentyx.json
+.agentyx.lock.json
+.claude
+.codex
+.kimi-code
+.mcp.json

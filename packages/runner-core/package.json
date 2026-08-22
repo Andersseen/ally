@@ -1,0 +1,35 @@
+{
+  "name": "@ally/runner-core",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Environment-agnostic hosted-audit job execution: claim, run @ally/audit-runner, report progress, persist or fail",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@ally/audit-runner": "workspace:*",
+    "@ally/browser": "workspace:*",
+    "@ally/core": "workspace:*",
+    "@ally/net-guard": "workspace:*"
+  },
+  "devDependencies": {
+    "@ally/config": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
