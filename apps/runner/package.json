@@ -1,0 +1,25 @@
+{
+  "name": "@ally/runner",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone Node process: claims hosted audit jobs from Cloudflare Queues and executes them via @ally/runner-core",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "start": "node --experimental-strip-types src/main.ts",
+    "clean": "rm -rf .turbo"
+  },
+  "dependencies": {
+    "@ally/core": "workspace:*",
+    "@ally/runner-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@ally/config": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

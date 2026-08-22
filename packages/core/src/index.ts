@@ -37,6 +37,8 @@ export type {
 export { findingId, truncateHtml } from './finding.js';
 export type { Evidence, FindingTarget, NormalizedFinding } from './finding.js';
 
+export type { AuditHooks, AuditStage, AuditStageEvent } from './hooks.js';
+
 export { isElementPath, normalizeElementPath } from './path.js';
 
 export { KEYBOARD_ANOMALIES, summarizeKeyboard } from './keyboard.js';

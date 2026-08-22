@@ -1,8 +1,11 @@
 import { acquire, connect } from '@cloudflare/playwright';
 import type { AuditPageOptions, AuditPageOutcome, EngineSelection } from '@ally/audit-runner';
 import type { AllyPage } from '@ally/browser/page';
-import type { AuditEngine, AuditRun, EngineDescriptor } from '@ally/core';
+import type { AuditEngine, EngineDescriptor } from '@ally/core';
+import { SsrfBlockedError, assertSyntacticallyPublicUrl } from '@ally/net-guard';
 import { rawFileName, serializeJson } from '@ally/reporter-json';
+import type { AuditStatus, AuditTransitionEvent } from './audit-state.js';
+import { isTerminalStatus, nextState } from './audit-state.js';
 import {
   AuthConfigurationError,
   OidcError,
@@ -12,6 +15,7 @@ import {
   clearSessionCookie,
   clearTransactionCookie,
   createLoginTransaction,
+  discoverOidc,
   exchangeCode,
   fetchUserInfo,
   mergeAuthUsers,
@@ -24,30 +28,43 @@ import {
   validateCallbackIssuer,
   verifyIdToken,
   webOrigin,
-  discoverOidc,
 } from './auth.js';
 import type { AuthSession } from './auth.js';
-import type { Env, AuditJob, MessageBatch } from './bindings.js';
+import type { AuditJobMessage, Env } from './bindings.js';
+import { requireRunnerAuth } from './runner-auth.js';
 
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
+const DEFAULT_MAX_ATTEMPTS = 3;
+const AUDIT_LIST_LIMIT = 20;
 
 interface AuditRow {
   readonly id: string;
   readonly url: string;
-  readonly status: 'queued' | 'running' | 'completed' | 'failed';
+  readonly status: AuditStatus;
+  readonly current_stage: string | null;
+  readonly attempt: number;
   readonly created_at: string;
   readonly updated_at: string;
   readonly started_at: string | null;
   readonly completed_at: string | null;
-  readonly error: string | null;
+  readonly last_error: string | null;
   readonly score: number | null;
+  readonly score_version: number | null;
   readonly unique_findings: number | null;
+  readonly raw_findings: number | null;
+  readonly keyboard_warnings: number | null;
   readonly engines_succeeded: number | null;
   readonly engines_configured: number | null;
+  readonly engines_failed: number | null;
   readonly artifact_key: string | null;
   readonly owner_user_id: string | null;
   readonly owner_email: string | null;
 }
+
+const AUDIT_COLUMNS = `id, url, status, current_stage, attempt, created_at, updated_at,
+  started_at, completed_at, last_error, score, score_version, unique_findings, raw_findings,
+  keyboard_warnings, engines_succeeded, engines_configured, engines_failed, artifact_key,
+  owner_user_id, owner_email`;
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -80,11 +97,10 @@ export default {
         return withCors(await createAudit(request, env, session), request, env);
       }
 
-      const auditMatch = /^\/api\/audits\/([^/]+)$/.exec(url.pathname);
-      if (request.method === 'GET' && auditMatch?.[1] !== undefined) {
+      if (request.method === 'GET' && url.pathname === '/api/audits') {
         const session = await requireAuth(request, env);
         if (session instanceof Response) return withCors(session, request, env);
-        return withCors(await getAudit(auditMatch[1], env, session), request, env);
+        return withCors(await listAudits(env, session), request, env);
       }
 
       const resultMatch = /^\/api\/audits\/([^/]+)\/result$/.exec(url.pathname);
@@ -94,48 +110,37 @@ export default {
         return withCors(await getAuditResult(resultMatch[1], env, session), request, env);
       }
 
+      const auditMatch = /^\/api\/audits\/([^/]+)$/.exec(url.pathname);
+      if (request.method === 'GET' && auditMatch?.[1] !== undefined) {
+        const session = await requireAuth(request, env);
+        if (session instanceof Response) return withCors(session, request, env);
+        return withCors(await getAudit(auditMatch[1], env, session), request, env);
+      }
+
       if (request.method === 'GET' && url.pathname === '/api/compatibility') {
         const session = await requireAuth(request, env);
         if (session instanceof Response) return withCors(session, request, env);
         return withCors(await runCompatibilitySpike(url, env), request, env);
       }
 
+      const runnerMatch =
+        /^\/api\/runner\/audits\/([^/]+)\/(claim|running|stage|persisting|complete|fail)$/.exec(
+          url.pathname,
+        );
+      const runnerId = runnerMatch?.[1];
+      const runnerAction = runnerMatch?.[2];
+      if (request.method === 'POST' && runnerId !== undefined && isRunnerAction(runnerAction)) {
+        const authorized = requireRunnerAuth(request, env);
+        if (authorized !== true) return authorized;
+        return await handleRunnerRoute(runnerId, runnerAction, request, env);
+      }
+
       return withCors(json({ error: 'Not found' }, 404), request, env);
     } catch (error) {
-      console.error(JSON.stringify({ level: 'error', message: 'request_failed', error }));
+      console.error(
+        JSON.stringify({ level: 'error', message: 'request_failed', error: firstLine(error) }),
+      );
       return withCors(json({ error: 'Internal server error' }, 500), request, env);
-    }
-  },
-
-  async queue(batch: MessageBatch<AuditJob>, env: Env): Promise<void> {
-    for (const message of batch.messages) {
-      try {
-        await consumeAudit(message.body, env);
-        message.ack();
-      } catch (error) {
-        if (isPermanentAuditFailure(error)) {
-          console.warn(
-            JSON.stringify({
-              level: 'warn',
-              message: 'audit_consumer_permanent_failure',
-              auditId: message.body.id,
-              error: firstLine(error),
-            }),
-          );
-          message.ack();
-          continue;
-        }
-
-        console.error(
-          JSON.stringify({
-            level: 'error',
-            message: 'audit_consumer_failed',
-            auditId: message.body.id,
-            error: error instanceof Error ? error.message : String(error),
-          }),
-        );
-        message.retry({ delaySeconds: 30 });
-      }
     }
   },
 };
@@ -245,9 +250,8 @@ async function requireAuth(request: Request, env: Env): Promise<AuthSession | Re
 }
 
 async function createAudit(request: Request, env: Env, session: AuthSession): Promise<Response> {
-  const body: unknown = await request.json().catch(() => undefined);
-  const rawUrl = typeof body === 'object' && body !== null && 'url' in body ? body.url : undefined;
-  const normalized = normalizePublicUrl(rawUrl);
+  const body = await readJsonObject(request);
+  const normalized = normalizePublicUrl(body?.url);
 
   if (normalized.status === 'invalid') return json({ error: normalized.message }, 400);
 
@@ -255,41 +259,32 @@ async function createAudit(request: Request, env: Env, session: AuthSession): Pr
   const now = new Date().toISOString();
 
   await env.DB.prepare(
-    `INSERT INTO audits (id, url, status, created_at, updated_at, owner_user_id, owner_email)
-     VALUES (?, ?, 'queued', ?, ?, ?, ?)`,
+    `INSERT INTO audits (id, url, status, attempt, created_at, updated_at, owner_user_id, owner_email)
+     VALUES (?, ?, 'queued', 0, ?, ?, ?, ?)`,
   )
     .bind(id, normalized.url, now, now, session.user.id, session.user.email)
     .run();
 
-  await env.AUDIT_QUEUE.send({ id, url: normalized.url, options: { keyboard: true } });
+  const message: AuditJobMessage = { id, url: normalized.url, options: { keyboard: true } };
+  await env.AUDIT_QUEUE.send(message);
 
   return json({ id, status: 'queued' }, 202);
+}
+
+async function listAudits(env: Env, session: AuthSession): Promise<Response> {
+  const { results } = await env.DB.prepare(
+    `SELECT ${AUDIT_COLUMNS} FROM audits WHERE owner_user_id = ? ORDER BY created_at DESC LIMIT ?`,
+  )
+    .bind(session.user.id, AUDIT_LIST_LIMIT)
+    .all<AuditRow>();
+
+  return json({ audits: results.map(toAuditJson) });
 }
 
 async function getAudit(id: string, env: Env, session: AuthSession): Promise<Response> {
   const row = await findAudit(id, env, session);
   if (row === null) return json({ error: 'Audit not found' }, 404);
-
-  return json({
-    id: row.id,
-    url: row.url,
-    status: row.status,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
-    startedAt: row.started_at,
-    completedAt: row.completed_at,
-    error: row.error,
-    summary:
-      row.status === 'completed'
-        ? {
-            score: row.score,
-            uniqueFindings: row.unique_findings,
-            enginesSucceeded: row.engines_succeeded,
-            enginesConfigured: row.engines_configured,
-          }
-        : undefined,
-    resultUrl: row.status === 'completed' ? `/api/audits/${row.id}/result` : undefined,
-  });
+  return json(toAuditJson(row));
 }
 
 async function getAuditResult(id: string, env: Env, session: AuthSession): Promise<Response> {
@@ -307,78 +302,288 @@ async function getAuditResult(id: string, env: Env, session: AuthSession): Promi
   });
 }
 
-async function consumeAudit(job: AuditJob, env: Env): Promise<void> {
-  const startedAt = new Date().toISOString();
-  await env.DB.prepare(
-    `UPDATE audits
-     SET status = 'running', started_at = ?, updated_at = ?, error = NULL
-     WHERE id = ?`,
-  )
-    .bind(startedAt, startedAt, job.id)
-    .run();
+// --- Runner API: authenticated by ALLY_RUNNER_SECRET, never by a user session ---
 
-  try {
-    const runtime = await loadAuditRuntime();
-    const run = await withCloudflarePage(env, job.url, job.options?.timeoutMs, (page) =>
-      runtime.auditPage({
-        url: job.url,
-        page,
-        only: job.options?.only ?? [],
-        keyboard: job.options?.keyboard ?? true,
-      }),
-    ).then((outcome) => outcome.run);
+type RunnerAction = 'claim' | 'running' | 'stage' | 'persisting' | 'complete' | 'fail';
 
-    const artifactKey = `audits/${job.id}/audit.json`;
-    await persistRun(job.id, artifactKey, run, env);
+const RUNNER_ACTIONS: ReadonlySet<string> = new Set<RunnerAction>([
+  'claim',
+  'running',
+  'stage',
+  'persisting',
+  'complete',
+  'fail',
+]);
 
-    const completedAt = new Date().toISOString();
-    await env.DB.prepare(
-      `UPDATE audits
-       SET status = 'completed',
-           completed_at = ?,
-           updated_at = ?,
-           score = ?,
-           unique_findings = ?,
-           engines_succeeded = ?,
-           engines_configured = ?,
-           artifact_key = ?
-       WHERE id = ?`,
-    )
-      .bind(
-        completedAt,
-        completedAt,
-        run.result.score.value,
-        run.result.summary.uniqueFindings,
-        run.result.coverage.enginesSucceeded,
-        run.result.coverage.enginesConfigured,
-        artifactKey,
-        job.id,
-      )
-      .run();
-  } catch (error) {
-    const failedAt = new Date().toISOString();
-    await env.DB.prepare(
-      `UPDATE audits
-       SET status = 'failed', completed_at = ?, updated_at = ?, error = ?
-       WHERE id = ?`,
-    )
-      .bind(failedAt, failedAt, auditFailureMessage(error), job.id)
-      .run();
-    throw error;
+function isRunnerAction(value: string | undefined): value is RunnerAction {
+  return value !== undefined && RUNNER_ACTIONS.has(value);
+}
+
+async function handleRunnerRoute(
+  id: string,
+  action: RunnerAction,
+  request: Request,
+  env: Env,
+): Promise<Response> {
+  switch (action) {
+    case 'claim':
+      return claimRunnerAudit(id, request, env);
+    case 'running':
+      return transitionRunnerAudit(id, env, 'start', (now) => ({
+        query: `UPDATE audits SET status = ?, started_at = COALESCE(started_at, ?), updated_at = ? WHERE id = ?`,
+        values: (nextStatus) => [nextStatus, now, now, id],
+      }));
+    case 'stage':
+      return reportRunnerStage(id, request, env);
+    case 'persisting':
+      return transitionRunnerAudit(id, env, 'persist', (now) => ({
+        query: `UPDATE audits SET status = ?, updated_at = ? WHERE id = ?`,
+        values: (nextStatus) => [nextStatus, now, id],
+      }));
+    case 'complete':
+      return completeRunnerAudit(id, request, env);
+    case 'fail':
+      return failRunnerAudit(id, request, env);
   }
 }
 
-async function persistRun(id: string, artifactKey: string, run: AuditRun, env: Env): Promise<void> {
-  await env.ARTIFACTS.put(artifactKey, serializeJson(run.result), {
+async function claimRunnerAudit(id: string, request: Request, env: Env): Promise<Response> {
+  const body = await readJsonObject(request);
+  const runnerId =
+    typeof body?.runnerId === 'string' && body.runnerId !== '' ? body.runnerId : 'unknown-runner';
+
+  const row = await findAuditById(id, env);
+  if (row === null) return json({ error: 'Audit not found' }, 404);
+
+  if (isTerminalStatus(row.status)) {
+    return json({ terminal: true, status: row.status, attempt: row.attempt });
+  }
+
+  const nextAttempt = row.attempt + 1;
+  const maxAttempts = auditMaxAttempts(env);
+
+  if (nextAttempt > maxAttempts) {
+    const now = new Date().toISOString();
+    await env.DB.prepare(
+      `UPDATE audits SET status = 'failed', attempt = ?, last_error = ?, completed_at = ?, updated_at = ? WHERE id = ?`,
+    )
+      .bind(nextAttempt, 'Exceeded the maximum number of retry attempts.', now, now, id)
+      .run();
+    return json({ terminal: true, status: 'failed', attempt: nextAttempt });
+  }
+
+  const next = nextState(row.status, 'claim');
+  if (next === null) return json({ error: 'Invalid state transition' }, 409);
+
+  const now = new Date().toISOString();
+  await env.DB.prepare(
+    `UPDATE audits SET status = ?, attempt = ?, runner_id = ?, current_stage = NULL, last_error = NULL, updated_at = ? WHERE id = ?`,
+  )
+    .bind(next, nextAttempt, runnerId, now, id)
+    .run();
+
+  console.log(
+    JSON.stringify({
+      level: 'info',
+      message: 'job_claimed',
+      auditId: id,
+      attempt: nextAttempt,
+      runnerId,
+    }),
+  );
+  return json({ terminal: false, status: next, attempt: nextAttempt });
+}
+
+function transitionRunnerAudit(
+  id: string,
+  env: Env,
+  event: AuditTransitionEvent,
+  build: (now: string) => {
+    query: string;
+    values: (nextStatus: AuditStatus) => readonly unknown[];
+  },
+): Promise<Response> {
+  return applyTransition(id, env, event, build);
+}
+
+async function applyTransition(
+  id: string,
+  env: Env,
+  event: AuditTransitionEvent,
+  build: (now: string) => {
+    query: string;
+    values: (nextStatus: AuditStatus) => readonly unknown[];
+  },
+): Promise<Response> {
+  const row = await findAuditById(id, env);
+  if (row === null) return json({ error: 'Audit not found' }, 404);
+
+  const next = nextState(row.status, event);
+  if (next === null) return json({ error: 'Invalid state transition' }, 409);
+
+  const now = new Date().toISOString();
+  const { query, values } = build(now);
+  await env.DB.prepare(query)
+    .bind(...values(next))
+    .run();
+
+  return json({ status: next });
+}
+
+async function reportRunnerStage(id: string, request: Request, env: Env): Promise<Response> {
+  const body = await readJsonObject(request);
+  const stage = typeof body?.stage === 'string' ? body.stage : undefined;
+  const status = typeof body?.status === 'string' ? body.status : undefined;
+  if (stage === undefined || status === undefined) {
+    return json({ error: 'stage and status are required' }, 400);
+  }
+
+  const row = await findAuditById(id, env);
+  if (row === null) return json({ error: 'Audit not found' }, 404);
+  if (isTerminalStatus(row.status)) return json({ status: row.status });
+
+  const now = new Date().toISOString();
+  await env.DB.prepare(`UPDATE audits SET current_stage = ?, updated_at = ? WHERE id = ?`)
+    .bind(`${stage}:${status}`, now, id)
+    .run();
+
+  return json({ ok: true });
+}
+
+async function completeRunnerAudit(id: string, request: Request, env: Env): Promise<Response> {
+  const row = await findAuditById(id, env);
+  if (row === null) return json({ error: 'Audit not found' }, 404);
+
+  const next = nextState(row.status, 'complete');
+  if (next === null) return json({ error: 'Invalid state transition' }, 409);
+
+  const body = await readJsonObject(request);
+  const result = isRecord(body?.result) ? body.result : undefined;
+  const raw = isRecord(body?.raw) ? body.raw : {};
+  if (result === undefined) return json({ error: 'result is required' }, 400);
+
+  const artifactKey = `audits/${id}/audit.json`;
+  await env.ARTIFACTS.put(artifactKey, serializeJson(result), {
     httpMetadata: { contentType: JSON_HEADERS['content-type'] },
   });
 
-  for (const [engineId, raw] of run.raw) {
-    await env.ARTIFACTS.put(`audits/${id}/raw/${rawFileName(engineId)}`, serializeJson(raw), {
+  for (const [engineId, rawOutput] of Object.entries(raw)) {
+    await env.ARTIFACTS.put(`audits/${id}/raw/${rawFileName(engineId)}`, serializeJson(rawOutput), {
       httpMetadata: { contentType: JSON_HEADERS['content-type'] },
     });
   }
+
+  const summary = summaryOf(result);
+  const now = new Date().toISOString();
+  await env.DB.prepare(
+    `UPDATE audits
+     SET status = 'completed', current_stage = NULL, completed_at = ?, updated_at = ?,
+         score = ?, score_version = ?, unique_findings = ?, raw_findings = ?, keyboard_warnings = ?,
+         engines_succeeded = ?, engines_configured = ?, engines_failed = ?, artifact_key = ?
+     WHERE id = ?`,
+  )
+    .bind(
+      now,
+      now,
+      summary.score,
+      summary.scoreVersion,
+      summary.uniqueFindings,
+      summary.rawFindings,
+      summary.keyboardWarnings,
+      summary.enginesSucceeded,
+      summary.enginesConfigured,
+      summary.enginesFailed,
+      artifactKey,
+      id,
+    )
+    .run();
+
+  console.log(
+    JSON.stringify({
+      level: 'info',
+      message: 'artifact_persisted',
+      auditId: id,
+      attempt: row.attempt,
+    }),
+  );
+  return json({ status: 'completed' });
 }
+
+async function failRunnerAudit(id: string, request: Request, env: Env): Promise<Response> {
+  const body = await readJsonObject(request);
+  const category = typeof body?.category === 'string' ? body.category : 'internal';
+  const message =
+    typeof body?.message === 'string' && body.message !== '' ? body.message : 'The audit failed.';
+
+  const row = await findAuditById(id, env);
+  if (row === null) return json({ error: 'Audit not found' }, 404);
+
+  const event: AuditTransitionEvent = category === 'audit-timeout' ? 'timeout' : 'fail';
+  const next = nextState(row.status, event);
+  if (next === null) return json({ error: 'Invalid state transition' }, 409);
+
+  const now = new Date().toISOString();
+  await env.DB.prepare(
+    `UPDATE audits SET status = ?, current_stage = NULL, last_error = ?, completed_at = ?, updated_at = ? WHERE id = ?`,
+  )
+    .bind(next, message, now, now, id)
+    .run();
+
+  console.warn(
+    JSON.stringify({
+      level: 'warn',
+      message: 'audit_failed',
+      auditId: id,
+      attempt: row.attempt,
+      category,
+    }),
+  );
+  return json({ status: next });
+}
+
+interface RunnerSummary {
+  readonly score: number | null;
+  readonly scoreVersion: number | null;
+  readonly uniqueFindings: number | null;
+  readonly rawFindings: number | null;
+  readonly keyboardWarnings: number | null;
+  readonly enginesSucceeded: number | null;
+  readonly enginesConfigured: number | null;
+  readonly enginesFailed: number | null;
+}
+
+function summaryOf(result: Record<string, unknown>): RunnerSummary {
+  const score = isRecord(result.score) ? result.score : undefined;
+  const summary = isRecord(result.summary) ? result.summary : undefined;
+  const coverage = isRecord(result.coverage) ? result.coverage : undefined;
+  const keyboard = isRecord(summary?.keyboard) ? summary.keyboard : undefined;
+
+  return {
+    score: numberOrNull(score?.value),
+    scoreVersion: numberOrNull(score?.version),
+    uniqueFindings: numberOrNull(summary?.uniqueFindings),
+    rawFindings: numberOrNull(summary?.totalFindings),
+    keyboardWarnings: numberOrNull(keyboard?.anomalies),
+    enginesSucceeded: numberOrNull(coverage?.enginesSucceeded),
+    enginesConfigured: numberOrNull(coverage?.enginesConfigured),
+    enginesFailed: numberOrNull(summary?.enginesFailed),
+  };
+}
+
+function numberOrNull(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function auditMaxAttempts(env: Env): number {
+  const parsed = Number(env.AUDIT_MAX_ATTEMPTS);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : DEFAULT_MAX_ATTEMPTS;
+}
+
+// --- Compatibility spike: unrelated to the job queue, still uses Browser Run directly ---
 
 async function runCompatibilitySpike(url: URL, env: Env): Promise<Response> {
   const normalized = normalizePublicUrl(url.searchParams.get('url'));
@@ -536,42 +741,70 @@ interface CloudflarePage extends AllyPage {
   ): Promise<{ ok(): boolean; status(): number } | null>;
 }
 
-function normalizePublicUrl(value: unknown):
+// --- Shared helpers ---
+
+function normalizePublicUrl(
+  value: unknown,
+):
   | { readonly status: 'ok'; readonly url: string }
   | { readonly status: 'invalid'; readonly message: string } {
   if (typeof value !== 'string' || value.trim() === '') {
     return { status: 'invalid', message: 'Provide a URL.' };
   }
 
-  let url: URL;
   try {
-    url = new URL(value.trim());
-  } catch {
+    const url = assertSyntacticallyPublicUrl(value);
+    return { status: 'ok', url: url.toString() };
+  } catch (error) {
+    if (error instanceof SsrfBlockedError) return { status: 'invalid', message: error.message };
     return { status: 'invalid', message: 'Provide a valid absolute URL.' };
   }
-
-  if (url.protocol !== 'https:' && url.protocol !== 'http:') {
-    return { status: 'invalid', message: 'Only http:// and https:// URLs can be audited.' };
-  }
-
-  if (url.username !== '' || url.password !== '') {
-    return { status: 'invalid', message: 'Credentials in URLs are not accepted.' };
-  }
-
-  url.hash = '';
-  return { status: 'ok', url: url.toString() };
 }
 
 async function findAudit(id: string, env: Env, session: AuthSession): Promise<AuditRow | null> {
-  return env.DB.prepare(
-    `SELECT id, url, status, created_at, updated_at, started_at, completed_at, error,
-            score, unique_findings, engines_succeeded, engines_configured, artifact_key,
-            owner_user_id, owner_email
-     FROM audits
-     WHERE id = ? AND owner_user_id = ?`,
-  )
+  return env.DB.prepare(`SELECT ${AUDIT_COLUMNS} FROM audits WHERE id = ? AND owner_user_id = ?`)
     .bind(id, session.user.id)
     .first<AuditRow>();
+}
+
+async function findAuditById(id: string, env: Env): Promise<AuditRow | null> {
+  return env.DB.prepare(`SELECT ${AUDIT_COLUMNS} FROM audits WHERE id = ?`)
+    .bind(id)
+    .first<AuditRow>();
+}
+
+function toAuditJson(row: AuditRow): Record<string, unknown> {
+  return {
+    id: row.id,
+    url: row.url,
+    status: row.status,
+    currentStage: row.current_stage,
+    attempt: row.attempt,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    startedAt: row.started_at,
+    completedAt: row.completed_at,
+    lastError: row.last_error,
+    summary:
+      row.status === 'completed'
+        ? {
+            score: row.score,
+            scoreVersion: row.score_version,
+            uniqueFindings: row.unique_findings,
+            rawFindings: row.raw_findings,
+            keyboardWarnings: row.keyboard_warnings,
+            enginesSucceeded: row.engines_succeeded,
+            enginesConfigured: row.engines_configured,
+            enginesFailed: row.engines_failed,
+          }
+        : undefined,
+    resultUrl: row.status === 'completed' ? `/api/audits/${row.id}/result` : undefined,
+  };
+}
+
+async function readJsonObject(request: Request): Promise<Record<string, unknown> | undefined> {
+  const body: unknown = await request.json().catch(() => undefined);
+  return isRecord(body) ? body : undefined;
 }
 
 function json(value: unknown, status = 200): Response {
@@ -595,11 +828,7 @@ function withCors(response: Response, request: Request, env: Env): Response {
 
 function allowedOrigin(origin: string | null, env: Env): string {
   const configured = env.PUBLIC_WEB_ORIGIN ?? 'http://127.0.0.1:4321';
-  const allowed = new Set([
-    configured,
-    'http://127.0.0.1:4321',
-    'http://localhost:4321',
-  ]);
+  const allowed = new Set([configured, 'http://127.0.0.1:4321', 'http://localhost:4321']);
 
   return origin !== null && allowed.has(origin) ? origin : configured;
 }
@@ -623,30 +852,6 @@ function isSecureRequest(request: Request): boolean {
 function firstLine(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
   return message.split('\n')[0]?.trim() ?? message;
-}
-
-function auditFailureMessage(error: unknown): string {
-  if (isWorkerRuntimeCompatibilityError(error)) {
-    return [
-      'Cloudflare-native audits are not supported by the current engine adapters yet.',
-      'The compatibility spike failed while loading Node-oriented adapters in Workers.',
-      'Use the local CLI for full audits while the hosted runner moves to the hybrid Node architecture.',
-    ].join(' ');
-  }
-
-  return firstLine(error);
-}
-
-function isPermanentAuditFailure(error: unknown): boolean {
-  return isWorkerRuntimeCompatibilityError(error);
-}
-
-function isWorkerRuntimeCompatibilityError(error: unknown): boolean {
-  const message = firstLine(error);
-  return (
-    message.includes("The argument 'path'") &&
-    message.includes("Received 'undefined'")
-  );
 }
 
 function staticCompatibilityFailureChecks(error: string): readonly Record<string, unknown>[] {

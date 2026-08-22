@@ -4,3 +4,8 @@ DEV_AUTH_CLIENT_ID=ally-dev
 DEV_AUTH_CLIENT_SECRET=replace-with-local-dev-auth-client-secret
 DEV_AUTH_REDIRECT_URI=http://127.0.0.1:8787/api/auth/callback
 ALLY_SESSION_SECRET=replace-with-local-random-secret
+
+# Machine-to-machine secret the standalone Node runner (apps/runner) presents
+# as `Authorization: Bearer <value>` when calling /api/runner/*. Separate
+# from DevAuth/user sessions. Generate with `openssl rand -base64 48`.
+ALLY_RUNNER_SECRET=replace-with-local-runner-secret

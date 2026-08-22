@@ -8,9 +8,15 @@ findings, and produces a developer-friendly report. The engines do the
 detecting; Ally does the orchestrating, normalizing, deduplicating and
 reporting.
 
-> **Status: Level 1 — a usable personal auditing MVP.** Four engines run, a
-> keyboard analyzer runs, findings are deduplicated and scored, and the whole
-> thing renders as one static report. See
+> **Status: Level 1 (local) is a usable personal auditing MVP** — four
+> engines run, a keyboard analyzer runs, findings are deduplicated and
+> scored, and the whole thing renders as one static report. **Level 2
+> (hosted) is implemented and locally verified**: sign in, submit a URL,
+> the job runs through a queue and a standalone runner, and the report is
+> viewable — proven end to end by an integration test against real
+> Chromium and the real pipeline (`apps/worker/src/hosted-flow.test.ts`).
+> It has not yet been deployed to a real public domain; see
+> [Hosted (Level 2)](#hosted-level-2) and
 > [What is not built yet](#what-is-not-built-yet).
 
 ## What Ally does not claim
@@ -122,6 +128,31 @@ The server depends on the report; the report knows nothing about the server.
 That direction is deliberate: `@ally/report` stays a portable file you can email
 someone, and it only stays that way as long as it never learns to run audits.
 
+## Hosted (Level 2)
+
+```text
+sign in -> submit URL -> queued -> runner claims it -> engines run
+  -> findings normalized/deduplicated/scored -> report viewable
+```
+
+Cloudflare (`apps/web` + `apps/worker`) is the control plane: sign-in, the
+public API, D1 metadata, R2 artifacts. A standalone Node process
+(`apps/runner`) is the execution plane: it claims jobs from a Cloudflare
+Queue and runs the exact same pipeline described below, through
+`@ally/audit-runner`, via `@ally/runner-core`. It never touches D1 or R2
+directly, and it protects the hosted service from SSRF with a DNS-aware
+guard checked before every navigation and every redirect
+(`@ally/net-guard`).
+
+```bash
+pnpm dev                                    # web + worker + real runner, in-process
+pnpm --filter @ally/worker run test         # includes the real end-to-end flow
+```
+
+See [`docs/hosted-mvp.md`](docs/hosted-mvp.md) for the architecture and
+[`docs/cloudflare-deployment.md`](docs/cloudflare-deployment.md) for what a
+real deployment needs.
+
 ## The pipeline
 
 ```text
@@ -153,20 +184,27 @@ silence would misstate what the audit actually covered.
 Dependencies point in one direction. The audit core never depends on the UI, and
 never on a concrete engine.
 
-| Package                   | Responsibility                                                    |
-| ------------------------- | ----------------------------------------------------------------- |
-| `@ally/core`              | Domain model, engine contract, dedup, scoring. No dependencies.   |
-| `@ally/browser`           | Playwright/Chromium lifecycle and shared in-page DOM helpers.     |
-| `@ally/engine-axe`        | axe-core adapter.                                                 |
-| `@ally/engine-ibm`        | IBM Equal Access adapter.                                         |
-| `@ally/engine-alfa`       | Siteimprove Alfa adapter.                                         |
-| `@ally/engine-qualweb`    | QualWeb adapter.                                                  |
-| `@ally/analyzer-keyboard` | Ally's own keyboard/focus analyzer.                               |
-| `@ally/reporter-json`     | Writes `audit.json` plus per-engine raw output.                   |
-| `@ally/cli`               | `ally <url>` and `ally serve` — parsing, orchestration, summary.  |
-| `@ally/fixtures`          | Local benchmark pages with known problems, and a server for them. |
-| `@ally/config`            | Shared TypeScript configuration.                                  |
-| `@ally/report`            | Static Astro report. Consumes the model; never runs audits.       |
+| Package                   | Responsibility                                                                          |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| `@ally/core`              | Domain model, engine contract, dedup, scoring. No dependencies.                         |
+| `@ally/browser`           | Playwright/Chromium lifecycle and shared in-page DOM helpers.                           |
+| `@ally/engine-axe`        | axe-core adapter.                                                                       |
+| `@ally/engine-ibm`        | IBM Equal Access adapter.                                                               |
+| `@ally/engine-alfa`       | Siteimprove Alfa adapter.                                                               |
+| `@ally/engine-qualweb`    | QualWeb adapter.                                                                        |
+| `@ally/analyzer-keyboard` | Ally's own keyboard/focus analyzer.                                                     |
+| `@ally/reporter-json`     | Writes `audit.json` plus per-engine raw output.                                         |
+| `@ally/cli`               | `ally <url>` and `ally serve` — parsing, orchestration, summary.                        |
+| `@ally/fixtures`          | Local benchmark pages with known problems, and a server for them.                       |
+| `@ally/config`            | Shared TypeScript configuration.                                                        |
+| `@ally/report`            | Static Astro report. Consumes the model; never runs audits.                             |
+| `@ally/net-guard`         | SSRF protection: URL validation and DNS-aware navigation guard.                         |
+| `@ally/runner-core`       | Environment-agnostic hosted-job execution, used by the standalone runner and local dev. |
+
+The hosted apps follow the same rule: `apps/web` and `apps/worker` are the
+Cloudflare control plane, `apps/runner` is the standalone Node execution
+plane, and none of them contain accessibility logic of their own — see
+[Hosted (Level 2)](#hosted-level-2).
 
 Two naming rules carry meaning:
 
@@ -324,8 +362,15 @@ changes, Ally changed.
 
 Deliberately absent, in rough order of intent: activation behaviour (Enter,
 Space, Escape), modal and widget interaction, focus restoration,
-accessibility-tree inspection, custom rules, multi-page crawling, authenticated
-audits, and any hosted or CI service.
+accessibility-tree inspection, custom rules, multi-page crawling, and
+authenticated audits.
+
+The hosted MVP (see [Hosted (Level 2)](#hosted-level-2)) is implemented and
+locally verified, but not yet deployed to a real public domain — that still
+needs a live Cloudflare account and Docker host, and a build-tested
+`apps/runner/Dockerfile` (see `docs/software-design-document.md` §14 for the
+exact remaining gaps). Deliberately still absent regardless: CI-triggered
+audits, schedules, teams, and billing.
 
 ## Licensing
 

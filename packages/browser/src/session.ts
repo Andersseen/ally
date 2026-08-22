@@ -13,6 +13,14 @@ export interface OpenPageOptions {
   readonly timeoutMs?: number;
   /** Treat a non-2xx/3xx response as a failure. Defaults to `true`. */
   readonly failOnHttpError?: boolean;
+  /**
+   * Called after the page is created but before the first `goto()`. Lets a
+   * caller install request interception (for example an SSRF navigation
+   * guard) so it is active for the very first navigation, not just for
+   * whatever happens afterwards. Unused by default — CLI behaviour is
+   * unchanged.
+   */
+  readonly beforeGoto?: (page: Page) => Promise<void>;
 }
 
 /** An open page plus the ownership of everything created to serve it. */
@@ -46,6 +54,7 @@ export async function openPage(url: string, options: OpenPageOptions = {}): Prom
     context.setDefaultTimeout(timeoutMs);
 
     const page = await context.newPage();
+    if (options.beforeGoto) await options.beforeGoto(page);
     const response = await page.goto(url, { waitUntil: 'load', timeout: timeoutMs });
 
     if (failOnHttpError && response !== null && !response.ok()) {

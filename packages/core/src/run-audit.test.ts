@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { AuditContext, AuditEngine } from './engine.js';
 import type { NormalizedFinding } from './finding.js';
+import type { AuditStageEvent } from './hooks.js';
 import type { KeyboardAnalysis, KeyboardAnalyzer } from './keyboard.js';
 import { runAudit } from './run-audit.js';
 import type { Severity } from './severity.js';
@@ -338,5 +339,40 @@ describe('runAudit', () => {
 
     expect(seen?.page.marker).toBe('test-page');
     expect(seen?.url).toBe('https://example.com/');
+  });
+
+  it('fires stage hooks around each engine and the keyboard analyzer, in order', async () => {
+    const events: AuditStageEvent[] = [];
+
+    await runAudit({
+      context,
+      clock: frozenClock,
+      engines: [
+        fakeEngine('alpha', [finding('alpha', 'image-alt', 'critical')]),
+        failingEngine('broken', new Error('engine crashed')),
+      ],
+      keyboard: keyboardAnalyzer(analysis),
+      hooks: { onStage: (event) => events.push(event) },
+    });
+
+    expect(events.map((event) => ({ stage: event.stage, status: event.status }))).toEqual([
+      { stage: 'alpha', status: 'started' },
+      { stage: 'alpha', status: 'ok' },
+      { stage: 'broken', status: 'started' },
+      { stage: 'broken', status: 'failed' },
+      { stage: 'keyboard', status: 'started' },
+      { stage: 'keyboard', status: 'ok' },
+    ]);
+    expect(
+      events.filter((event) => event.status !== 'started').every((event) => event.durationMs === 0),
+    ).toBe(true);
+    expect(events[3]?.error?.message).toBe('engine crashed');
+  });
+
+  it('never calls a hook that was not supplied', async () => {
+    // Simply must not throw when hooks/onStage is omitted.
+    await expect(
+      runAudit({ context, clock: frozenClock, engines: [fakeEngine('alpha', [])] }),
+    ).resolves.toBeDefined();
   });
 });

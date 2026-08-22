@@ -11,7 +11,10 @@ const {
   title,
   description = 'Run automated accessibility audits against public web pages with normalized findings and report-ready output.',
 } = Astro.props;
-const siteUrl = (import.meta.env.PUBLIC_SITE_URL ?? 'https://ally.andersseen.dev').replace(/\/$/, '');
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL ?? 'https://ally.andersseen.dev').replace(
+  /\/$/,
+  '',
+);
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const fullTitle = title === 'Ally' ? 'Ally - Hosted Web Audit' : `${title} - Ally`;
 const socialImage = new URL('/social-card.svg', siteUrl).toString();
@@ -45,11 +48,12 @@ const socialImage = new URL('/social-card.svg', siteUrl).toString();
       (() => {
         const key = 'ally-theme-mode';
         const stored = window.localStorage.getItem(key);
-        const mode = stored === 'light' || stored === 'dark'
-          ? stored
-          : window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light';
+        const mode =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
         document.documentElement.dataset.themeMode = mode;
         document.documentElement.style.colorScheme = mode;
         // @andersseen/web-components keys its palette off `and-mode`/`.dark`,

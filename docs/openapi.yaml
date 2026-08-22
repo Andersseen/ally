@@ -21,6 +21,12 @@ tags:
     description: Hosted audit queue, polling, and result retrieval.
   - name: Compatibility
     description: Cloudflare Worker adapter compatibility spike.
+  - name: Runner
+    description: |
+      Machine-to-machine surface for the standalone Node runner (apps/runner)
+      only. Authenticated by a bearer ALLY_RUNNER_SECRET, never by a user
+      session or DevAuth. The runner has no D1/R2 access of its own — every
+      state change and artifact it produces goes through these routes.
 paths:
   /api/auth/session:
     get:
@@ -31,12 +37,12 @@ paths:
         Returns whether the browser has a valid signed Ally session cookie.
         This endpoint does not contact dev-auth on every request.
       responses:
-        "200":
+        '200':
           description: Current auth session status.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthSessionStatus"
+                $ref: '#/components/schemas/AuthSessionStatus'
               examples:
                 unauthenticated:
                   value:
@@ -60,7 +66,7 @@ paths:
             default: /
           description: Same-site path to return to after login. Absolute URLs are rejected.
       responses:
-        "302":
+        '302':
           description: Redirects to dev-auth authorize endpoint and sets the OAuth transaction cookie.
           headers:
             Location:
@@ -99,21 +105,21 @@ paths:
             type: string
             format: uri
       responses:
-        "302":
+        '302':
           description: Redirects back to the web app and sets or clears Ally cookies.
-        "503":
+        '503':
           description: Missing session secret configuration.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/auth/logout:
     post:
       tags: [Auth]
       operationId: logout
       summary: Clear the Ally app session cookie.
       responses:
-        "200":
+        '200':
           description: Session cookie cleared.
           headers:
             Set-Cookie:
@@ -153,22 +159,48 @@ paths:
                   examples:
                     - https://www.andriipap.dev/
       responses:
-        "202":
+        '202':
           description: Audit job accepted.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CreateAuditResponse"
-        "400":
+                $ref: '#/components/schemas/CreateAuditResponse'
+        '400':
           description: Invalid URL input.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "503":
-          $ref: "#/components/responses/AuthNotConfigured"
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/AuthNotConfigured'
+    get:
+      tags: [Audits]
+      operationId: listAudits
+      summary: List the caller's own recent audits.
+      security:
+        - AllySession: []
+      description: |
+        Owner-scoped and capped at the 20 most recent audits, newest first.
+        Powers the dashboard's "Recent audits" list.
+      responses:
+        '200':
+          description: Recent audits.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [audits]
+                properties:
+                  audits:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Audit'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/AuthNotConfigured'
   /api/audits/{id}:
     get:
       tags: [Audits]
@@ -177,24 +209,24 @@ paths:
       security:
         - AllySession: []
       parameters:
-        - $ref: "#/components/parameters/AuditId"
+        - $ref: '#/components/parameters/AuditId'
       responses:
-        "200":
+        '200':
           description: Audit status.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Audit"
-        "404":
+                $ref: '#/components/schemas/Audit'
+        '404':
           description: Audit ID was not found.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "503":
-          $ref: "#/components/responses/AuthNotConfigured"
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/AuthNotConfigured'
   /api/audits/{id}/result:
     get:
       tags: [Audits]
@@ -203,9 +235,9 @@ paths:
       security:
         - AllySession: []
       parameters:
-        - $ref: "#/components/parameters/AuditId"
+        - $ref: '#/components/parameters/AuditId'
       responses:
-        "200":
+        '200':
           description: Shared Ally AuditResult JSON artifact.
           content:
             application/json:
@@ -213,22 +245,215 @@ paths:
                 type: object
                 description: Serialized @ally/core AuditResult.
                 additionalProperties: true
-        "404":
+        '404':
           description: Audit or artifact was not found.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "409":
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
           description: Audit has not completed yet.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "503":
-          $ref: "#/components/responses/AuthNotConfigured"
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/AuthNotConfigured'
+  /api/runner/audits/{id}/claim:
+    post:
+      tags: [Runner]
+      operationId: claimRunnerAudit
+      summary: Claim an audit job (or find it already terminal).
+      security:
+        - RunnerSecret: []
+      description: |
+        Idempotent: legal from `queued`, `claimed`, or `running` (a redelivered
+        queue message re-claims cleanly), and safe to call after the audit
+        already reached a terminal state — the response says so instead of
+        re-running it. Increments the server-side `attempt` counter and fails
+        the audit outright once `AUDIT_MAX_ATTEMPTS` is exceeded.
+      parameters:
+        - $ref: '#/components/parameters/AuditId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                runnerId:
+                  type: string
+      responses:
+        '200':
+          description: Claim result.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [terminal]
+                properties:
+                  terminal:
+                    type: boolean
+                  status:
+                    $ref: '#/components/schemas/AuditStatus'
+                  attempt:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/RunnerUnauthorized'
+        '404':
+          $ref: '#/components/responses/RunnerNotFound'
+  /api/runner/audits/{id}/running:
+    post:
+      tags: [Runner]
+      operationId: markRunnerAuditRunning
+      summary: Transition claimed -> running.
+      security:
+        - RunnerSecret: []
+      parameters:
+        - $ref: '#/components/parameters/AuditId'
+      responses:
+        '200':
+          description: New status.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/AuditStatus'
+        '401':
+          $ref: '#/components/responses/RunnerUnauthorized'
+        '404':
+          $ref: '#/components/responses/RunnerNotFound'
+        '409':
+          $ref: '#/components/responses/RunnerInvalidTransition'
+  /api/runner/audits/{id}/stage:
+    post:
+      tags: [Runner]
+      operationId: reportRunnerAuditStage
+      summary: Report per-engine/keyboard progress.
+      security:
+        - RunnerSecret: []
+      description: |
+        Powers the dashboard's real, backend-driven progress display. A no-op
+        (200) once the audit is already terminal, so a late/duplicate report
+        from a lagging attempt cannot resurrect finished state.
+      parameters:
+        - $ref: '#/components/parameters/AuditId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [stage, status]
+              properties:
+                stage:
+                  type: string
+                status:
+                  type: string
+                  enum: [started, ok, failed]
+                durationMs:
+                  type: integer
+      responses:
+        '200':
+          description: Accepted.
+        '400':
+          description: Missing stage or status.
+        '401':
+          $ref: '#/components/responses/RunnerUnauthorized'
+        '404':
+          $ref: '#/components/responses/RunnerNotFound'
+  /api/runner/audits/{id}/persisting:
+    post:
+      tags: [Runner]
+      operationId: markRunnerAuditPersisting
+      summary: Transition running -> persisting.
+      security:
+        - RunnerSecret: []
+      parameters:
+        - $ref: '#/components/parameters/AuditId'
+      responses:
+        '200':
+          description: New status.
+        '401':
+          $ref: '#/components/responses/RunnerUnauthorized'
+        '404':
+          $ref: '#/components/responses/RunnerNotFound'
+        '409':
+          $ref: '#/components/responses/RunnerInvalidTransition'
+  /api/runner/audits/{id}/complete:
+    post:
+      tags: [Runner]
+      operationId: completeRunnerAudit
+      summary: Persist the finished artifact and mark the audit completed.
+      security:
+        - RunnerSecret: []
+      description: |
+        The Worker performs the R2 writes here, to the final
+        `audits/<id>/audit.json` and `audits/<id>/raw/<engine>.json` keys —
+        the only place those keys are ever written, so a retried job can
+        never leave a partially-written final artifact.
+      parameters:
+        - $ref: '#/components/parameters/AuditId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [result]
+              properties:
+                result:
+                  type: object
+                  description: Serialized @ally/core AuditResult.
+                  additionalProperties: true
+                raw:
+                  type: object
+                  description: Raw per-engine output, keyed by engine id.
+                  additionalProperties: true
+      responses:
+        '200':
+          description: Completed.
+        '400':
+          description: Missing result.
+        '401':
+          $ref: '#/components/responses/RunnerUnauthorized'
+        '404':
+          $ref: '#/components/responses/RunnerNotFound'
+        '409':
+          $ref: '#/components/responses/RunnerInvalidTransition'
+  /api/runner/audits/{id}/fail:
+    post:
+      tags: [Runner]
+      operationId: failRunnerAudit
+      summary: Mark the audit failed (or timed_out for the audit-timeout category).
+      security:
+        - RunnerSecret: []
+      parameters:
+        - $ref: '#/components/parameters/AuditId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [category, message]
+              properties:
+                category:
+                  type: string
+                  description: One of @ally/runner-core's FailureCategory values.
+                message:
+                  type: string
+                  description: Always a safe, developer-facing message — never a stack trace.
+      responses:
+        '200':
+          description: New status.
+        '401':
+          $ref: '#/components/responses/RunnerUnauthorized'
+        '404':
+          $ref: '#/components/responses/RunnerNotFound'
+        '409':
+          $ref: '#/components/responses/RunnerInvalidTransition'
   /api/compatibility:
     get:
       tags: [Compatibility]
@@ -244,22 +469,22 @@ paths:
             type: string
             format: uri
       responses:
-        "200":
+        '200':
           description: Adapter compatibility report.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CompatibilityReport"
-        "400":
+                $ref: '#/components/schemas/CompatibilityReport'
+        '400':
           description: Invalid URL input.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "503":
-          $ref: "#/components/responses/AuthNotConfigured"
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/AuthNotConfigured'
 components:
   securitySchemes:
     AllySession:
@@ -267,13 +492,20 @@ components:
       in: cookie
       name: ally_session
       description: Signed Ally app session cookie issued after dev-auth login.
+    RunnerSecret:
+      type: http
+      scheme: bearer
+      description: |
+        `Authorization: Bearer <ALLY_RUNNER_SECRET>`. Machine-to-machine only
+        — the standalone Node runner, never a user session. Constant-time
+        compared; unset secret fails closed with 503.
   responses:
     Unauthorized:
       description: Missing or invalid Ally app session.
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorResponse"
+            $ref: '#/components/schemas/ErrorResponse'
           examples:
             required:
               value:
@@ -283,11 +515,29 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorResponse"
+            $ref: '#/components/schemas/ErrorResponse'
           examples:
             missingSecret:
               value:
                 error: Authentication is not configured
+    RunnerUnauthorized:
+      description: Missing/invalid runner secret, or ALLY_RUNNER_SECRET is unset (fails closed).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RunnerNotFound:
+      description: Audit ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RunnerInvalidTransition:
+      description: The audit's current status does not allow this transition.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   parameters:
     AuditId:
       name: id
@@ -307,7 +557,7 @@ components:
           type: boolean
           description: True when Ally has a session-signing secret configured.
         user:
-          $ref: "#/components/schemas/AuthUser"
+          $ref: '#/components/schemas/AuthUser'
         expiresAt:
           type: string
           format: date-time
@@ -336,7 +586,7 @@ components:
         image:
           type:
             - string
-            - "null"
+            - 'null'
           format: uri
     CreateAuditResponse:
       type: object
@@ -354,11 +604,13 @@ components:
         - id
         - url
         - status
+        - currentStage
+        - attempt
         - createdAt
         - updatedAt
         - startedAt
         - completedAt
-        - error
+        - lastError
       properties:
         id:
           type: string
@@ -367,7 +619,18 @@ components:
           type: string
           format: uri
         status:
-          $ref: "#/components/schemas/AuditStatus"
+          $ref: '#/components/schemas/AuditStatus'
+        currentStage:
+          type:
+            - string
+            - 'null'
+          description: |
+            `"<engine-id-or-keyboard>:<started|ok|failed>"`, updated live as
+            the runner works through engines and the keyboard analyzer. Real
+            backend-reported progress, not a simulated percentage.
+        attempt:
+          type: integer
+          description: Incremented on every re-claim. Capped by AUDIT_MAX_ATTEMPTS.
         createdAt:
           type: string
           format: date-time
@@ -377,44 +640,75 @@ components:
         startedAt:
           type:
             - string
-            - "null"
+            - 'null'
           format: date-time
         completedAt:
           type:
             - string
-            - "null"
+            - 'null'
           format: date-time
-        error:
+        lastError:
           type:
             - string
-            - "null"
+            - 'null'
+          description: A safe, developer-facing message. Never a stack trace or internal detail.
         summary:
-          $ref: "#/components/schemas/AuditSummary"
+          $ref: '#/components/schemas/AuditSummary'
         resultUrl:
           type: string
     AuditStatus:
       type: string
-      enum: [queued, running, completed, failed]
+      description: |
+        `claimed` and `persisting` exist for debuggability; the dashboard
+        groups `claimed` with `queued` and `persisting` with `running`.
+        `timed_out` and `cancelled` are terminal, same as `failed`.
+      enum: [queued, claimed, running, persisting, completed, failed, timed_out, cancelled]
     AuditSummary:
       type: object
-      required: [score, uniqueFindings, enginesSucceeded, enginesConfigured]
+      required:
+        - score
+        - scoreVersion
+        - uniqueFindings
+        - rawFindings
+        - keyboardWarnings
+        - enginesSucceeded
+        - enginesConfigured
+        - enginesFailed
       properties:
         score:
           type:
             - integer
-            - "null"
+            - 'null'
+        scoreVersion:
+          type:
+            - integer
+            - 'null'
         uniqueFindings:
           type:
             - integer
-            - "null"
+            - 'null'
+        rawFindings:
+          type:
+            - integer
+            - 'null'
+          description: Findings across all engines before deduplication.
+        keyboardWarnings:
+          type:
+            - integer
+            - 'null'
+          description: Keyboard-analyzer anomaly count.
         enginesSucceeded:
           type:
             - integer
-            - "null"
+            - 'null'
         enginesConfigured:
           type:
             - integer
-            - "null"
+            - 'null'
+        enginesFailed:
+          type:
+            - integer
+            - 'null'
     CompatibilityReport:
       type: object
       required: [url, runtime, generatedAt, checks]
@@ -433,7 +727,7 @@ components:
         checks:
           type: array
           items:
-            $ref: "#/components/schemas/CompatibilityCheck"
+            $ref: '#/components/schemas/CompatibilityCheck'
     CompatibilityCheck:
       type: object
       required: [id, runsDirectlyInWorker]

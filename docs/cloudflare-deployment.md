@@ -1,13 +1,17 @@
 # Cloudflare Deployment
 
-This repo deploys as two Cloudflare surfaces on one public site origin:
+This repo deploys as three surfaces:
 
 - Web UI: Cloudflare Pages at `https://ally.andersseen.dev`.
-- API/runner: Cloudflare Worker route at `https://ally.andersseen.dev/api/*`.
+- API/control plane: Cloudflare Worker route at `https://ally.andersseen.dev/api/*`.
+- Execution plane: the standalone Node runner (`apps/runner`), deployed as a
+  Docker container on any Docker host — not a Cloudflare product. It claims
+  jobs from the Worker's Cloudflare Queue and reports back to
+  `/api/runner/*`; it has no D1/R2 access of its own.
 
-Keeping the API under the same site origin matches the registered dev-auth
-callback byte for byte and lets the Worker set `ally_session` cookies on the
-same host the static UI uses.
+Keeping the Worker under the same site origin as the web UI matches the
+registered dev-auth callback byte for byte and lets the Worker set
+`ally_session` cookies on the same host the static UI uses.
 
 ## 1. Register dev-auth client
 
@@ -39,9 +43,37 @@ Use Wrangler from `apps/worker`.
 pnpm --filter @ally/worker exec wrangler d1 create ally-audits
 pnpm --filter @ally/worker exec wrangler r2 bucket create ally-audit-artifacts
 pnpm --filter @ally/worker exec wrangler queues create ally-audit-jobs
+pnpm --filter @ally/worker exec wrangler queues create ally-audit-jobs-dlq
 ```
 
 Copy the returned D1 `database_id` into `apps/worker/wrangler.jsonc`.
+
+### Configure the queue as a pull consumer
+
+The standalone runner is not a Worker, so it consumes the queue through
+Cloudflare's HTTP pull-consumer API rather than a `queue()` handler in the
+Worker:
+
+```bash
+pnpm --filter @ally/worker exec wrangler queues consumer http add ally-audit-jobs \
+  --dead-letter-queue ally-audit-jobs-dlq \
+  --max-retries 5 \
+  --visibility-timeout-ms 150000
+```
+
+Set `--visibility-timeout-ms` comfortably above the runner's
+`ALLY_AUDIT_TIMEOUT_MS` (default 120000) so a job's lease doesn't expire and
+get redelivered to another puller while it's still legitimately running.
+
+You'll also need a Cloudflare API token scoped to Queues on this account
+(ideally scoped further to just this queue if your plan supports resource-
+level scoping) for the runner's `CLOUDFLARE_QUEUES_API_TOKEN` — create one
+under **My Profile → API Tokens** in the Cloudflare dashboard, and find the
+queue's id (not its name) with:
+
+```bash
+pnpm --filter @ally/worker exec wrangler queues list
+```
 
 ## 3. Configure Worker secrets
 
@@ -50,15 +82,22 @@ Never commit these values.
 ```bash
 pnpm --filter @ally/worker exec wrangler secret put DEV_AUTH_CLIENT_SECRET
 pnpm --filter @ally/worker exec wrangler secret put ALLY_SESSION_SECRET
+pnpm --filter @ally/worker exec wrangler secret put ALLY_RUNNER_SECRET
 ```
 
-Generate `ALLY_SESSION_SECRET` separately:
+Generate each with:
 
 ```bash
 openssl rand -base64 48
 ```
 
-For GitHub Actions deployment, add these repository or production environment
+`ALLY_RUNNER_SECRET` is the bearer token the standalone runner presents to
+`/api/runner/*` — generate a separate value from `ALLY_SESSION_SECRET` and
+give it to the runner's own configuration (`apps/runner/.env`, or your
+container platform's secret store), never to `wrangler.jsonc`.
+
+For GitHub Actions deployment (Worker/Pages only — the runner is not
+deployed by this pipeline), add these repository or production environment
 secrets:
 
 - `CLOUDFLARE_API_TOKEN`
@@ -73,10 +112,15 @@ secrets:
 pnpm --filter @ally/worker run migrate:remote
 ```
 
-This applies:
+This applies, in order:
 
 - `0001_audits.sql`
 - `0002_audit_owner.sql`
+- `0003_runner_state.sql` — widens `status` to the full job lifecycle (queued,
+  claimed, running, persisting, completed, failed, timed_out, cancelled) and
+  adds `current_stage`, `attempt`, `last_error` (replaces `error`),
+  `runner_id`, `raw_findings`, `keyboard_warnings`, `engines_failed`,
+  `score_version`.
 
 ## 5. Dry-run and deploy the Worker
 
@@ -106,7 +150,41 @@ Attach the Pages custom domain:
 ally.andersseen.dev -> ally-web
 ```
 
-## 7. Smoke test
+## 7. Deploy the standalone Node runner
+
+The runner is a plain Docker image (`apps/runner/Dockerfile`) — build and
+push it to whatever registry your host reads from, then run it with the
+environment variables in `apps/runner/.env.example` filled in
+(`ALLY_WORKER_BASE_URL`, `ALLY_RUNNER_SECRET`, `CLOUDFLARE_ACCOUNT_ID`,
+`CLOUDFLARE_QUEUES_API_TOKEN`, `CLOUDFLARE_QUEUE_ID`).
+
+```bash
+docker build -t ally-runner -f apps/runner/Dockerfile .
+docker run --rm \
+  -e ALLY_WORKER_BASE_URL=https://ally.andersseen.dev \
+  -e ALLY_RUNNER_SECRET=... \
+  -e CLOUDFLARE_ACCOUNT_ID=... \
+  -e CLOUDFLARE_QUEUES_API_TOKEN=... \
+  -e CLOUDFLARE_QUEUE_ID=... \
+  -p 8080:8080 \
+  ally-runner
+```
+
+This has not been build-tested against a real Docker daemon or a real
+Cloudflare account from this repository's automated environment — validate
+the image build and a real queue pull/ack round trip before relying on it in
+production. The image works the same way on Coolify, Fly.io, Railway, Cloud
+Run, or a bare VM with Docker: it needs outbound HTTPS to Cloudflare's API
+and to your Worker's origin, and nothing provider-specific. `/healthz` on
+`ALLY_HEALTH_PORT` (default 8080) is available for the platform's health
+check. `SIGTERM` triggers a graceful shutdown: the process stops pulling new
+jobs, lets an in-flight one finish, then exits.
+
+Run more than one instance for throughput or availability — the queue's
+lease semantics make concurrent runners safe without any coordination
+between them.
+
+## 8. Smoke test
 
 Before sign-in:
 
@@ -124,20 +202,31 @@ Expected for protected audit routes:
 {"error":"Authentication required"}
 ```
 
+The runner-only surface should reject an unauthenticated or wrong-secret
+request:
+
+```bash
+curl -i -X POST https://ally.andersseen.dev/api/runner/audits/00000000-0000-0000-0000-000000000000/claim
+# 401 {"error":"Runner authentication required"}
+```
+
 From the browser:
 
 1. Open `https://ally.andersseen.dev`.
 2. Sign in through dev-auth.
 3. Open the protected dashboard from `/dashboard`.
 4. Submit one small public URL.
-5. Confirm status polling and report rendering.
+5. Confirm the job reaches `queued`, then real per-engine progress appears,
+   then `completed`, and the report renders.
+6. Confirm the URL shows up in "Recent audits" and opens the same report.
 
-## 8. Cost controls still owed
+## 9. Cost controls still owed
 
 Authentication prevents anonymous abuse, but production should also add:
 
 - Per-user daily audit quota.
-- URL/domain denylist or allowlist for private/internal hosts.
-- Queue concurrency limits matched to the free tier.
-- Structured audit duration metrics.
+- Queue concurrency limits matched to the free tier, and runner instance
+  count matched to expected load.
+- Structured audit duration metrics (durations are already logged per-stage;
+  aggregating them is the remaining step).
 - A manual kill switch, for example `AUDITS_ENABLED=false`.

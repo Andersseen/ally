@@ -11,142 +11,216 @@ browser provider
   -> environment-specific persistence
 ```
 
-The local CLI still uses `@ally/browser` with local Playwright. The hosted
-Worker uses Cloudflare Browser Run through `@cloudflare/playwright` and passes a
-Playwright-shaped page into the same `@ally/audit-runner` composition.
+The environment decides browser provider, persistence, job transport, and
+logging — never accessibility semantics. `@ally/audit-runner` stays the only
+place that knows about engines, in every environment.
 
-## Current Cloudflare references
+## Architecture: hybrid, not Worker-native
 
-- Browser Run supports browser sessions from Workers and external environments
-  through Playwright, Puppeteer, or CDP:
-  <https://developers.cloudflare.com/browser-run/get-started/>
-- Cloudflare's Worker-compatible Playwright package is
-  `@cloudflare/playwright`, currently documented as Cloudflare's fork rather
-  than regular `playwright`:
-  <https://developers.cloudflare.com/browser-run/playwright/>
-- Cloudflare documents queue producer and consumer bindings under
-  `queues.producers` and `queues.consumers` in Wrangler configuration:
-  <https://developers.cloudflare.com/queues/get-started/>
-- Wrangler JSON/JSONC config is current and recommended for new Worker config:
-  <https://developers.cloudflare.com/workers/wrangler/configuration/>
-- For compatibility dates on or after `2026-08-04`, Workers enable the current
-  Node.js compatibility behavior by default, though individual APIs may still be
-  partial or stubbed:
-  <https://developers.cloudflare.com/workers/configuration/compatibility-flags/>
+Ally's Worker previously ran a compatibility spike (`GET /api/compatibility`)
+to decide between a fully Cloudflare-native audit runner (Browser Run) and a
+hybrid Node runner. That decision is now made, based on the spike's own
+findings: IBM Equal Access and QualWeb resolve package/bundle files with
+Node APIs Workers don't provide the same way, and the keyboard analyzer
+resolves `tabbable`'s bundle the same way. The spike endpoint stays as a
+diagnostic — the evidence for why the architecture below looks the way it
+does — but no longer gates anything.
 
-## Compatibility spike
-
-The Worker exposes:
-
-```http
-GET /api/compatibility?url=https://example.com
+```text
+                   ┌──────────────────┐
+                   │    Astro Web     │
+                   └────────┬─────────┘
+                            │
+                            ▼
+                   ┌──────────────────┐
+                   │ Cloudflare API   │   control plane: D1, R2, auth,
+                   │ Worker           │   public API — owns all state
+                   └────────┬─────────┘
+                            │ produces
+                            ▼
+                        Cloudflare Queue (ally-audit-jobs)
+                            │ HTTP pull consumer
+                            ▼
+                  ┌───────────────────┐
+                  │  apps/runner      │   execution plane only:
+                  │  (Node process)   │   no D1/R2 access of its own
+                  └─────────┬─────────┘
+                            │
+                            ▼
+                   Playwright/Chromium
+                            │
+                            ▼
+                    @ally/audit-runner
+                            │
+              ┌─────────────┼─────────────┐
+              │             │             │
+             axe           IBM           Alfa
+              │             │             │
+              └──────┬──────┴──────┬──────┘
+                     │           QualWeb
+                     │
+                  keyboard
+                     │
+                     ▼
+              /api/runner/* (ALLY_RUNNER_SECRET)
+                     │
+                     ▼
+                Worker writes D1 + R2
 ```
 
-It opens a Browser Run page and tests each engine independently. The response
-records whether that adapter ran directly in the Worker, the observed error
-when it did not, and static dependency notes for the adapter.
+The Worker remains the sole owner of D1, R2, and the public API. The runner
+is purely an execution plane: it claims a job, runs the shared pipeline, and
+reports state back through `/api/runner/*` — it never touches D1 or R2
+directly.
 
-This endpoint is deliberately separate from the audit queue. It is the decision
-gate between:
+## One pipeline, reused three ways
 
-- **Architecture A:** Cloudflare-native audit consumer using Browser Run.
-- **Architecture B:** hybrid Node runner using the same Ally packages and a
-  Cloudflare-hosted API/queue/storage layer.
+```text
+Local CLI                Hosted Node runner       Local dev (pnpm dev)
+     │                          │                         │
+     ├── @ally/browser          ├── PlaywrightChromium-    ├── same
+     │   openPage()             │   BrowserProvider        │   provider
+     │                          │   (@ally/runner-core)     │
+     ▼                          ▼                         ▼
+@ally/audit-runner        @ally/audit-runner        @ally/audit-runner
+```
 
-## Initial adapter matrix
+`@ally/runner-core`'s `executeAuditJob(job, ports)` is the one place that
+knows how a hosted job is executed: claim → running → open browser → run
+`@ally/audit-runner` → persisting → complete/fail. `apps/runner` (the real
+hosted process) and `apps/worker/src/local-dev.ts` (local dev) call it with
+different `RunnerPersistencePort`/`BrowserProvider` implementations, never
+with different logic — there is no `CloudflareAuditEngine`/`NodeAuditEngine`
+split.
 
-These are code-inspection findings before running the Worker spike against a
-real Browser Run binding.
+## Job delivery: Cloudflare Queues' HTTP pull consumer
 
-| Adapter | Browser injection | Node APIs | Filesystem/package resolution | Expected Worker risk |
-| --- | --- | --- | --- | --- |
-| `axe-core` | Yes, via `axe.source` content | No direct Node APIs in adapter | No | Lowest risk. It injects a self-contained bundle string and evaluates in the page. |
-| `IBM Equal Access` | Yes, via package bundle path | `node:module`, `node:fs/promises` | Yes, `require.resolve()` and manifest read | Medium risk. Workers with recent compatibility dates support more Node APIs, but bundling and `page.addScriptTag({ path })` must be proven. |
-| `Siteimprove Alfa` | No | No direct Node APIs in adapter | No direct filesystem use | Medium/high risk. It depends on `@siteimprove/alfa-playwright` accepting a Cloudflare Playwright handle, which must be proven at runtime. |
-| `QualWeb` | Yes, several package bundles | `node:module`, `node:fs/promises`, `node:path` | Yes, bundle resolution and manifest directory walking | High risk. It currently assumes package files are addressable at runtime. |
-| `@ally/analyzer-keyboard` | Yes, `tabbable` UMD bundle | `node:module` | Yes, `require.resolve()` | Medium risk for the same script-path reason as IBM and QualWeb. |
+The runner is a plain Node process outside Cloudflare's own runtime, so it
+consumes the queue through Cloudflare's officially supported pull-consumer
+REST API (`POST .../queues/{id}/messages/pull` and `.../messages/ack`),
+authenticated with a Cloudflare API token scoped to Queues on that one queue.
+This was chosen over a custom leasing endpoint because it gives, for free:
+
+- **No double execution** — `visibility_timeout_ms` leases a message; it
+  isn't visible to another puller while leased.
+- **Stranded-job recovery** — a runner that crashes or stalls simply lets
+  its lease expire; the message becomes visible again automatically.
+- **Safe retries** — `max_retries` plus a dead-letter queue bound how many
+  times a bad job is retried before it's set aside for inspection.
+
+See `apps/worker/wrangler.jsonc` for the exact `wrangler queues consumer
+http add` configuration, and `apps/runner/src/queue-client.ts` for the
+client. The Worker's producer binding (`env.AUDIT_QUEUE.send`) is unchanged.
+
+## Runner authentication
+
+The runner has no D1/R2 bindings — it reports every state change through
+`/api/runner/*` on the Worker, authenticated by `Authorization: Bearer
+<ALLY_RUNNER_SECRET>` (`apps/worker/src/runner-auth.ts`, constant-time
+compared). This is a second, independent trust boundary from the Cloudflare
+API token used for queue pulling, and from DevAuth/user sessions — never
+reused between the three.
+
+## Job state machine
+
+`apps/worker/src/audit-state.ts` defines the legal transitions:
+
+```text
+queued -> claimed -> running -> persisting -> completed
+                  \       \          \
+                   \       \          -> failed / timed_out
+                    -> failed / timed_out / cancelled
+```
+
+`claimed` and `running` both accept a `claim` event again — that's what
+makes at-least-once queue redelivery safe: a second attempt (or the same
+attempt after a stranded lease) can re-claim cleanly instead of erroring. A
+row already in a terminal state (`completed`, `failed`, `timed_out`,
+`cancelled`) rejects every further transition; the runner-auth routes return
+`{terminal: true}` from `/claim` in that case so the caller acks the queue
+message and does nothing else. `attempt` is incremented server-side on every
+claim and capped by `AUDIT_MAX_ATTEMPTS` (default 3, in `wrangler.jsonc`'s
+`vars`).
+
+## SSRF protection
+
+`@ally/net-guard` is the reusable SSRF layer (see its own doc comments for
+the full range list). Two entries:
+
+- `.` (portable): syntactic checks only — protocol, credentials, literal
+  private/loopback/link-local/reserved IPs, `.local`/`.internal`/`localhost`
+  names. Safe to import from the Worker (no DNS API in Workers), used there
+  as a cheap best-effort rejection at submission time.
+- `./node` (Node only): adds DNS resolution and a Playwright navigation
+  guard (`guardPage`) that re-validates the target on the initial navigation
+  **and every redirect**, failing closed on any violation or DNS failure.
+  This is the runner's actual enforcement point — the Worker's check is
+  defense-in-depth only.
+
+An explicit, narrow allowlist (`ALLY_SSRF_ALLOW_HOSTS` in local dev; a
+`networkPolicy.allowHostnames` port option in `@ally/runner-core`) exempts
+exact `host:port` values from the private-network check — never protocol or
+credential checks. It exists for a deliberately configured exception (an
+operator's own internal target), and is what lets the hosted-flow
+integration test run the real guarded pipeline against a local fixture
+server instead of weakening the guard for tests. Unset by default.
 
 ## Hosted MVP pieces
 
-- `apps/web` is a static Astro tool UI with a URL input, progress polling, and a
-  report view over the stored `audit.json`.
-- `apps/worker` exposes:
-  - `GET /api/auth/session`
-  - `GET /api/auth/login`
-  - `GET /api/auth/callback`
-  - `POST /api/auth/logout`
-  - `POST /api/audits`
-  - `GET /api/audits/:id`
-  - `GET /api/audits/:id/result`
-  - `GET /api/compatibility?url=...`
-- D1 stores audit metadata and job status.
-- R2 stores `audit.json` and raw engine artifacts.
-- Cloudflare Queues decouple the HTTP request from audit execution.
+- `apps/web` is a static Astro UI: `/` is the sign-in gate, `/dashboard` has
+  the audit form, real backend-reported progress, and a recent-audits list,
+  `/reports` renders a completed audit.
+- `apps/worker` exposes the public API (`/api/auth/*`, `/api/audits*`,
+  `/api/compatibility`) and the runner-only API (`/api/runner/*`). D1 stores
+  audit metadata/state; R2 stores `audit.json` and raw engine artifacts,
+  written only by the one successful `/api/runner/audits/:id/complete` call
+  — there is never a partially-written final artifact to guard against.
+- `apps/runner` is the standalone Node process. See its own `package.json`
+  and `Dockerfile`.
+- `packages/runner-core` is the shared job-execution core described above.
+- `packages/net-guard` is the SSRF layer described above.
 
 ## Local development runner
 
-`pnpm dev` uses a hybrid local runner on purpose:
+`pnpm dev` runs two processes via Turborepo, unchanged in shape from before
+this milestone:
 
 ```text
 Astro web UI (:4321)
   -> Node audit API (:8787)
-  -> local Playwright
+  -> local Playwright + @ally/runner-core's executeAuditJob
   -> shared Ally audit packages
 ```
 
-That local API lives in `apps/worker/src/local-dev.ts`. It exists because the
-compatibility spike showed the current engine adapters cannot all load directly
-inside Workers yet. Local development should still exercise the hosted UX end to
-end, so the default `@ally/worker` dev script runs the Node API.
+`apps/worker/src/local-dev.ts` exports `createLocalDevServer()`, which wires
+`@ally/runner-core`'s `executeAuditJob` to an in-memory
+`RunnerPersistencePort` and the real `PlaywrightChromiumBrowserProvider` — no
+queue indirection locally, but the _same_ runner code path the hosted
+process uses, not a separate ad hoc audit call. This is also the harness the
+hosted-flow integration test (`apps/worker/src/hosted-flow.test.ts`) starts
+and drives over real HTTP.
 
-To run the Cloudflare-native spike instead:
+To run the Cloudflare-native compatibility spike:
 
 ```bash
 pnpm --filter @ally/worker run dev:worker
 ```
 
-The spike is expected to report compatibility failures until the adapters stop
-depending on Node-only package resolution at Worker runtime, or until the
-hosted architecture moves to the hybrid Node runner described above.
+To run the real standalone runner against a real Cloudflare account (not
+needed for ordinary UI/core development):
 
-The hosted report route currently renders the shared `AuditResult` artifact in
-the web app. The existing `@ally/report` static Astro artifact remains unchanged
-for CLI/local report generation. A later iteration can extract the report
-components into a shared report package if the hosted report must exactly match
-the generated static report.
+```bash
+cp apps/runner/.env.example apps/runner/.env   # fill in real values
+pnpm --filter @ally/runner run start
+```
 
 ## Setup notes
 
 Replace placeholder Cloudflare resource IDs in `apps/worker/wrangler.jsonc`
-before deployment:
-
-- `d1_databases[0].database_id`
-- R2 bucket name if not using `ally-audit-artifacts`
-- Queue name if not using `ally-audit-jobs`
-
-Apply the D1 schema:
-
-```bash
-pnpm --filter @ally/worker exec wrangler d1 migrations apply ally-audits
-```
-
-Run the static web app with:
-
-```bash
-PUBLIC_ALLY_API_BASE=http://127.0.0.1:8787 pnpm --filter @ally/web dev
-```
-
-Run the local hosted API with:
-
-```bash
-pnpm --filter @ally/worker dev
-```
-
-Run the Cloudflare Worker compatibility spike with:
-
-```bash
-pnpm --filter @ally/worker run dev:worker
-```
+before deployment. See `docs/cloudflare-deployment.md` for the full
+resource-creation and secret-provisioning sequence, including the Queues
+pull-consumer and dead-letter-queue setup, and the runner's Docker
+deployment.
 
 ## dev-auth preparation
 

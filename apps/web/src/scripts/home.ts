@@ -11,16 +11,22 @@ const authLogout = document.querySelector<HTMLElement & { disabled?: boolean; lo
 );
 const statusPanel = document.querySelector('#status-panel');
 const message = document.querySelector('#status-message');
+const stageMessage = document.querySelector('#stage-message');
 const reportLink = document.querySelector('#report-link');
 const targetPanel = document.querySelector('#target-panel');
 const button = document.querySelector<HTMLElement & { disabled?: boolean; loading?: boolean }>(
   '#run-button',
 );
 const steps = Array.from(document.querySelectorAll('[data-step]'));
+const recentAuditsEmpty = document.querySelector('#recent-audits-empty');
+const recentAuditsList = document.querySelector('#recent-audits-list');
 
 const apiBase = form?.getAttribute('data-api-base') ?? '';
 let isAuthenticated = false;
-type AuditStatus = 'queued' | 'running' | 'completed' | 'failed';
+
+/** The four steps the UI shows. `claimed` groups with `queued`, `persisting` with `running`. */
+type HostedAuditStatus = 'queued' | 'claimed' | 'running' | 'persisting' | 'completed' | 'failed';
+
 type AuthSession = {
   readonly authenticated: boolean;
   readonly configured: boolean;
@@ -34,6 +40,13 @@ type AuthSession = {
     readonly clientId: string;
   };
 };
+
+interface AuditListItem {
+  readonly id: string;
+  readonly url: string;
+  readonly status: HostedAuditStatus;
+  readonly summary?: { readonly score: number | null };
+}
 
 async function refreshAuth(): Promise<void> {
   if (authPanel === null || authStatus === null) return;
@@ -54,6 +67,7 @@ async function refreshAuth(): Promise<void> {
       authStatus.textContent = `Signed in as ${session.user?.email || session.user?.name || 'Ally user'}.`;
       setAuthActions(true, true);
       setAuditAccess(true);
+      void loadRecentAudits();
       return;
     }
 
@@ -68,9 +82,10 @@ async function refreshAuth(): Promise<void> {
 }
 
 function authConfigurationMessage(missingConfiguration: readonly string[] = []): string {
-  const missing = missingConfiguration.length > 0
-    ? missingConfiguration.join(', ')
-    : 'ALLY_SESSION_SECRET, DEV_AUTH_CLIENT_SECRET';
+  const missing =
+    missingConfiguration.length > 0
+      ? missingConfiguration.join(', ')
+      : 'ALLY_SESSION_SECRET, DEV_AUTH_CLIENT_SECRET';
   return `dev-auth routes are ready. Set ${missing} in apps/worker/.dev.vars to enable local login.`;
 }
 
@@ -94,7 +109,7 @@ function setAuditAccess(canAudit: boolean): void {
   }
 }
 
-function setStatus(status: AuditStatus, text: string): void {
+function setStatus(status: HostedAuditStatus, text: string): void {
   statusPanel?.classList.remove('hidden');
   if (message) message.textContent = text;
 
@@ -102,8 +117,7 @@ function setStatus(status: AuditStatus, text: string): void {
     const name = step.getAttribute('data-step');
     const failed = status === 'failed';
     const active =
-      (!failed && status === name) ||
-      (!failed && status === 'running' && name === 'queued') ||
+      (!failed && stepGroup(status) === name) ||
       (!failed && status === 'completed' && (name === 'queued' || name === 'running'));
     const failedStep = failed && name === 'failed';
 
@@ -114,17 +128,44 @@ function setStatus(status: AuditStatus, text: string): void {
   }
 }
 
+/** `claimed` reads as still-queued to the user; `persisting` reads as still-running. */
+function stepGroup(status: HostedAuditStatus): 'queued' | 'running' | 'completed' | 'failed' {
+  if (status === 'claimed') return 'queued';
+  if (status === 'persisting') return 'running';
+  return status;
+}
+
+/**
+ * Turns the backend's `"<stage>:<started|ok|failed>"` marker into short
+ * human text. This is real progress read from `GET /api/audits/:id` — never
+ * a simulated percentage.
+ */
+function humanizeStage(currentStage: string | null | undefined): string {
+  if (currentStage === null || currentStage === undefined || currentStage === '') return '';
+  const [stage, status] = currentStage.split(':');
+  if (stage === undefined) return '';
+
+  const label = stage === 'keyboard' ? 'Keyboard analysis' : stage;
+  if (status === 'started') return `Running ${label}…`;
+  if (status === 'failed') return `${label} failed, continuing.`;
+  return `✓ ${label}`;
+}
+
 async function poll(id: string): Promise<void> {
   const response = await fetch(`${apiBase}/api/audits/${id}`, { credentials: 'include' });
   if (!response.ok) throw new Error('Could not read audit status.');
   const audit = (await response.json()) as {
-    readonly status: AuditStatus;
-    readonly error?: string;
+    readonly status: HostedAuditStatus;
+    readonly currentStage?: string | null;
+    readonly lastError?: string | null;
   };
 
+  if (stageMessage) stageMessage.textContent = humanizeStage(audit.currentStage);
+
   if (audit.status === 'failed') {
-    setStatus('failed', audit.error ?? 'The audit failed.');
+    setStatus('failed', audit.lastError ?? 'The audit failed.');
     setButtonBusy(false);
+    void loadRecentAudits();
     return;
   }
 
@@ -137,6 +178,7 @@ async function poll(id: string): Promise<void> {
       reportLink.classList.add('inline-flex');
     }
     setButtonBusy(false);
+    void loadRecentAudits();
     return;
   }
 
@@ -157,6 +199,72 @@ function setButtonBusy(isBusy: boolean): void {
 
 function redirectToAuth(): void {
   window.location.replace('/');
+}
+
+async function loadRecentAudits(): Promise<void> {
+  if (recentAuditsList === null || recentAuditsEmpty === null) return;
+
+  try {
+    const response = await fetch(`${apiBase}/api/audits`, { credentials: 'include' });
+    if (!response.ok) return;
+    const body = (await response.json()) as { readonly audits: readonly AuditListItem[] };
+    renderRecentAudits(body.audits);
+  } catch {
+    // The dashboard still works without this list; leave the empty state.
+  }
+}
+
+function renderRecentAudits(audits: readonly AuditListItem[]): void {
+  if (recentAuditsList === null || recentAuditsEmpty === null) return;
+
+  if (audits.length === 0) {
+    recentAuditsEmpty.classList.remove('hidden');
+    recentAuditsList.classList.add('hidden');
+    recentAuditsList.innerHTML = '';
+    return;
+  }
+
+  recentAuditsEmpty.classList.add('hidden');
+  recentAuditsList.classList.remove('hidden');
+  recentAuditsList.innerHTML = audits.map(recentAuditRow).join('');
+}
+
+function recentAuditRow(audit: AuditListItem): string {
+  const score =
+    audit.status === 'completed' && audit.summary?.score !== null
+      ? String(audit.summary?.score ?? '')
+      : '—';
+  const isDone = audit.status === 'completed';
+  const badgeVariant = audit.status === 'failed' ? 'destructive' : isDone ? 'default' : 'secondary';
+  const hostname = safeHostname(audit.url);
+
+  const row = `
+    <div and-layout="horizontal align:center justify:between gap:sm">
+      <span class="truncate font-medium">${escapeHtml(hostname)}</span>
+      <span class="text-ally-muted tabular-nums">${escapeHtml(score)}</span>
+      <and-badge variant="${badgeVariant}">${escapeHtml(audit.status)}</and-badge>
+    </div>
+  `;
+
+  return isDone
+    ? `<a href="/reports?id=${encodeURIComponent(audit.id)}"><and-card padded="true">${row}</and-card></a>`
+    : `<and-card padded="true">${row}</and-card>`;
+}
+
+function safeHostname(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return url;
+  }
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 form?.addEventListener('submit', (event) => {

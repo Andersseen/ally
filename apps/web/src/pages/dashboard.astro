@@ -23,15 +23,11 @@ const loginUrl = `${apiBase}/api/auth/login?returnTo=${encodeURIComponent('/dash
 
     <section class="grid flex-1 items-center gap-8 py-10 md:grid-cols-[1.04fr_0.96fr]">
       <div and-layout="vertical gap:lg" and-motion="fade-in-up" and-motion-trigger="enter">
-        <p class="eyebrow">
-          Hosted web audit
-        </p>
-        <h1 class="hero-title">
-          Ally
-        </h1>
+        <p class="eyebrow">Hosted web audit</p>
+        <h1 class="hero-title">Ally</h1>
         <p class="hero-copy">
-          Run axe-core, IBM Equal Access, Siteimprove Alfa, QualWeb, and Ally's keyboard
-          analyzer against one public page, then normalize, deduplicate, and score the findings.
+          Run axe-core, IBM Equal Access, Siteimprove Alfa, QualWeb, and Ally's keyboard analyzer
+          against one public page, then normalize, deduplicate, and score the findings.
         </p>
         <div and-layout="horizontal gap:sm wrap:wrap">
           <and-badge variant="outline">
@@ -49,8 +45,8 @@ const loginUrl = `${apiBase}/api/auth/login?returnTo=${encodeURIComponent('/dash
         </div>
         <and-alert variant="default">
           <and-icon slot="icon" name="info"></and-icon>
-          Automated auditing does not prove WCAG conformance. A clean automated result still
-          requires manual review before you can claim accessibility.
+          Automated auditing does not prove WCAG conformance. A clean automated result still requires
+          manual review before you can claim accessibility.
         </and-alert>
       </div>
 
@@ -99,9 +95,7 @@ const loginUrl = `${apiBase}/api/auth/login?returnTo=${encodeURIComponent('/dash
               </span>
             </div>
 
-            <label class="text-ally-ink text-sm font-semibold" for="audit-url">
-              Public URL
-            </label>
+            <label class="text-ally-ink text-sm font-semibold" for="audit-url"> Public URL </label>
             <p id="audit-lock-message" class="text-ally-muted text-sm">
               Sign in to unlock hosted audits.
             </p>
@@ -151,17 +145,21 @@ const loginUrl = `${apiBase}/api/auth/login?returnTo=${encodeURIComponent('/dash
             </li>
           </ol>
           <p id="status-message" class="text-ally-muted mt-4 text-sm"></p>
-          <and-button
-            id="report-link"
-            class="mt-4 hidden"
-            href="/reports"
-            variant="outline"
-          >
+          <p id="stage-message" class="text-ally-muted mt-1 text-xs"></p>
+          <and-button id="report-link" class="mt-4 hidden" href="/reports" variant="outline">
             <and-icon name="external-link" size="16"></and-icon>
             View report
           </and-button>
         </and-card>
       </form>
+    </section>
+
+    <section class="pb-10" and-layout="vertical gap:md">
+      <h2 class="text-ally-ink text-xl font-bold">Recent audits</h2>
+      <and-card id="recent-audits-empty" padded="true">
+        <p class="text-ally-muted text-sm">No audits yet. Run one above.</p>
+      </and-card>
+      <div id="recent-audits-list" class="hidden" and-layout="vertical gap:sm"></div>
     </section>
   </main>
 

@@ -59,11 +59,10 @@ describe('Ally session cookie', () => {
 
 describe('ID token verification', () => {
   test('verifies ES256 ID tokens and validates nonce', async () => {
-    const keyPair = await crypto.subtle.generateKey(
-      { name: 'ECDSA', namedCurve: 'P-256' },
-      true,
-      ['sign', 'verify'],
-    );
+    const keyPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, [
+      'sign',
+      'verify',
+    ]);
     const jwk = await publicJwk(keyPair.publicKey, 'test-key');
     const claims = {
       iss: CONFIG.issuer,
@@ -77,18 +76,16 @@ describe('ID token verification', () => {
     };
     const jwt = await signJwt(keyPair.privateKey, 'test-key', claims);
 
-    await expect(
-      verifyIdTokenWithJwks(CONFIG, [jwk], jwt, 'expected-nonce'),
-    ).resolves.toEqual({
+    await expect(verifyIdTokenWithJwks(CONFIG, [jwk], jwt, 'expected-nonce')).resolves.toEqual({
       id: 'dev-auth-user',
       email: 'andriipap01@gmail.com',
       name: 'Andrii',
       image: 'https://example.com/avatar.png',
     });
 
-    await expect(
-      verifyIdTokenWithJwks(CONFIG, [jwk], jwt, 'wrong-nonce'),
-    ).rejects.toThrow('provider_id_token_nonce_invalid');
+    await expect(verifyIdTokenWithJwks(CONFIG, [jwk], jwt, 'wrong-nonce')).rejects.toThrow(
+      'provider_id_token_nonce_invalid',
+    );
   });
 });
 

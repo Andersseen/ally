@@ -28,9 +28,10 @@ function setMode(mode: ThemeMode): void {
 setMode(preferredMode());
 
 document.addEventListener('click', (event) => {
-  const toggle = event.target instanceof Element
-    ? event.target.closest<HTMLButtonElement>('[data-theme-toggle]')
-    : null;
+  const toggle =
+    event.target instanceof Element
+      ? event.target.closest<HTMLButtonElement>('[data-theme-toggle]')
+      : null;
   if (toggle === null) return;
 
   const nextMode = document.documentElement.dataset.themeMode === 'dark' ? 'light' : 'dark';

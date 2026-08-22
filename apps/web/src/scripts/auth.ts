@@ -52,9 +52,10 @@ async function refreshAuth(): Promise<void> {
 }
 
 function authConfigurationMessage(missingConfiguration: readonly string[] = []): string {
-  const missing = missingConfiguration.length > 0
-    ? missingConfiguration.join(', ')
-    : 'ALLY_SESSION_SECRET, DEV_AUTH_CLIENT_SECRET';
+  const missing =
+    missingConfiguration.length > 0
+      ? missingConfiguration.join(', ')
+      : 'ALLY_SESSION_SECRET, DEV_AUTH_CLIENT_SECRET';
   return `Local auth is not configured. Copy apps/worker/.dev.vars.example to apps/worker/.dev.vars and set: ${missing}.`;
 }
 

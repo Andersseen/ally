@@ -1,20 +1,28 @@
 import type { BrowserWorker } from '@cloudflare/playwright';
 import type { AuthEnv } from './auth.js';
+import type { RunnerAuthEnv } from './runner-auth.js';
 
-export interface Env extends AuthEnv {
+export interface Env extends AuthEnv, RunnerAuthEnv {
   readonly BROWSER: BrowserWorker;
   readonly DB: D1Database;
   readonly ARTIFACTS: R2Bucket;
-  readonly AUDIT_QUEUE: Queue<AuditJob>;
+  readonly AUDIT_QUEUE: Queue<AuditJobMessage>;
+  /** Caps re-claim attempts per audit. Defaults to 3 when unset. */
+  readonly AUDIT_MAX_ATTEMPTS?: string;
 }
 
-export interface AuditJob {
+/**
+ * The wire shape of a queued audit job. Deliberately smaller than
+ * `@ally/runner-core`'s `AuditJob` (no `attempt`) — the Worker's D1 row is
+ * the single source of truth for attempt counts, established at claim time,
+ * not carried on the queue message.
+ */
+export interface AuditJobMessage {
   readonly id: string;
   readonly url: string;
   readonly options?: {
     readonly only?: readonly string[];
     readonly keyboard?: boolean;
-    readonly timeoutMs?: number;
   };
 }
 
@@ -25,6 +33,7 @@ export interface D1Database {
 export interface D1PreparedStatement {
   bind(...values: readonly unknown[]): D1PreparedStatement;
   first<T = unknown>(): Promise<T | null>;
+  all<T = unknown>(): Promise<{ readonly results: readonly T[] }>;
   run(): Promise<unknown>;
 }
 
@@ -44,14 +53,4 @@ export interface R2ObjectBody {
 
 export interface Queue<T> {
   send(message: T): Promise<void>;
-}
-
-export interface MessageBatch<T> {
-  readonly messages: readonly Message<T>[];
-}
-
-export interface Message<T> {
-  readonly body: T;
-  ack(): void;
-  retry(options?: { delaySeconds?: number }): void;
 }

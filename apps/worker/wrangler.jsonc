@@ -1,60 +1,69 @@
 {
-	"$schema": "../../node_modules/wrangler/config-schema.json",
-	"name": "ally-audit-worker",
-	"main": "src/index.ts",
-	"compatibility_date": "2026-08-21",
-	"upload_source_maps": true,
-	"observability": {
-		"enabled": true,
-		"head_sampling_rate": 1
-	},
-	"routes": [
-		{
-			"pattern": "ally.andersseen.dev/api/*",
-			"zone_name": "andersseen.dev"
-		}
-	],
-	"browser": {
-		"binding": "BROWSER"
-	},
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "ally-audits",
-			"database_id": "00000000-0000-0000-0000-000000000000"
-		},
-		{
-			"binding": "ally_audits",
-			"database_name": "ally-audits",
-			"database_id": "758c08aa-1cc0-46b7-900a-b468f0a5c2a7",
-			"remote": true
-		}
-	],
-	"r2_buckets": [
-		{
-			"binding": "ARTIFACTS",
-			"bucket_name": "ally-audit-artifacts"
-		}
-	],
-	"queues": {
-		"producers": [
-			{
-				"binding": "AUDIT_QUEUE",
-				"queue": "ally-audit-jobs"
-			}
-		],
-		"consumers": [
-			{
-				"queue": "ally-audit-jobs",
-				"max_batch_size": 1,
-				"max_batch_timeout": 5
-			}
-		]
-	},
-	"vars": {
-		"DEV_AUTH_URL": "https://auth-devflare.andersseen.dev",
-		"DEV_AUTH_CLIENT_ID": "ally-dev",
-		"DEV_AUTH_REDIRECT_URI": "https://ally.andersseen.dev/api/auth/callback",
-		"PUBLIC_WEB_ORIGIN": "https://ally.andersseen.dev"
-	}
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "ally-audit-worker",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-21",
+  "upload_source_maps": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+  },
+  "routes": [
+    {
+      "pattern": "ally.andersseen.dev/api/*",
+      "zone_name": "andersseen.dev",
+    },
+  ],
+  "browser": {
+    "binding": "BROWSER",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ally-audits",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+    },
+    {
+      "binding": "ally_audits",
+      "database_name": "ally-audits",
+      "database_id": "758c08aa-1cc0-46b7-900a-b468f0a5c2a7",
+      "remote": true,
+    },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ARTIFACTS",
+      "bucket_name": "ally-audit-artifacts",
+    },
+  ],
+  // Consumed by the standalone Node runner (apps/runner) via Cloudflare's
+  // HTTP pull-consumer API, not by this Worker's `fetch`/`queue` exports —
+  // the Worker only ever produces onto this queue. Pull consumers give the
+  // external runner lease semantics (`visibility_timeout_ms`) for free: a
+  // stalled or crashed runner's claim expires and the job becomes visible
+  // to another puller again, and `max_retries` plus the DLQ bound how many
+  // times a bad job can be retried before it's set aside for inspection.
+  // Configure the pull consumer and DLQ with:
+  //   wrangler queues create ally-audit-jobs-dlq
+  //   wrangler queues consumer http add ally-audit-jobs \
+  //     --dead-letter-queue ally-audit-jobs-dlq --max-retries 5
+  "queues": {
+    "producers": [
+      {
+        "binding": "AUDIT_QUEUE",
+        "queue": "ally-audit-jobs",
+      },
+    ],
+  },
+  "vars": {
+    "DEV_AUTH_URL": "https://auth-devflare.andersseen.dev",
+    "DEV_AUTH_CLIENT_ID": "ally-dev",
+    "DEV_AUTH_REDIRECT_URI": "https://ally.andersseen.dev/api/auth/callback",
+    "PUBLIC_WEB_ORIGIN": "https://ally.andersseen.dev",
+    // Caps re-claim attempts per audit; independent of the queue's own
+    // max_retries above, which bounds redelivery at the transport level.
+    "AUDIT_MAX_ATTEMPTS": "3",
+  },
+  // Secrets — never set here. Configure with `wrangler secret put <name>`:
+  //   DEV_AUTH_CLIENT_SECRET, ALLY_SESSION_SECRET, ALLY_RUNNER_SECRET
 }
