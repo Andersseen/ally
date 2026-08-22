@@ -73,6 +73,10 @@ jobs:
         if: steps.deployment-secrets.outputs.ready == 'true'
         run: pnpm install --frozen-lockfile
 
+      - name: Install Playwright Chromium
+        if: steps.deployment-secrets.outputs.ready == 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Verify
         if: steps.deployment-secrets.outputs.ready == 'true'
         run: |

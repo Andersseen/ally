@@ -828,7 +828,14 @@ function withCors(response: Response, request: Request, env: Env): Response {
 
 function allowedOrigin(origin: string | null, env: Env): string {
   const configured = env.PUBLIC_WEB_ORIGIN ?? 'http://127.0.0.1:4321';
-  const allowed = new Set([configured, 'http://127.0.0.1:4321', 'http://localhost:4321']);
+  const allowed = new Set([
+    configured,
+    'http://127.0.0.1:4321',
+    'http://localhost:4321',
+    // The Pages project's default domain, live until/alongside the custom
+    // domain configured via PUBLIC_WEB_ORIGIN.
+    'https://ally-audit-web.pages.dev',
+  ]);
 
   return origin !== null && allowed.has(origin) ? origin : configured;
 }
