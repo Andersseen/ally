@@ -12,6 +12,10 @@ function preferredMode(): ThemeMode {
 function setMode(mode: ThemeMode): void {
   document.documentElement.dataset.themeMode = mode;
   document.documentElement.style.colorScheme = mode;
+  // The component palette only reacts to `and-mode` / `.dark`; without these the
+  // page turns dark while every `and-*` element stays on its light tokens.
+  document.documentElement.setAttribute('and-mode', mode);
+  document.documentElement.classList.toggle('dark', mode === 'dark');
   for (const toggle of document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')) {
     toggle.setAttribute(
       'aria-label',

@@ -52,6 +52,10 @@ const socialImage = new URL('/social-card.svg', siteUrl).toString();
             : 'light';
         document.documentElement.dataset.themeMode = mode;
         document.documentElement.style.colorScheme = mode;
+        // @andersseen/web-components keys its palette off `and-mode`/`.dark`,
+        // not off our own attribute, so the design system needs both.
+        document.documentElement.setAttribute('and-mode', mode);
+        document.documentElement.classList.toggle('dark', mode === 'dark');
       })();
     </script>
   </head>

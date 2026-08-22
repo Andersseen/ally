@@ -118,5 +118,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy apps/web/dist --project-name ally-web
+          command: pages deploy apps/web/dist --project-name ally-audit-web
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

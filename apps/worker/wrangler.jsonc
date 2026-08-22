@@ -1,54 +1,60 @@
 {
-  "$schema": "../../node_modules/wrangler/config-schema.json",
-  "name": "ally-audit-worker",
-  "main": "src/index.ts",
-  "compatibility_date": "2026-08-21",
-  "upload_source_maps": true,
-  "observability": {
-    "enabled": true,
-    "head_sampling_rate": 1
-  },
-  "routes": [
-    {
-      "pattern": "ally.andersseen.dev/api/*",
-      "zone_name": "andersseen.dev"
-    }
-  ],
-  "browser": {
-    "binding": "BROWSER"
-  },
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "ally-audits",
-      "database_id": "00000000-0000-0000-0000-000000000000"
-    }
-  ],
-  "r2_buckets": [
-    {
-      "binding": "ARTIFACTS",
-      "bucket_name": "ally-audit-artifacts"
-    }
-  ],
-  "queues": {
-    "producers": [
-      {
-        "binding": "AUDIT_QUEUE",
-        "queue": "ally-audit-jobs"
-      }
-    ],
-    "consumers": [
-      {
-        "queue": "ally-audit-jobs",
-        "max_batch_size": 1,
-        "max_batch_timeout": 5
-      }
-    ]
-  },
-  "vars": {
-    "DEV_AUTH_URL": "https://auth-devflare.andersseen.dev",
-    "DEV_AUTH_CLIENT_ID": "ally-dev",
-    "DEV_AUTH_REDIRECT_URI": "https://ally.andersseen.dev/api/auth/callback",
-    "PUBLIC_WEB_ORIGIN": "https://ally.andersseen.dev"
-  }
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "ally-audit-worker",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-08-21",
+	"upload_source_maps": true,
+	"observability": {
+		"enabled": true,
+		"head_sampling_rate": 1
+	},
+	"routes": [
+		{
+			"pattern": "ally.andersseen.dev/api/*",
+			"zone_name": "andersseen.dev"
+		}
+	],
+	"browser": {
+		"binding": "BROWSER"
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "ally-audits",
+			"database_id": "00000000-0000-0000-0000-000000000000"
+		},
+		{
+			"binding": "ally_audits",
+			"database_name": "ally-audits",
+			"database_id": "758c08aa-1cc0-46b7-900a-b468f0a5c2a7",
+			"remote": true
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "ARTIFACTS",
+			"bucket_name": "ally-audit-artifacts"
+		}
+	],
+	"queues": {
+		"producers": [
+			{
+				"binding": "AUDIT_QUEUE",
+				"queue": "ally-audit-jobs"
+			}
+		],
+		"consumers": [
+			{
+				"queue": "ally-audit-jobs",
+				"max_batch_size": 1,
+				"max_batch_timeout": 5
+			}
+		]
+	},
+	"vars": {
+		"DEV_AUTH_URL": "https://auth-devflare.andersseen.dev",
+		"DEV_AUTH_CLIENT_ID": "ally-dev",
+		"DEV_AUTH_REDIRECT_URI": "https://ally.andersseen.dev/api/auth/callback",
+		"PUBLIC_WEB_ORIGIN": "https://ally.andersseen.dev"
+	}
 }

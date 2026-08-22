@@ -353,15 +353,6 @@ and-card::part(card) {
   display: inline-block;
 }
 
-:root[data-theme-mode="dark"] and-card::part(card),
-:root[data-theme-mode="dark"] and-alert::part(alert),
-:root[data-theme-mode="dark"] and-badge::part(badge),
-:root[data-theme-mode="dark"] and-button::part(button) {
-  border-color: var(--ally-faint);
-  background-color: var(--ally-panel-strong);
-  color: var(--ally-ink);
-}
-
 and-button.full-width {
   width: 100%;
 }
