@@ -1,3 +1,15 @@
+<p align="center">
+  <img src="apps/web/public/social-card.svg" alt="Ally — hosted web accessibility audits" width="720">
+</p>
+
+<p align="center">
+  <a href="https://github.com/Andersseen/ally/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Andersseen/ally/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/Andersseen/ally/actions/workflows/deploy-cloudflare.yml"><img alt="Deploy" src="https://github.com/Andersseen/ally/actions/workflows/deploy-cloudflare.yml/badge.svg"></a>
+  <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-17695D"></a>
+  <img alt="Node >=22.12" src="https://img.shields.io/badge/node-%E2%89%A522.12-17695D?logo=node.js&amp;logoColor=white">
+  <a href="https://ally-audit-web.pages.dev"><img alt="Live demo" src="https://img.shields.io/badge/demo-ally--audit--web.pages.dev-17695D?logo=googlechrome&amp;logoColor=white"></a>
+</p>
+
 # Ally
 
 An experimental, open-source **accessibility audit orchestrator** for developers.
@@ -8,16 +20,38 @@ findings, and produces a developer-friendly report. The engines do the
 detecting; Ally does the orchestrating, normalizing, deduplicating and
 reporting.
 
+<p align="center">
+  <img src="docs/screenshots/report.png" alt="An Ally report showing an Automated Accessibility Score of 55/100, engine coverage 4/4, and findings broken down by severity and classification" width="760">
+  <br>
+  <sub>The static report every audit produces — <code>pnpm ally &lt;url&gt;</code> or the hosted dashboard.</sub>
+</p>
+
 > **Status: Level 1 (local) is a usable personal auditing MVP** — four
 > engines run, a keyboard analyzer runs, findings are deduplicated and
 > scored, and the whole thing renders as one static report. **Level 2
-> (hosted) is implemented and locally verified**: sign in, submit a URL,
-> the job runs through a queue and a standalone runner, and the report is
-> viewable — proven end to end by an integration test against real
-> Chromium and the real pipeline (`apps/worker/src/hosted-flow.test.ts`).
-> It has not yet been deployed to a real public domain; see
+> (hosted) is deployed** at [ally-audit-web.pages.dev](https://ally-audit-web.pages.dev):
+> sign in, submit a URL, the job runs through a queue and a standalone
+> runner, and the report is viewable — proven end to end by an integration
+> test against real Chromium and the real pipeline
+> (`apps/worker/src/hosted-flow.test.ts`). See
 > [Hosted (Level 2)](#hosted-level-2) and
 > [What is not built yet](#what-is-not-built-yet).
+
+## Contents
+
+- [What Ally does not claim](#what-ally-does-not-claim)
+- [Requirements](#requirements)
+- [Getting started](#getting-started)
+- [Hosted (Level 2)](#hosted-level-2)
+- [The pipeline](#the-pipeline)
+- [Architecture](#architecture)
+- [Deduplication](#deduplication)
+- [Automated Accessibility Score](#automated-accessibility-score)
+- [Keyboard analysis](#keyboard-analysis)
+- [Commands](#commands)
+- [Testing](#testing)
+- [What is not built yet](#what-is-not-built-yet)
+- [Licensing](#licensing)
 
 ## What Ally does not claim
 
@@ -365,12 +399,13 @@ Space, Escape), modal and widget interaction, focus restoration,
 accessibility-tree inspection, custom rules, multi-page crawling, and
 authenticated audits.
 
-The hosted MVP (see [Hosted (Level 2)](#hosted-level-2)) is implemented and
-locally verified, but not yet deployed to a real public domain — that still
-needs a live Cloudflare account and Docker host, and a build-tested
-`apps/runner/Dockerfile` (see `docs/software-design-document.md` §14 for the
-exact remaining gaps). Deliberately still absent regardless: CI-triggered
-audits, schedules, teams, and billing.
+The hosted control plane — `apps/web` and `apps/worker`, see
+[Hosted (Level 2)](#hosted-level-2) — is deployed to Cloudflare. The
+standalone execution runner (`apps/runner`) still needs a Docker host to
+actually process queued audits; until one is running, submitted jobs stay
+`queued` (see `docs/software-design-document.md` §14 for the exact
+remaining gaps). Deliberately still absent regardless: CI-triggered audits,
+schedules, teams, and billing.
 
 ## Licensing
 
