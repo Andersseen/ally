@@ -368,7 +368,7 @@ Cloudflare resources:
   externally by `apps/runner`, not by the Worker
 
 The runner (`apps/runner`) deploys as a Docker image
-(`apps/runner/Dockerfile`) to any Docker host — Coolify, Fly.io, Railway,
+(`Dockerfile.runner`) to any Docker host — Coolify, Fly.io, Railway,
 Cloud Run, or a bare VM — independent of Cloudflare's deploy pipeline. See
 `docs/cloudflare-deployment.md` for the full sequence.
 
@@ -415,7 +415,7 @@ Recommended next tests:
   (`apps/runner/src/queue-client.ts`) is parsed defensively but has not been
   confirmed against a live account; re-verify against current Cloudflare
   docs at deploy time.
-- `apps/runner/Dockerfile` has not been build-tested against a real Docker
+- `Dockerfile.runner` has not been build-tested against a real Docker
   daemon from this environment.
 - Auth client registration must be done in `Andersseen/devflare` before real
   sign-in can complete.

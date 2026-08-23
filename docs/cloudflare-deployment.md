@@ -136,7 +136,7 @@ ally.andersseen.dev -> ally-web
 Cloudflare Containers is the default path. The Worker config declares:
 
 - `AuditRunnerContainer` as a container-enabled Durable Object.
-- `../runner/Dockerfile` as the container image.
+- `Dockerfile.runner` (repo root) as the container image.
 - `AUDIT_RUNNER` as the binding used by the Worker's `queue()` handler.
 - `ally-audit-jobs` as both the producer queue and native consumer queue.
 
@@ -152,7 +152,7 @@ queued job to `/run`.
 
 ### External Docker host fallback
 
-The runner is a plain Docker image (`apps/runner/Dockerfile`) — build and
+The runner is a plain Docker image (`Dockerfile.runner`) — build and
 push it to whatever registry your host reads from, then run it with the
 environment variables in `apps/runner/.env.example` filled in
 (`ALLY_WORKER_BASE_URL`, `ALLY_RUNNER_SECRET`, `CLOUDFLARE_ACCOUNT_ID`,
@@ -174,7 +174,7 @@ You'll also need a Cloudflare API token scoped to Queues and the queue id
 from `pnpm --filter @ally/worker exec wrangler queues list`.
 
 ```bash
-docker build -t ally-runner -f apps/runner/Dockerfile .
+docker build -t ally-runner -f Dockerfile.runner .
 docker run --rm \
   -e ALLY_WORKER_BASE_URL=https://ally.andersseen.dev \
   -e ALLY_RUNNER_SECRET=... \

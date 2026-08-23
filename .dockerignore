@@ -1,4 +1,4 @@
-# Build context for apps/runner/Dockerfile, which builds from the repo root
+# Build context for Dockerfile.runner, which builds from the repo root
 # (it needs the whole pnpm workspace before `turbo prune` narrows it down).
 # Mirrors .gitignore for everything that should never end up in an image.
 node_modules/
