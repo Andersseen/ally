@@ -73,7 +73,7 @@ function readJson(request: IncomingMessage): Promise<unknown> {
         const body = Buffer.concat(chunks).toString('utf8');
         resolveRead(body === '' ? {} : JSON.parse(body));
       } catch (error) {
-        rejectRead(error);
+        rejectRead(error instanceof Error ? error : new Error(String(error)));
       }
     });
   });
