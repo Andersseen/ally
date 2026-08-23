@@ -149,8 +149,10 @@ Cloudflare Containers is the default path. The Worker config declares:
 - `ally-audit-jobs` as both the producer queue and native consumer queue.
 
 Deploying the Worker builds/pushes the runner image and registers the native
-queue consumer. Start with the committed `max_instances: 10` only after a
-staging smoke test; lower it first if you want a narrower beta rollout.
+queue consumer. The committed production guardrail is deliberately narrow:
+`max_instances: 1`, one queue retry, and one accepted audit per UTC day
+globally and per user. Raise those `wrangler.jsonc` vars only after reviewing
+billable usage.
 
 The runner image exposes `/healthz` and `/run` on `ALLY_HEALTH_PORT`
 (default 8080). The Worker starts one named container per audit id, passes
@@ -246,11 +248,21 @@ From the browser:
 
 ## 9. Cost controls still owed
 
-Authentication prevents anonymous abuse, but production should also add:
+Authentication prevents anonymous abuse, and the production Worker now ships
+with conservative cost guardrails:
 
-- Per-user daily audit quota.
-- Queue concurrency limits matched to the free tier, and runner instance
-  count matched to expected load.
+- `limits.cpu_ms: 1000` and `limits.subrequests: 100`.
+- `AUDITS_ENABLED=true`; set it to `false` as an emergency stop for new work.
+- `max_instances: 1` for Cloudflare Containers.
+- Container `sleepAfter: 30s`.
+- `ALLY_DAILY_AUDIT_LIMIT=1`.
+- `ALLY_GLOBAL_DAILY_AUDIT_LIMIT=1`.
+- `ALLY_GLOBAL_ACTIVE_AUDIT_LIMIT=1`.
+- `AUDIT_MAX_ATTEMPTS=1` and queue `max_retries=1`.
+
+These are technical guardrails, not a Cloudflare billing hard cap. Keep the
+Cloudflare budget alerts enabled and check Billable Usage after every real
+smoke test. Remaining follow-up:
+
 - Structured audit duration metrics (durations are already logged per-stage;
   aggregating them is the remaining step).
-- A manual kill switch, for example `AUDITS_ENABLED=false`.

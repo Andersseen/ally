@@ -8,6 +8,14 @@ export interface Env extends AuthEnv, RunnerAuthEnv {
   readonly ARTIFACTS: R2Bucket;
   readonly AUDIT_QUEUE: Queue<AuditJobMessage>;
   readonly AUDIT_RUNNER: ContainerNamespace;
+  /** Emergency switch for audit submission. Set to "false" to reject new work. */
+  readonly AUDITS_ENABLED?: string;
+  /** Caps accepted audit submissions per authenticated user per UTC day. Defaults to 1. */
+  readonly ALLY_DAILY_AUDIT_LIMIT?: string;
+  /** Caps accepted audit submissions across the deployment per UTC day. Defaults to 1. */
+  readonly ALLY_GLOBAL_DAILY_AUDIT_LIMIT?: string;
+  /** Caps queued/running audit work across the deployment. Defaults to 1. */
+  readonly ALLY_GLOBAL_ACTIVE_AUDIT_LIMIT?: string;
   /** Caps re-claim attempts per audit. Defaults to 3 when unset. */
   readonly AUDIT_MAX_ATTEMPTS?: string;
 }
@@ -37,7 +45,13 @@ export interface D1PreparedStatement {
   bind(...values: readonly unknown[]): D1PreparedStatement;
   first<T = unknown>(): Promise<T | null>;
   all<T = unknown>(): Promise<{ readonly results: readonly T[] }>;
-  run(): Promise<unknown>;
+  run(): Promise<D1Result>;
+}
+
+export interface D1Result {
+  readonly meta?: {
+    readonly changes?: number;
+  };
 }
 
 export interface R2Bucket {
