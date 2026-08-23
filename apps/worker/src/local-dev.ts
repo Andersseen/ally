@@ -232,6 +232,14 @@ async function handle(
     return;
   }
 
+  const cancelMatch = /^\/api\/audits\/([^/]+)\/cancel$/.exec(url.pathname);
+  if (request.method === 'POST' && cancelMatch?.[1] !== undefined) {
+    const session = await requireAuth(request, response, ctx);
+    if (session === null) return;
+    cancelAudit(cancelMatch[1], request, response, ctx, session);
+    return;
+  }
+
   const auditMatch = /^\/api\/audits\/([^/]+)$/.exec(url.pathname);
   if (request.method === 'GET' && auditMatch?.[1] !== undefined) {
     const session = await requireAuth(request, response, ctx);
@@ -454,6 +462,35 @@ function getAuditResult(
   }
 
   send(response, request, ctx, audit.result);
+}
+
+function cancelAudit(
+  id: string,
+  request: IncomingMessage,
+  response: ServerResponse,
+  ctx: LocalDevContext,
+  session: AuthSession,
+): void {
+  const audit = ctx.audits.get(id);
+  if (audit === undefined || audit.ownerUserId !== session.user.id) {
+    send(response, request, ctx, { error: 'Audit not found' }, 404);
+    return;
+  }
+
+  const next = nextState(audit.status, 'cancel');
+  if (next === null) {
+    send(response, request, ctx, { error: 'Audit cannot be cancelled from its current state' }, 409);
+    return;
+  }
+
+  const now = new Date().toISOString();
+  audit.status = next;
+  audit.currentStage = null;
+  audit.lastError = 'Cancelled by user.';
+  audit.completedAt = now;
+  audit.updatedAt = now;
+
+  send(response, request, ctx, { status: next });
 }
 
 function auditJson(audit: LocalAudit): Record<string, unknown> {

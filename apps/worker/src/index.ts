@@ -110,6 +110,13 @@ export default {
         return withCors(await getAuditResult(resultMatch[1], env, session), request, env);
       }
 
+      const cancelMatch = /^\/api\/audits\/([^/]+)\/cancel$/.exec(url.pathname);
+      if (request.method === 'POST' && cancelMatch?.[1] !== undefined) {
+        const session = await requireAuth(request, env);
+        if (session instanceof Response) return withCors(session, request, env);
+        return withCors(await cancelAudit(cancelMatch[1], env, session), request, env);
+      }
+
       const auditMatch = /^\/api\/audits\/([^/]+)$/.exec(url.pathname);
       if (request.method === 'GET' && auditMatch?.[1] !== undefined) {
         const session = await requireAuth(request, env);
@@ -300,6 +307,25 @@ async function getAuditResult(id: string, env: Env, session: AuthSession): Promi
   return new Response(object.body, {
     headers: { 'content-type': object.httpMetadata?.contentType ?? JSON_HEADERS['content-type'] },
   });
+}
+
+async function cancelAudit(id: string, env: Env, session: AuthSession): Promise<Response> {
+  const row = await findAudit(id, env, session);
+  if (row === null) return json({ error: 'Audit not found' }, 404);
+
+  const next = nextState(row.status, 'cancel');
+  if (next === null) {
+    return json({ error: 'Audit cannot be cancelled from its current state' }, 409);
+  }
+
+  const now = new Date().toISOString();
+  await env.DB.prepare(
+    `UPDATE audits SET status = ?, current_stage = NULL, last_error = 'Cancelled by user.', completed_at = ?, updated_at = ? WHERE id = ?`,
+  )
+    .bind(next, now, now, id)
+    .run();
+
+  return json({ status: next });
 }
 
 // --- Runner API: authenticated by ALLY_RUNNER_SECRET, never by a user session ---

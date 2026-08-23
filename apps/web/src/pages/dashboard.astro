@@ -121,6 +121,10 @@ const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
           </ol>
           <p id="status-message" class="text-ally-muted mt-4 text-sm"></p>
           <p id="stage-message" class="text-ally-muted mt-1 text-xs"></p>
+          <and-button id="stop-button" class="mt-4 hidden" type="button" variant="ghost">
+            <and-icon name="close" size="16"></and-icon>
+            Stop audit
+          </and-button>
           <and-button id="report-link" class="mt-4 hidden" href="/reports" variant="outline">
             <and-icon name="external-link" size="16"></and-icon>
             View report

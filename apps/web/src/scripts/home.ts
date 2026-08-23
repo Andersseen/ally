@@ -6,6 +6,7 @@ const auditLockMessage = document.querySelector('#audit-lock-message');
 const statusPanel = document.querySelector('#status-panel');
 const message = document.querySelector('#status-message');
 const stageMessage = document.querySelector('#stage-message');
+const stopButton = document.querySelector<HTMLElement & { disabled?: boolean }>('#stop-button');
 const reportLink = document.querySelector('#report-link');
 const targetPanel = document.querySelector('#target-panel');
 const button = document.querySelector<HTMLElement & { disabled?: boolean; loading?: boolean }>(
@@ -17,9 +18,23 @@ const recentAuditsList = document.querySelector('#recent-audits-list');
 
 const apiBase = form?.getAttribute('data-api-base') ?? '';
 let isAuthenticated = false;
+/** The audit the status panel and stop button currently track, if any. */
+let activeAuditId: string | null = null;
 
-/** The four steps the UI shows. `claimed` groups with `queued`, `persisting` with `running`. */
-type HostedAuditStatus = 'queued' | 'claimed' | 'running' | 'persisting' | 'completed' | 'failed';
+/**
+ * The backend's full lifecycle. The UI groups these onto four visible
+ * steps — `claimed` reads as `queued`, `persisting` as `running`, and
+ * `cancelled`/`timed_out` as `failed` — see `stepGroup`.
+ */
+type HostedAuditStatus =
+  | 'queued'
+  | 'claimed'
+  | 'running'
+  | 'persisting'
+  | 'completed'
+  | 'failed'
+  | 'cancelled'
+  | 'timed_out';
 
 type AuthSession = {
   readonly authenticated: boolean;
@@ -78,27 +93,34 @@ function setAuditAccess(canAudit: boolean): void {
 function setStatus(status: HostedAuditStatus, text: string): void {
   statusPanel?.classList.remove('hidden');
   if (message) message.textContent = text;
+  stopButton?.classList.toggle('hidden', isTerminalStatus(status));
 
+  const group = stepGroup(status);
   for (const step of steps) {
     const name = step.getAttribute('data-step');
-    const failed = status === 'failed';
-    const active =
-      (!failed && stepGroup(status) === name) ||
-      (!failed && status === 'completed' && (name === 'queued' || name === 'running'));
-    const failedStep = failed && name === 'failed';
+    const active = group === name || (status === 'completed' && (name === 'queued' || name === 'running'));
+    const failedStep = group === 'failed' && name === 'failed';
 
-    step.classList.toggle('hidden', name === 'failed' && !failed);
-    step.classList.toggle('flex', name !== 'failed' || failed);
+    step.classList.toggle('hidden', name === 'failed' && group !== 'failed');
+    step.classList.toggle('flex', name !== 'failed' || group === 'failed');
     step.classList.toggle('font-semibold', active || failedStep);
     step.setAttribute('data-state', failedStep ? 'failed' : active ? 'active' : 'idle');
   }
 }
 
-/** `claimed` reads as still-queued to the user; `persisting` reads as still-running. */
+/**
+ * `claimed` reads as still-queued; `persisting` as still-running;
+ * `cancelled`/`timed_out` share the `failed` step — the UI only has four.
+ */
 function stepGroup(status: HostedAuditStatus): 'queued' | 'running' | 'completed' | 'failed' {
   if (status === 'claimed') return 'queued';
   if (status === 'persisting') return 'running';
+  if (status === 'cancelled' || status === 'timed_out') return 'failed';
   return status;
+}
+
+function isTerminalStatus(status: HostedAuditStatus): boolean {
+  return status === 'completed' || stepGroup(status) === 'failed';
 }
 
 /**
@@ -121,6 +143,7 @@ function humanizeStage(currentStage: string | null | undefined): string {
 const STALE_QUEUE_POLLS = 15;
 
 async function poll(id: string, attempt = 0): Promise<void> {
+  activeAuditId = id;
   const response = await fetch(`${apiBase}/api/audits/${id}`, { credentials: 'include' });
   if (!response.ok) throw new Error('Could not read audit status.');
   const audit = (await response.json()) as {
@@ -130,22 +153,16 @@ async function poll(id: string, attempt = 0): Promise<void> {
   };
 
   if (stageMessage) stageMessage.textContent = humanizeStage(audit.currentStage);
+  setStatus(audit.status, pollMessage(audit.status, attempt, audit.lastError));
 
-  if (audit.status === 'failed') {
-    setStatus('failed', audit.lastError ?? 'The audit failed.');
-    setButtonBusy(false);
-    void loadRecentAudits();
-    return;
+  if (audit.status === 'completed' && reportLink instanceof HTMLElement) {
+    reportLink.setAttribute('href', `/reports?id=${encodeURIComponent(id)}`);
+    reportLink.classList.remove('hidden');
+    reportLink.classList.add('inline-flex');
   }
 
-  setStatus(audit.status, pollMessage(audit.status, attempt));
-
-  if (audit.status === 'completed') {
-    if (reportLink instanceof HTMLElement) {
-      reportLink.setAttribute('href', `/reports?id=${encodeURIComponent(id)}`);
-      reportLink.classList.remove('hidden');
-      reportLink.classList.add('inline-flex');
-    }
+  if (isTerminalStatus(audit.status)) {
+    activeAuditId = null;
     setButtonBusy(false);
     void loadRecentAudits();
     return;
@@ -154,7 +171,15 @@ async function poll(id: string, attempt = 0): Promise<void> {
   window.setTimeout(() => void poll(id, attempt + 1).catch(showError), 2000);
 }
 
-function pollMessage(status: HostedAuditStatus, attempt: number): string {
+function pollMessage(
+  status: HostedAuditStatus,
+  attempt: number,
+  lastError: string | null | undefined,
+): string {
+  if (status === 'failed') return lastError ?? 'The audit failed.';
+  if (status === 'cancelled') return 'Audit cancelled.';
+  if (status === 'timed_out') return 'Audit timed out.';
+  if (status === 'completed') return 'Audit complete.';
   if (stepGroup(status) === 'queued') {
     return attempt >= STALE_QUEUE_POLLS
       ? 'Still queued — no runner has picked this up yet. Confirm a runner is deployed and processing the queue.'
@@ -213,14 +238,20 @@ function recentAuditRow(audit: AuditListItem): string {
       ? String(audit.summary?.score ?? '')
       : '—';
   const isDone = audit.status === 'completed';
+  const isTerminal = isTerminalStatus(audit.status);
   const badgeVariant = audit.status === 'failed' ? 'destructive' : isDone ? 'default' : 'secondary';
   const hostname = safeHostname(audit.url);
+
+  const stopControl = isTerminal
+    ? ''
+    : `<and-button type="button" variant="ghost" size="sm" data-cancel-audit="${escapeHtml(audit.id)}">Stop</and-button>`;
 
   const row = `
     <div and-layout="horizontal align:center justify:between gap:sm">
       <span class="truncate font-medium">${escapeHtml(hostname)}</span>
       <span class="text-ally-muted tabular-nums">${escapeHtml(score)}</span>
       <and-badge variant="${badgeVariant}">${escapeHtml(audit.status)}</and-badge>
+      ${stopControl}
     </div>
   `;
 
@@ -268,10 +299,38 @@ form?.addEventListener('submit', (event) => {
       if (!response.ok || body.id === undefined) {
         throw new Error(body.error ?? 'Could not create audit.');
       }
+      activeAuditId = body.id;
       setStatus('queued', 'Audit queued.');
       return poll(body.id);
     })
     .catch(showError);
+});
+
+async function cancelAudit(id: string): Promise<void> {
+  await fetch(`${apiBase}/api/audits/${id}/cancel`, { method: 'POST', credentials: 'include' });
+}
+
+stopButton?.addEventListener('click', () => {
+  if (activeAuditId === null || stopButton.disabled === true) return;
+  const id = activeAuditId;
+  stopButton.disabled = true;
+  void cancelAudit(id)
+    .then(() => poll(id))
+    .catch(showError)
+    .finally(() => {
+      stopButton.disabled = false;
+    });
+});
+
+recentAuditsList?.addEventListener('click', (event) => {
+  const target = event.target instanceof Element ? event.target.closest('[data-cancel-audit]') : null;
+  const id = target?.getAttribute('data-cancel-audit');
+  if (id === null || id === undefined) return;
+
+  void cancelAudit(id).finally(() => {
+    void loadRecentAudits();
+    if (id === activeAuditId) void poll(id).catch(showError);
+  });
 });
 
 void refreshAuth();

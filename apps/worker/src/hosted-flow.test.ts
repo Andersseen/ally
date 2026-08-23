@@ -127,5 +127,17 @@ describe('hosted audit flow', () => {
     const list = await fetch(`${devServer.url}/api/audits`, { headers: { cookie: ownerCookie } });
     const listBody = (await list.json()) as { audits: readonly { id: string }[] };
     expect(listBody.audits.some((audit) => audit.id === created.id)).toBe(true);
+
+    const strangerCancel = await fetch(`${devServer.url}/api/audits/${created.id}/cancel`, {
+      method: 'POST',
+      headers: { cookie: strangerCookie },
+    });
+    expect(strangerCancel.status).toBe(404);
+
+    const ownerCancelAlreadyDone = await fetch(`${devServer.url}/api/audits/${created.id}/cancel`, {
+      method: 'POST',
+      headers: { cookie: ownerCookie },
+    });
+    expect(ownerCancelAlreadyDone.status).toBe(409);
   }, 60_000);
 });
