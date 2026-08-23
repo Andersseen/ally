@@ -9,13 +9,14 @@ const recommendationsOption = document.querySelector('#option-recommendations');
 const markupOption = document.querySelector('#option-markup');
 const message = document.querySelector('#status-message');
 const stageMessage = document.querySelector('#stage-message');
+const statusTitle = document.querySelector('#status-title');
+const statusIcon = document.querySelector('#status-icon');
 const stopButton = document.querySelector<HTMLElement & { disabled?: boolean }>('#stop-button');
 const reportLink = document.querySelector('#report-link');
 const targetPanel = document.querySelector('#target-panel');
 const button = document.querySelector<HTMLElement & { disabled?: boolean; loading?: boolean }>(
   '#run-button',
 );
-const steps = Array.from(document.querySelectorAll('[data-step]'));
 const recentAuditsEmpty = document.querySelector('#recent-audits-empty');
 const recentAuditsList = document.querySelector('#recent-audits-list');
 
@@ -57,6 +58,10 @@ interface AuditListItem {
   readonly id: string;
   readonly url: string;
   readonly status: HostedAuditStatus;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly startedAt?: string | null;
+  readonly completedAt?: string | null;
   readonly summary?: { readonly score: number | null };
 }
 
@@ -99,16 +104,15 @@ function setStatus(status: HostedAuditStatus, text: string): void {
   stopButton?.classList.toggle('hidden', isTerminalStatus(status));
 
   const group = stepGroup(status);
-  for (const step of steps) {
-    const name = step.getAttribute('data-step');
-    const active =
-      group === name || (status === 'completed' && (name === 'queued' || name === 'running'));
-    const failedStep = group === 'failed' && name === 'failed';
-
-    step.classList.toggle('hidden', name === 'failed' && group !== 'failed');
-    step.classList.toggle('flex', name !== 'failed' || group === 'failed');
-    step.classList.toggle('font-semibold', active || failedStep);
-    step.setAttribute('data-state', failedStep ? 'failed' : active ? 'active' : 'idle');
+  if (statusTitle) statusTitle.textContent = statusTitleFor(group);
+  if (statusIcon instanceof HTMLElement) {
+    statusIcon.dataset['statusIcon'] = group;
+    statusIcon.innerHTML =
+      group === 'completed'
+        ? '<and-icon name="success" size="15"></and-icon>'
+        : group === 'failed'
+          ? '<and-icon name="alert-circle" size="15"></and-icon>'
+          : '<and-icon name="loader" size="15"></and-icon>';
   }
 }
 
@@ -125,6 +129,13 @@ function stepGroup(status: HostedAuditStatus): 'queued' | 'running' | 'completed
 
 function isTerminalStatus(status: HostedAuditStatus): boolean {
   return status === 'completed' || stepGroup(status) === 'failed';
+}
+
+function statusTitleFor(status: ReturnType<typeof stepGroup>): string {
+  if (status === 'queued') return 'Audit queued';
+  if (status === 'running') return 'Audit running';
+  if (status === 'completed') return 'Audit complete';
+  return 'Audit failed';
 }
 
 /**
@@ -193,7 +204,7 @@ function pollMessage(
 }
 
 function showError(error: unknown): void {
-  setStatus('running', error instanceof Error ? error.message : String(error));
+  setStatus('failed', error instanceof Error ? error.message : String(error));
   setButtonBusy(false);
 }
 
@@ -245,23 +256,63 @@ function recentAuditRow(audit: AuditListItem): string {
   const isTerminal = isTerminalStatus(audit.status);
   const badgeVariant = audit.status === 'failed' ? 'destructive' : isDone ? 'default' : 'secondary';
   const hostname = safeHostname(audit.url);
+  const dateLabel = auditDateLabel(audit);
+  const reportHref = `/reports?id=${encodeURIComponent(audit.id)}`;
 
   const stopControl = isTerminal
     ? ''
-    : `<and-button type="button" variant="ghost" size="sm" data-cancel-audit="${escapeHtml(audit.id)}">Stop</and-button>`;
+    : `<button type="button" class="rounded-md border border-slate-400 px-3 py-1.5 text-sm font-semibold hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ally-primary)] dark:border-slate-600 dark:hover:bg-slate-800" data-cancel-audit="${escapeHtml(audit.id)}">Stop</button>`;
 
   const row = `
-    <div and-layout="horizontal align:center justify:between gap:sm">
-      <span class="truncate font-medium">${escapeHtml(hostname)}</span>
-      <span class="text-ally-muted tabular-nums">${escapeHtml(score)}</span>
-      <and-badge variant="${badgeVariant}">${escapeHtml(audit.status)}</and-badge>
+    <li>
+    <div class="rounded-lg border border-[var(--ally-secondary-border)] bg-[var(--ally-secondary-bg)] p-4">
+    <div class="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center">
+      <div class="min-w-0">
+        <p class="truncate font-semibold text-ally-ink">${escapeHtml(hostname)}</p>
+        <p class="mt-1 break-all text-xs text-ally-muted">${escapeHtml(audit.url)}</p>
+        <p class="mt-2 text-sm text-ally-muted">${escapeHtml(dateLabel)}</p>
+      </div>
+      <div class="text-sm text-ally-muted md:text-right">
+        <span class="sr-only">Score </span>
+        <span class="text-ally-ink text-lg font-bold tabular-nums">${escapeHtml(score)}</span>
+        <span>${isDone ? '/100' : ''}</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 md:justify-end">
+        <and-badge variant="${badgeVariant}">${escapeHtml(audit.status)}</and-badge>
+        ${
+          isDone
+            ? `<a class="inline-flex items-center rounded-md border border-slate-400 px-3 py-1.5 text-sm font-semibold hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ally-primary)] dark:border-slate-600 dark:hover:bg-slate-800" href="${reportHref}">View report</a>`
+            : ''
+        }
       ${stopControl}
     </div>
+    </div>
+    </div>
+    </li>
   `;
 
-  return isDone
-    ? `<a href="/reports?id=${encodeURIComponent(audit.id)}"><and-card padded="true">${row}</and-card></a>`
-    : `<and-card padded="true">${row}</and-card>`;
+  return row;
+}
+
+function auditDateLabel(audit: AuditListItem): string {
+  const date = audit.completedAt ?? audit.startedAt ?? audit.updatedAt ?? audit.createdAt;
+  const prefix =
+    audit.completedAt !== null && audit.completedAt !== undefined
+      ? 'Completed'
+      : audit.startedAt !== null && audit.startedAt !== undefined
+        ? 'Started'
+        : 'Created';
+
+  return `${prefix} ${formatDate(date)}`;
+}
+
+function formatDate(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date);
 }
 
 function safeHostname(url: string): string {

@@ -278,12 +278,28 @@ a {
   color: white;
 }
 
-[data-state='active'] .status-dot {
+.status-dot[data-status-icon='queued'],
+.status-dot[data-status-icon='running'] {
   background: var(--ally-primary);
 }
 
-[data-state='failed'] .status-dot {
+.status-dot[data-status-icon='completed'] {
+  background: var(--ally-primary);
+}
+
+.status-dot[data-status-icon='failed'] {
   background: var(--ally-danger);
+}
+
+.status-dot[data-status-icon='queued'],
+.status-dot[data-status-icon='running'] {
+  animation: ally-status-spin 1s linear infinite;
+}
+
+@keyframes ally-status-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .report-grid {

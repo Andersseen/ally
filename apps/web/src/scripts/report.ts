@@ -6,6 +6,10 @@ const id = new URL(window.location.href).searchParams.get('id') ?? '';
 
 interface AuditResultJson {
   readonly target: { readonly url: string };
+  readonly options?: {
+    readonly recommendations?: boolean;
+    readonly markupValidation?: boolean;
+  };
   readonly finishedAt: string;
   readonly score: { readonly value: number };
   readonly summary: { readonly uniqueFindings: number };
@@ -21,11 +25,32 @@ interface AuditResultJson {
     readonly error?: { readonly message: string };
   }[];
   readonly findings?: readonly {
+    readonly id: string;
     readonly severity: string;
     readonly engineIds: readonly string[];
     readonly title: string;
-    readonly description: string;
-    readonly target?: { readonly path?: string };
+    readonly description?: string;
+    readonly target?: {
+      readonly label?: string;
+      readonly path?: string;
+      readonly selector?: string;
+      readonly tagName?: string;
+      readonly html?: string;
+    };
+  }[];
+  readonly remediations?: Record<string, RemediationJson>;
+}
+
+interface RemediationJson {
+  readonly confidence: string;
+  readonly summary: string;
+  readonly why: string;
+  readonly steps: readonly string[];
+  readonly goodExample?: string;
+  readonly badExample?: string;
+  readonly references?: readonly {
+    readonly label: string;
+    readonly url: string;
   }[];
 }
 
@@ -40,6 +65,9 @@ function escapeHtml(value: unknown): string {
 function render(result: AuditResultJson): void {
   const findings = result.findings ?? [];
   const engines = result.engines ?? [];
+  const remediations = result.remediations ?? {};
+  const recommendationsRequested = result.options?.recommendations === true;
+  const remediationCount = Object.keys(remediations).length;
 
   if (root) {
     root.innerHTML = `
@@ -49,6 +77,11 @@ function render(result: AuditResultJson): void {
       <h1 class="text-ally-ink break-words text-3xl font-bold">${escapeHtml(result.target.url)}</h1>
       <p class="text-ally-muted mt-3 text-sm">
         Audited ${escapeHtml(new Date(result.finishedAt).toUTCString())}
+      </p>
+      <p class="text-ally-muted mt-1 text-sm">
+        Recommendations ${recommendationsRequested ? `enabled (${escapeHtml(remediationCount)} fixes)` : 'not requested'}${
+          result.options?.markupValidation === true ? ' · Markup validation enabled' : ''
+        }
       </p>
 
       <div class="report-grid mt-6" and-motion="fade-in-up" and-motion-trigger="enter">
@@ -63,8 +96,8 @@ function render(result: AuditResultJson): void {
         Automated testing only. This report does not establish WCAG conformance, and manual review is still required.
       </and-alert>
 
-      <section class="mt-8">
-        <h2 class="text-ally-ink text-xl font-bold">Engine runs</h2>
+      <section class="mt-8" aria-labelledby="engine-runs-heading">
+        <h2 id="engine-runs-heading" class="text-ally-ink text-xl font-bold">Engine runs</h2>
         <and-card class="mt-3 block" padded="true">
           ${engines
             .map(
@@ -88,38 +121,129 @@ function render(result: AuditResultJson): void {
         </and-card>
       </section>
 
-      <section class="mt-8">
-        <h2 class="text-ally-ink text-xl font-bold">Findings</h2>
-        <div class="mt-3 space-y-3" and-motion="fade-in-up" and-motion-trigger="enter">
+      <section class="mt-8" aria-labelledby="findings-heading">
+        <h2 id="findings-heading" class="text-ally-ink text-xl font-bold">Findings</h2>
+        ${
+          recommendationsRequested
+            ? remediationCount === 0
+              ? `<and-alert class="mt-3 block" variant="default"><and-icon slot="icon" name="info"></and-icon>No deterministic fix recommendations were available for this audit.</and-alert>`
+              : ''
+            : `<and-alert class="mt-3 block" variant="default"><and-icon slot="icon" name="info"></and-icon>Fix recommendations were not requested for this audit. Enable “Recommendations” before running the next audit to include them.</and-alert>`
+        }
+        <div class="mt-3" and-motion="fade-in-up" and-motion-trigger="enter">
           ${
             findings.length === 0
               ? '<and-card padded="true"><p class="text-ally-muted">No automated findings were reported.</p></and-card>'
-              : findings
-                  .map(
-                    (finding) => `
-                      <and-card class="block" padded="true">
-                      <article>
-                        <div class="flex flex-wrap items-center gap-2">
-                          <and-badge variant="secondary">${escapeHtml(finding.severity)}</and-badge>
-                          <and-badge variant="outline">${escapeHtml(finding.engineIds.join(', '))}</and-badge>
-                        </div>
-                        <h3 class="text-ally-ink mt-3 font-semibold">${escapeHtml(finding.title)}</h3>
-                        <p class="mt-2 text-sm leading-6 text-[#38443f]">${escapeHtml(finding.description)}</p>
-                        ${
-                          finding.target?.path
-                            ? `<p class="text-ally-muted mt-2 break-all font-mono text-xs">${escapeHtml(finding.target.path)}</p>`
-                            : ''
-                        }
-                      </article>
-                      </and-card>
-                    `,
-                  )
-                  .join('')
+              : `<ul class="space-y-3" role="list">${findings.map((finding) => renderFinding(finding, remediations[finding.id])).join('')}</ul>`
           }
         </div>
       </section>
     `;
   }
+}
+
+function renderFinding(
+  finding: NonNullable<AuditResultJson['findings']>[number],
+  remediation: RemediationJson | undefined,
+): string {
+  const elementLabel = targetLabel(finding.target);
+
+  return `
+    <li>
+      <and-card class="block" padded="true">
+        <article aria-labelledby="finding-${escapeHtml(finding.id)}">
+          <div class="flex flex-wrap items-center gap-2">
+            <and-badge variant="secondary">${escapeHtml(finding.severity)}</and-badge>
+            <and-badge variant="outline">${escapeHtml(finding.engineIds.join(', '))}</and-badge>
+          </div>
+          <h3 id="finding-${escapeHtml(finding.id)}" class="text-ally-ink mt-3 font-semibold">${escapeHtml(finding.title)}</h3>
+          ${
+            finding.description === undefined || finding.description === ''
+              ? ''
+              : `<p class="text-ally-muted mt-2 text-sm leading-6">${escapeHtml(finding.description)}</p>`
+          }
+          ${
+            elementLabel === ''
+              ? ''
+              : `<div class="mt-3 rounded-md border border-[var(--ally-secondary-border)] bg-[var(--ally-field-bg)] px-3 py-2">
+                  <p class="text-xs font-semibold text-ally-muted">Affected element</p>
+                  <p class="mt-1 break-words text-sm">${elementLabel}</p>
+                </div>`
+          }
+          ${remediation === undefined ? '' : renderRemediation(remediation)}
+        </article>
+      </and-card>
+    </li>
+  `;
+}
+
+function targetLabel(target: NonNullable<AuditResultJson['findings']>[number]['target']): string {
+  if (target === undefined) return '';
+
+  const parts = [
+    target.tagName === undefined
+      ? ''
+      : `<span class="font-mono text-xs">&lt;${escapeHtml(target.tagName)}&gt;</span>`,
+    target.label === undefined || target.label === ''
+      ? ''
+      : `<span>${escapeHtml(target.label)}</span>`,
+  ].filter(Boolean);
+
+  const path = target.selector ?? target.path;
+  if (path !== undefined && path !== '') {
+    parts.push(
+      `<span class="block break-all font-mono text-xs text-ally-muted">${escapeHtml(path)}</span>`,
+    );
+  }
+
+  if (parts.length > 0) return parts.join(' ');
+  return '<span class="text-ally-muted">No stable element label was reported.</span>';
+}
+
+function renderRemediation(remediation: RemediationJson): string {
+  return `
+    <section class="mt-4 rounded-md border border-emerald-700/40 bg-emerald-950/20 px-3 py-3" aria-label="Fix recommendation">
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <h4 class="text-sm font-semibold text-ally-ink">Fix recommendation</h4>
+        <span class="text-xs font-semibold uppercase text-ally-muted">${escapeHtml(remediation.confidence)}</span>
+      </div>
+      <p class="mt-2 text-sm font-semibold">${escapeHtml(remediation.summary)}</p>
+      <p class="mt-1 text-sm text-ally-muted">${escapeHtml(remediation.why)}</p>
+      <ol class="mt-2 list-decimal space-y-1 pl-5 text-sm">
+        ${remediation.steps.map((step) => `<li>${escapeHtml(step)}</li>`).join('')}
+      </ol>
+      ${
+        remediation.goodExample === undefined && remediation.badExample === undefined
+          ? ''
+          : `<div class="mt-3 grid gap-2 md:grid-cols-2">
+              ${renderCodeExample('Good example', remediation.goodExample)}
+              ${renderCodeExample('Avoid', remediation.badExample)}
+            </div>`
+      }
+      ${
+        remediation.references === undefined || remediation.references.length === 0
+          ? ''
+          : `<ul class="mt-3 space-y-1" role="list">
+              ${remediation.references
+                .map(
+                  (reference) =>
+                    `<li class="text-xs"><a class="underline decoration-slate-400 underline-offset-2 hover:decoration-current" href="${escapeHtml(reference.url)}">${escapeHtml(reference.label)}</a></li>`,
+                )
+                .join('')}
+            </ul>`
+      }
+    </section>
+  `;
+}
+
+function renderCodeExample(label: string, value: string | undefined): string {
+  if (value === undefined) return '';
+  return `
+    <div>
+      <p class="text-xs font-semibold text-ally-muted">${escapeHtml(label)}</p>
+      <pre class="mt-1 whitespace-pre-wrap break-all rounded border border-[var(--ally-secondary-border)] bg-[var(--ally-field-bg)] p-2 font-mono text-xs"><code>${escapeHtml(value)}</code></pre>
+    </div>
+  `;
 }
 
 function renderMetric(label: string, value: unknown, icon: string): string {
