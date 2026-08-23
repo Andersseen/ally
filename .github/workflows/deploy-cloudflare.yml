@@ -137,7 +137,10 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/worker
-          command: deploy
+          # Cloudflare Containers can fail rollouts with APPLICATION_NOT_FOUND
+          # shortly after the first app creation. These guardrail/UI changes only
+          # need Worker code; skip image rollout until the container app settles.
+          command: deploy --containers-rollout=none
           secrets: |
             DEV_AUTH_CLIENT_SECRET
             ALLY_SESSION_SECRET
