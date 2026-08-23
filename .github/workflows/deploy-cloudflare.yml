@@ -42,10 +42,10 @@ jobs:
           [ -n "$ALLY_SESSION_SECRET" ] || missing+=("ALLY_SESSION_SECRET")
 
           if [ "${#missing[@]}" -gt 0 ]; then
-            printf 'ready=false\n' >> "$GITHUB_OUTPUT"
-            printf 'missing=%s\n' "$(IFS=', '; echo "${missing[*]}")" >> "$GITHUB_OUTPUT"
-            printf 'Cloudflare deploy skipped. Missing GitHub secrets: %s\n' "$(IFS=', '; echo "${missing[*]}")" >> "$GITHUB_STEP_SUMMARY"
-            exit 0
+            joined="$(IFS=', '; echo "${missing[*]}")"
+            printf '### Cloudflare deploy FAILED\nMissing GitHub secrets: %s\n' "$joined" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::Cloudflare deploy is misconfigured — missing GitHub secrets: $joined. Add them under Settings > Secrets and variables > Actions, then re-run this workflow."
+            exit 1
           fi
 
           printf 'ready=true\n' >> "$GITHUB_OUTPUT"

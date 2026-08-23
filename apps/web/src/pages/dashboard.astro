@@ -3,7 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 
 const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
-const loginUrl = `${apiBase}/api/auth/login?returnTo=${encodeURIComponent('/dashboard')}`;
 ---
 
 <BaseLayout title="Dashboard">
@@ -59,30 +58,6 @@ const loginUrl = `${apiBase}/api/auth/login?returnTo=${encodeURIComponent('/dash
         and-motion-trigger="enter"
         and-motion-delay="120ms"
       >
-        <and-card id="auth-panel" padded="true" data-api-base={apiBase}>
-          <div and-layout="vertical gap:md">
-            <div and-layout="horizontal align:center justify:between gap:sm">
-              <div>
-                <p class="eyebrow">Identity</p>
-                <h2 class="text-ally-ink mt-1 text-xl font-bold">dev-auth</h2>
-              </div>
-              <span class="brand-icon" aria-hidden="true">
-                <and-icon name="check" size="18"></and-icon>
-              </span>
-            </div>
-            <p id="auth-status" class="text-ally-muted text-sm">Checking sign-in...</p>
-            <div and-layout="horizontal gap:sm wrap:wrap">
-              <a id="auth-login" class="action-link action-link-secondary" href={loginUrl}>
-                <and-icon name="arrow-right" size="16"></and-icon>
-                Sign in
-              </a>
-              <and-button id="auth-logout" class="hidden" type="button" variant="ghost">
-                Sign out
-              </and-button>
-            </div>
-          </div>
-        </and-card>
-
         <and-card id="target-panel" padded="true" data-locked="true" aria-disabled="true">
           <div and-layout="vertical gap:md">
             <div and-layout="horizontal align:center justify:between gap:sm">
