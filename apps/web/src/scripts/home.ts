@@ -3,12 +3,6 @@ import './design-system';
 const form = document.querySelector('#audit-form');
 const input = document.querySelector('#audit-url');
 const auditLockMessage = document.querySelector('#audit-lock-message');
-const authPanel = document.querySelector('#auth-panel');
-const authStatus = document.querySelector('#auth-status');
-const authLogin = document.querySelector<HTMLAnchorElement>('#auth-login');
-const authLogout = document.querySelector<HTMLElement & { disabled?: boolean; loading?: boolean }>(
-  '#auth-logout',
-);
 const statusPanel = document.querySelector('#status-panel');
 const message = document.querySelector('#status-message');
 const stageMessage = document.querySelector('#stage-message');
@@ -49,51 +43,23 @@ interface AuditListItem {
 }
 
 async function refreshAuth(): Promise<void> {
-  if (authPanel === null || authStatus === null) return;
-
   try {
     const response = await fetch(`${apiBase}/api/auth/session`, { credentials: 'include' });
     if (!response.ok) throw new Error('Could not read identity status.');
     const session = (await response.json()) as AuthSession;
 
-    if (!session.configured) {
-      authStatus.textContent = authConfigurationMessage(session.missingConfiguration);
-      setAuditAccess(false);
-      redirectToAuth();
-      return;
-    }
-
-    if (session.authenticated) {
-      authStatus.textContent = `Signed in as ${session.user?.email || session.user?.name || 'Ally user'}.`;
-      setAuthActions(true, true);
+    if (session.configured && session.authenticated) {
       setAuditAccess(true);
       void loadRecentAudits();
       return;
     }
 
-    authStatus.textContent = `Not signed in. Provider: ${session.provider?.issuer ?? 'dev-auth'}.`;
     setAuditAccess(false);
     redirectToAuth();
-  } catch (error) {
-    authStatus.textContent = error instanceof Error ? error.message : String(error);
+  } catch {
     setAuditAccess(false);
     redirectToAuth();
   }
-}
-
-function authConfigurationMessage(missingConfiguration: readonly string[] = []): string {
-  const missing =
-    missingConfiguration.length > 0
-      ? missingConfiguration.join(', ')
-      : 'ALLY_SESSION_SECRET, DEV_AUTH_CLIENT_SECRET';
-  return `dev-auth routes are ready. Set ${missing} in apps/worker/.dev.vars to enable local login.`;
-}
-
-function setAuthActions(isSignedIn: boolean, canLogin: boolean): void {
-  authLogin?.classList.toggle('hidden', isSignedIn);
-  authLogout?.classList.toggle('hidden', !isSignedIn);
-  authLogin?.setAttribute('aria-disabled', String(!canLogin || isSignedIn));
-  authLogin?.classList.toggle('is-disabled', !canLogin || isSignedIn);
 }
 
 function setAuditAccess(canAudit: boolean): void {
@@ -294,24 +260,6 @@ form?.addEventListener('submit', (event) => {
       return poll(body.id);
     })
     .catch(showError);
-});
-
-authLogin?.addEventListener('click', (event) => {
-  if (authLogin.getAttribute('aria-disabled') === 'true') event.preventDefault();
-});
-
-authLogout?.addEventListener('click', () => {
-  authLogout.disabled = true;
-  authLogout.loading = true;
-  void fetch(`${apiBase}/api/auth/logout`, {
-    method: 'POST',
-    credentials: 'include',
-  })
-    .then(() => refreshAuth())
-    .finally(() => {
-      authLogout.disabled = false;
-      authLogout.loading = false;
-    });
 });
 
 void refreshAuth();
