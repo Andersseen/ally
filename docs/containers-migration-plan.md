@@ -89,17 +89,16 @@ Docker-anywhere fallback:
   `apps/runner/src/health.ts`) exposing `POST /run`, which parses the
   request body as an `AuditJob` (reuse `parseJob` logic from `main.ts` —
   consider extracting it to a shared module both entrypoints import), then
-  calls the same `executeAuditJob(job, { browserProvider, persistence,
-  budgets })` used by `runOne` in `main.ts`, and responds `200` once done
-  (or once claimed, if you want fire-and-forget — decide based on whether
-  the Worker's `queue()` handler should wait for the whole audit or just
-  confirm hand-off; waiting is simpler and matches at-least-once semantics
-  via the queue's own retry).
+  calls the same `executeAuditJob(job, { browserProvider, persistence, budgets })`
+  used by `runOne` in `main.ts`, and responds `200` once done (or once claimed, if
+  you want fire-and-forget — decide based on whether the Worker's `queue()` handler
+  should wait for the whole audit or just confirm hand-off; waiting is simpler and
+  matches at-least-once semantics via the queue's own retry).
 - Add a `start:serve` script to `apps/runner/package.json` running this new
   entrypoint instead of `main.ts`'s loop.
 - The container still authenticates to `/api/runner/*` with
   `ALLY_RUNNER_SECRET` exactly as `worker-client.ts` does today — that part
-  needs no changes, only the *trigger* mechanism changes (HTTP push from
+  needs no changes, only the _trigger_ mechanism changes (HTTP push from
   the Worker instead of self-polling a remote queue).
 
 ### 3. Container image
@@ -194,10 +193,10 @@ to the `Env` type in `apps/worker/src/bindings.ts`.
 - The `queue()` handler and container dispatch are **not** exercisable by
   the existing `apps/worker/src/hosted-flow.test.ts` harness (it uses
   `local-dev.ts`, which fires `executeAuditJob` in-process — there is no
-  Cloudflare Queue or Container involved locally). Check current `wrangler
-  dev` support for local Container emulation before assuming you can test
-  this end-to-end without a real deploy; as of the beta docs referenced
-  above it may require Docker running locally.
+  Cloudflare Queue or Container involved locally). Check current `wrangler dev`
+  support for local Container emulation before assuming you can test this
+  end-to-end without a real deploy; as of the beta docs referenced above it may
+  require Docker running locally.
 - Plan for a real staging deploy to validate the `queue()` → Container →
   `/api/runner/*` round trip before relying on it for production traffic.
 

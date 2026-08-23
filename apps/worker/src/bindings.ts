@@ -24,6 +24,8 @@ export interface AuditJobMessage {
   readonly options?: {
     readonly only?: readonly string[];
     readonly keyboard?: boolean;
+    readonly recommendations?: boolean;
+    readonly markupValidation?: boolean;
   };
 }
 

@@ -29,6 +29,8 @@ export async function performAudit(options: AuditOptions): Promise<AuditOutcome>
         page,
         only: options.only,
         keyboard: options.keyboard,
+        recommendations: options.recommendations,
+        markupValidation: options.markupValidation,
       }),
     { headless: options.headless, timeoutMs: options.timeoutMs },
   );

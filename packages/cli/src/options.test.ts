@@ -57,8 +57,17 @@ describe('parseArgs', () => {
     const options = audit(['https://example.com']);
 
     expect(options.keyboard).toBe(true);
+    expect(options.recommendations).toBe(false);
+    expect(options.markupValidation).toBe(false);
     expect(options.buildReport).toBe(true);
     expect(options.headless).toBe(true);
+  });
+
+  it('enables optional recommendations and markup validation', () => {
+    const options = audit(['https://example.com', '--recommendations', '--markup']);
+
+    expect(options.recommendations).toBe(true);
+    expect(options.markupValidation).toBe(true);
   });
 
   it('honours the opt-out flags', () => {

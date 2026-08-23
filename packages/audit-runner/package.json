@@ -26,8 +26,11 @@
     "@ally/core": "workspace:*",
     "@ally/engine-alfa": "workspace:*",
     "@ally/engine-axe": "workspace:*",
+    "@ally/engine-htmlcs": "workspace:*",
     "@ally/engine-ibm": "workspace:*",
-    "@ally/engine-qualweb": "workspace:*"
+    "@ally/engine-qualweb": "workspace:*",
+    "@ally/markup-validator": "workspace:*",
+    "@ally/remediation": "workspace:*"
   },
   "devDependencies": {
     "@ally/config": "workspace:*",

@@ -1,6 +1,9 @@
 import type { AllyFinding } from './dedupe.js';
 import type { EngineMetadata } from './engine.js';
 import type { KeyboardReport, KeyboardSummary } from './keyboard.js';
+import type { MarkupValidationResult } from './markup.js';
+import type { AuditOptionsSnapshot } from './options.js';
+import type { Remediation } from './remediation.js';
 import type { AutomatedScore } from './score.js';
 import type { SeverityCounts } from './severity.js';
 import type { RuleStandard } from './wcag.js';
@@ -57,8 +60,12 @@ export interface EngineContribution {
   readonly durationMs: number;
   readonly rawFindings: number;
   readonly normalizedFindings: number;
+  /** Deduplicated findings this engine participated in. */
+  readonly mergedFindings: number;
   /** Unique findings only this engine reported. */
   readonly uniqueContributions: number;
+  /** Alias for unique contributions, named for product/report copy. */
+  readonly exclusiveFindings: number;
   /** Unique findings this engine reported alongside at least one other. */
   readonly sharedContributions: number;
 }
@@ -99,6 +106,7 @@ export interface AuditTarget {
 export interface AuditResult {
   readonly schemaVersion: number;
   readonly target: AuditTarget;
+  readonly options: AuditOptionsSnapshot;
   /** ISO-8601 timestamp. */
   readonly startedAt: string;
   /** ISO-8601 timestamp. */
@@ -109,6 +117,8 @@ export interface AuditResult {
   /** Deduplicated findings, most urgent first. */
   readonly findings: readonly AllyFinding[];
   readonly keyboard?: KeyboardReport;
+  readonly markupValidation?: MarkupValidationResult;
+  readonly remediations?: Readonly<Record<string, Remediation>>;
   readonly score: AutomatedScore;
   readonly coverage: AuditCoverage;
   readonly summary: AuditSummary;

@@ -324,10 +324,21 @@ async function createAudit(request: Request, env: Env, session: AuthSession): Pr
     .bind(id, normalized.url, now, now, session.user.id, session.user.email)
     .run();
 
-  const message: AuditJobMessage = { id, url: normalized.url, options: { keyboard: true } };
+  const auditOptions = readAuditOptions(body?.options);
+  const message: AuditJobMessage = { id, url: normalized.url, options: auditOptions };
   await env.AUDIT_QUEUE.send(message);
 
   return json({ id, status: 'queued' }, 202);
+}
+
+function readAuditOptions(value: unknown): NonNullable<AuditJobMessage['options']> {
+  const record = isRecord(value) ? value : {};
+  return {
+    keyboard: typeof record.keyboard === 'boolean' ? record.keyboard : true,
+    recommendations: typeof record.recommendations === 'boolean' ? record.recommendations : false,
+    markupValidation:
+      typeof record.markupValidation === 'boolean' ? record.markupValidation : false,
+  };
 }
 
 async function listAudits(env: Env, session: AuthSession): Promise<Response> {

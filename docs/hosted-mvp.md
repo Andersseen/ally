@@ -57,9 +57,11 @@ does — but no longer gates anything.
              axe           IBM           Alfa
               │             │             │
               └──────┬──────┴──────┬──────┘
-                     │           QualWeb
+                     │       QualWeb + HTMLCS
                      │
                   keyboard
+                     │
+       optional markup validation + recommendations
                      │
                      ▼
               /api/runner/* (ALLY_RUNNER_SECRET)

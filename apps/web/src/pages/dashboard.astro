@@ -25,8 +25,9 @@ const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
         <p class="eyebrow">Hosted web audit</p>
         <h1 class="hero-title">Ally</h1>
         <p class="hero-copy">
-          Run axe-core, IBM Equal Access, Siteimprove Alfa, QualWeb, and Ally's keyboard analyzer
-          against one public page, then normalize, deduplicate, and score the findings.
+          Run axe-core, IBM Equal Access, Siteimprove Alfa, QualWeb, HTML_CodeSniffer, and Ally's
+          keyboard analyzer against one public page, then normalize, deduplicate, and score the
+          findings.
         </p>
         <div and-layout="horizontal gap:sm wrap:wrap">
           <and-badge variant="outline">
@@ -54,9 +55,6 @@ const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
         class="surface audit-card p-5"
         data-api-base={apiBase}
         and-layout="vertical gap:md"
-        and-motion="fade-in-up"
-        and-motion-trigger="enter"
-        and-motion-delay="120ms"
       >
         <and-card id="target-panel" padded="true" data-locked="true" aria-disabled="true">
           <div and-layout="vertical gap:md">
@@ -85,6 +83,21 @@ const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
               placeholder="https://example.com"
               class="native-field"
             />
+            <fieldset class="space-y-2">
+              <legend class="text-ally-ink text-sm font-semibold">Audit options</legend>
+              <label class="flex items-center gap-2 text-sm">
+                <input id="option-keyboard" type="checkbox" checked class="size-4" />
+                <span>Keyboard analysis</span>
+              </label>
+              <label class="flex items-center gap-2 text-sm">
+                <input id="option-recommendations" type="checkbox" class="size-4" />
+                <span>Recommendations</span>
+              </label>
+              <label class="flex items-center gap-2 text-sm">
+                <input id="option-markup" type="checkbox" class="size-4" />
+                <span>Markup validation</span>
+              </label>
+            </fieldset>
             <and-button id="run-button" class="full-width" type="submit" size="lg" disabled>
               <and-icon name="arrow-right" size="18"></and-icon>
               Run audit
@@ -92,35 +105,24 @@ const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
           </div>
         </and-card>
 
-        <and-card id="status-panel" class="hidden" padded="true" aria-live="polite">
-          <ol class="space-y-3 text-sm">
-            <li class="flex items-center gap-3" data-step="queued">
-              <span class="status-dot">
-                <and-icon name="check" size="15"></and-icon>
-              </span>
-              <span>Audit queued</span>
-            </li>
-            <li class="flex items-center gap-3" data-step="running">
-              <span class="status-dot">
-                <and-icon name="loader" size="15"></and-icon>
-              </span>
-              <span>Running</span>
-            </li>
-            <li class="flex items-center gap-3" data-step="completed">
-              <span class="status-dot">
-                <and-icon name="success" size="15"></and-icon>
-              </span>
-              <span>Completed</span>
-            </li>
-            <li class="hidden items-center gap-3" data-step="failed">
-              <span class="status-dot">
-                <and-icon name="alert-circle" size="15"></and-icon>
-              </span>
-              <span>Failed</span>
-            </li>
-          </ol>
-          <p id="status-message" class="text-ally-muted mt-4 text-sm"></p>
-          <p id="stage-message" class="text-ally-muted mt-1 text-xs"></p>
+        <and-card id="status-panel" class="hidden" padded="true">
+          <div class="flex items-start gap-3" role="status" aria-live="polite" aria-atomic="true">
+            <span
+              id="status-icon"
+              class="status-dot mt-0.5"
+              data-status-icon="queued"
+              aria-hidden="true"
+            >
+              <and-icon name="loader" size="15"></and-icon>
+            </span>
+            <div>
+              <h2 id="status-title" class="text-ally-ink text-base font-semibold">
+                Preparing audit
+              </h2>
+              <p id="status-message" class="text-ally-muted mt-1 text-sm"></p>
+              <p id="stage-message" class="text-ally-muted mt-1 text-xs"></p>
+            </div>
+          </div>
           <and-button id="stop-button" class="mt-4 hidden" type="button" variant="ghost">
             <and-icon name="close" size="16"></and-icon>
             Stop audit
@@ -138,7 +140,7 @@ const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
       <and-card id="recent-audits-empty" padded="true">
         <p class="text-ally-muted text-sm">No audits yet. Run one above.</p>
       </and-card>
-      <div id="recent-audits-list" class="hidden" and-layout="vertical gap:sm"></div>
+      <ul id="recent-audits-list" class="hidden space-y-3" role="list"></ul>
     </section>
   </main>
 

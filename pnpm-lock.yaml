@@ -54,6 +54,9 @@ catalogs:
     '@tailwindcss/vite':
       specifier: ^4.3.3
       version: 4.3.3
+    '@types/html_codesniffer':
+      specifier: ^2.5.4
+      version: 2.5.4
     '@types/node':
       specifier: ^22.19.0
       version: 22.20.1
@@ -78,6 +81,9 @@ catalogs:
     eslint-plugin-jsx-a11y:
       specifier: ^6.10.2
       version: 6.10.2
+    html_codesniffer:
+      specifier: ^2.5.1
+      version: 2.5.1
     playwright:
       specifier: ^1.62.1
       version: 1.62.1
@@ -108,6 +114,9 @@ catalogs:
     vitest:
       specifier: ^4.1.11
       version: 4.1.11
+    vnu-jar:
+      specifier: ^26.8.21
+      version: 26.8.21
     wrangler:
       specifier: ^4.33.0
       version: 4.125.0
@@ -367,12 +376,21 @@ importers:
       '@ally/engine-axe':
         specifier: workspace:*
         version: link:../engine-axe
+      '@ally/engine-htmlcs':
+        specifier: workspace:*
+        version: link:../engine-htmlcs
       '@ally/engine-ibm':
         specifier: workspace:*
         version: link:../engine-ibm
       '@ally/engine-qualweb':
         specifier: workspace:*
         version: link:../engine-qualweb
+      '@ally/markup-validator':
+        specifier: workspace:*
+        version: link:../markup-validator
+      '@ally/remediation':
+        specifier: workspace:*
+        version: link:../remediation
     devDependencies:
       '@ally/config':
         specifier: workspace:*
@@ -495,6 +513,31 @@ importers:
         specifier: 'catalog:'
         version: 4.1.11(@types/node@22.20.1)(vite@8.2.2(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.1)(yaml@2.9.0))
 
+  packages/engine-htmlcs:
+    dependencies:
+      '@ally/browser':
+        specifier: workspace:*
+        version: link:../browser
+      '@ally/core':
+        specifier: workspace:*
+        version: link:../core
+      html_codesniffer:
+        specifier: 'catalog:'
+        version: 2.5.1
+    devDependencies:
+      '@ally/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/html_codesniffer':
+        specifier: 'catalog:'
+        version: 2.5.4
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@22.20.1)(vite@8.2.2(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.1)(yaml@2.9.0))
+
   packages/engine-ibm:
     dependencies:
       '@ally/browser':
@@ -575,6 +618,28 @@ importers:
         specifier: 'catalog:'
         version: 4.1.11(@types/node@22.20.1)(vite@8.2.2(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.1)(yaml@2.9.0))
 
+  packages/markup-validator:
+    dependencies:
+      '@ally/core':
+        specifier: workspace:*
+        version: link:../core
+      vnu-jar:
+        specifier: 'catalog:'
+        version: 26.8.21
+    devDependencies:
+      '@ally/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.1
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@22.20.1)(vite@8.2.2(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.1)(yaml@2.9.0))
+
   packages/net-guard:
     dependencies:
       playwright:
@@ -587,6 +652,22 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.1
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@22.20.1)(vite@8.2.2(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.1)(yaml@2.9.0))
+
+  packages/remediation:
+    dependencies:
+      '@ally/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@ally/config':
+        specifier: workspace:*
+        version: link:../config
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -2416,6 +2497,9 @@ packages:
   '@types/hast@3.0.5':
     resolution: {integrity: sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g==}
 
+  '@types/html_codesniffer@2.5.4':
+    resolution: {integrity: sha512-l7LZ5umKNiJIdq5b9Z8WDhJ2IKd8MZejapCssvdKF7RCmLQDx3bcEDF2T8PwGyK6rhcX/ggovd2sqYICywGzOA==}
+
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
@@ -3232,6 +3316,10 @@ packages:
 
   html-void-elements@3.0.0:
     resolution: {integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==}
+
+  html_codesniffer@2.5.1:
+    resolution: {integrity: sha512-vcz0yAaX/OaV6sdNHuT9alBOKkSxYb8h5Yq26dUqgi7XmCgGUSa7U9PiY1PBXQFMjKv1wVPs5/QzHlGuxPDUGg==}
+    engines: {node: '>=6'}
 
   http-cache-semantics@4.2.0:
     resolution: {integrity: sha512-dTxcvPXqPvXBQpq5dUr6mEMJX4oIEFv6bwom3FDwKRDsuIjjJGANqhBuoAn9c1RQJIdAKav33ED65E2ys+87QQ==}
@@ -4345,6 +4433,11 @@ packages:
         optional: true
       jsdom:
         optional: true
+
+  vnu-jar@26.8.21:
+    resolution: {integrity: sha512-vwdjyWEAR1IOwwiEG2JPnBBkCeeBod6fvjF41PWj72fQOnslbaWZutkTS1WapT7uPeQfPgHUTghIw0FY9gbffg==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   volar-service-css@0.0.71:
     resolution: {integrity: sha512-wRRFt9BpjMKCazcgOh67MSjUjiWUCAh99DyYSDIOTuxaRjEtDC7PpB0k1Y1wbJIW/pVtMUSVbpPo3UGSm0Byxw==}
@@ -6440,6 +6533,8 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
+  '@types/html_codesniffer@2.5.4': {}
+
   '@types/json-schema@7.0.15': {}
 
   '@types/mdast@4.0.4':
@@ -7553,6 +7648,8 @@ snapshots:
 
   html-void-elements@3.0.0: {}
 
+  html_codesniffer@2.5.1: {}
+
   http-cache-semantics@4.2.0: {}
 
   ignore@5.3.2: {}
@@ -8665,6 +8762,8 @@ snapshots:
       '@types/node': 22.20.1
     transitivePeerDependencies:
       - msw
+
+  vnu-jar@26.8.21: {}
 
   volar-service-css@0.0.71(@volar/language-service@2.4.28):
     dependencies:

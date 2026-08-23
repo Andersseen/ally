@@ -1,7 +1,8 @@
 import { createKeyboardAnalyzer } from '@ally/analyzer-keyboard';
 import type { AllyPage } from '@ally/browser/page';
-import { runAudit } from '@ally/core';
+import { normalizeAuditOptions, runAudit } from '@ally/core';
 import type {
+  AuditOptionsSnapshot,
   AuditEngine,
   AuditHooks,
   AuditRun,
@@ -10,8 +11,11 @@ import type {
 } from '@ally/core';
 import { AXE_ENGINE, createAxeEngine } from '@ally/engine-axe';
 import { ALFA_ENGINE, createAlfaEngine } from '@ally/engine-alfa';
+import { createHtmlCsEngine, HTMLCS_ENGINE } from '@ally/engine-htmlcs';
 import { IBM_ENGINE, createIbmEngine } from '@ally/engine-ibm';
 import { QUALWEB_ENGINE, createQualwebEngine } from '@ally/engine-qualweb';
+import { validateMarkup } from '@ally/markup-validator';
+import { remediateFindings } from '@ally/remediation';
 
 /**
  * The engines Ally ships with, in the order they run.
@@ -26,6 +30,7 @@ export const AVAILABLE_ENGINES: readonly EngineDescriptor[] = [
   IBM_ENGINE,
   ALFA_ENGINE,
   QUALWEB_ENGINE,
+  HTMLCS_ENGINE,
 ];
 
 const FACTORIES: Readonly<Record<string, () => AuditEngine<AllyPage>>> = {
@@ -33,6 +38,7 @@ const FACTORIES: Readonly<Record<string, () => AuditEngine<AllyPage>>> = {
   [IBM_ENGINE.id]: () => createIbmEngine(),
   [ALFA_ENGINE.id]: () => createAlfaEngine(),
   [QUALWEB_ENGINE.id]: () => createQualwebEngine(),
+  [HTMLCS_ENGINE.id]: () => createHtmlCsEngine(),
 };
 
 export interface EngineSelection {
@@ -46,6 +52,8 @@ export interface AuditPageOptions {
   readonly page: AllyPage;
   readonly only?: readonly string[];
   readonly keyboard?: boolean;
+  readonly recommendations?: boolean;
+  readonly markupValidation?: boolean;
   /** Forwarded to `runAudit` unchanged. See `@ally/core`'s `AuditHooks`. */
   readonly hooks?: AuditHooks;
 }
@@ -87,21 +95,52 @@ export function selectEngines(only: readonly string[] = []): EngineSelection {
  */
 export async function auditPage(options: AuditPageOptions): Promise<AuditPageOutcome> {
   const { engines, unknown } = selectEngines(options.only ?? []);
-  const keyboard: KeyboardAnalyzer<AllyPage> | undefined =
-    (options.keyboard ?? true) ? createKeyboardAnalyzer() : undefined;
+  const auditOptions = normalizeAuditOptions({
+    ...(options.keyboard === undefined ? {} : { keyboard: options.keyboard }),
+    ...(options.recommendations === undefined ? {} : { recommendations: options.recommendations }),
+    ...(options.markupValidation === undefined
+      ? {}
+      : { markupValidation: options.markupValidation }),
+  });
+  const keyboard: KeyboardAnalyzer<AllyPage> | undefined = auditOptions.keyboard
+    ? createKeyboardAnalyzer()
+    : undefined;
 
   const run = await runAudit({
     context: { url: options.url, page: options.page },
     engines,
+    auditOptions,
     ...(keyboard === undefined ? {} : { keyboard }),
     ...(options.hooks === undefined ? {} : { hooks: options.hooks }),
   });
 
-  return { run, unknownEngines: unknown };
+  return { run: await enrichAuditRun(run, options.page, auditOptions), unknownEngines: unknown };
 }
 
 function build(id: string): AuditEngine<AllyPage> {
   const factory = FACTORIES[id];
   if (factory === undefined) throw new Error(`No engine adapter is registered for "${id}".`);
   return factory();
+}
+
+async function enrichAuditRun(
+  run: AuditRun,
+  page: AllyPage,
+  options: AuditOptionsSnapshot,
+): Promise<AuditRun> {
+  let result = run.result;
+  const raw = new Map(run.raw);
+
+  if (options.markupValidation) {
+    const html = await page.evaluate(() => document.documentElement.outerHTML);
+    const markupValidation = await validateMarkup(html);
+    raw.set('nu-html-checker', markupValidation);
+    result = { ...result, markupValidation };
+  }
+
+  if (options.recommendations) {
+    result = { ...result, remediations: remediateFindings(result.findings) };
+  }
+
+  return { result, raw };
 }

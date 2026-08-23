@@ -15,6 +15,7 @@ import type { AuditResult } from '@ally/core';
 export const SAMPLE_AUDIT: AuditResult = {
   schemaVersion: AUDIT_SCHEMA_VERSION,
   target: { url: 'https://example.com/' },
+  options: { keyboard: true, recommendations: true, markupValidation: true },
   startedAt: '2026-01-15T09:24:11.000Z',
   finishedAt: '2026-01-15T09:24:17.420Z',
   durationMs: 6420,
@@ -72,6 +73,19 @@ export const SAMPLE_AUDIT: AuditResult = {
       durationMs: 830,
       error: { message: 'The QualWeb bundle did not install `ACTRulesRunner`.' },
     },
+    {
+      status: 'ok',
+      engine: {
+        id: 'htmlcs',
+        name: 'HTML_CodeSniffer',
+        homepage: 'https://github.com/squizlabs/HTML_CodeSniffer',
+        license: 'BSD-3-Clause',
+        version: '2.5.1',
+      },
+      durationMs: 152,
+      rawFindingCount: 2,
+      findingCount: 2,
+    },
   ],
   contributions: [
     {
@@ -81,7 +95,9 @@ export const SAMPLE_AUDIT: AuditResult = {
       durationMs: 124,
       rawFindings: 4,
       normalizedFindings: 4,
+      mergedFindings: 4,
       uniqueContributions: 2,
+      exclusiveFindings: 2,
       sharedContributions: 2,
     },
     {
@@ -91,7 +107,9 @@ export const SAMPLE_AUDIT: AuditResult = {
       durationMs: 187,
       rawFindings: 3,
       normalizedFindings: 3,
+      mergedFindings: 3,
       uniqueContributions: 1,
+      exclusiveFindings: 1,
       sharedContributions: 2,
     },
     {
@@ -101,7 +119,9 @@ export const SAMPLE_AUDIT: AuditResult = {
       durationMs: 243,
       rawFindings: 3,
       normalizedFindings: 3,
+      mergedFindings: 3,
       uniqueContributions: 1,
+      exclusiveFindings: 1,
       sharedContributions: 2,
     },
     {
@@ -111,8 +131,22 @@ export const SAMPLE_AUDIT: AuditResult = {
       durationMs: 830,
       rawFindings: 0,
       normalizedFindings: 0,
+      mergedFindings: 0,
       uniqueContributions: 0,
+      exclusiveFindings: 0,
       sharedContributions: 0,
+    },
+    {
+      engineId: 'htmlcs',
+      engineName: 'HTML_CodeSniffer',
+      status: 'ok',
+      durationMs: 152,
+      rawFindings: 2,
+      normalizedFindings: 2,
+      mergedFindings: 2,
+      uniqueContributions: 1,
+      exclusiveFindings: 1,
+      sharedContributions: 1,
     },
   ],
   findings: [
@@ -381,6 +415,60 @@ export const SAMPLE_AUDIT: AuditResult = {
       confidence: 'none',
     },
   ],
+  markupValidation: {
+    status: 'ok',
+    durationMs: 96,
+    tool: {
+      id: 'nu-html-checker',
+      name: 'Nu HTML Checker',
+      homepage: 'https://github.com/validator/validator',
+      license: 'MIT',
+      version: '26.8.21',
+    },
+    errors: [
+      {
+        severity: 'error',
+        message: 'Element “img” is missing required attribute “alt”.',
+        line: 12,
+        column: 7,
+        extract: '<img class="logo" src="/logo.svg">',
+        source: 'nu-html-checker',
+      },
+    ],
+    warnings: [
+      {
+        severity: 'warning',
+        message: 'Consider adding a lang attribute to the html start tag.',
+        line: 1,
+        column: 1,
+        extract: '<html>',
+        source: 'nu-html-checker',
+      },
+    ],
+    info: [],
+  },
+  remediations: {
+    'ally-0001': {
+      summary: 'Add an appropriate text alternative.',
+      why: 'Images that convey information need text alternatives so the information is available without vision.',
+      steps: [
+        'Use an alt attribute for informative images.',
+        'Use alt="" for decorative images that should be ignored.',
+      ],
+      goodExample: '<img src="chart.png" alt="Revenue increased 18% in Q4">',
+      badExample: '<img src="chart.png">',
+      confidence: 'high',
+    },
+    'ally-0002': {
+      summary: 'Manual review: verify whether this is an intentional focus trap.',
+      why: 'A focus cycle can be correct inside an open modal, but broken if users cannot leave the interaction.',
+      steps: [
+        'Check whether the cycle belongs to an active modal/dialog.',
+        'Verify Escape or a visible close action exits the interaction.',
+      ],
+      confidence: 'manual-review',
+    },
+  },
   keyboard: {
     status: 'ok',
     durationMs: 412,
@@ -529,13 +617,13 @@ export const SAMPLE_AUDIT: AuditResult = {
     findingCount: 6,
     groupCount: 6,
   },
-  coverage: { enginesConfigured: 4, enginesSucceeded: 3, keyboardAnalysis: 'ok' },
+  coverage: { enginesConfigured: 5, enginesSucceeded: 4, keyboardAnalysis: 'ok' },
   summary: {
     totalFindings: 13,
     uniqueFindings: 6,
     bySeverity: { critical: 1, serious: 2, moderate: 2, minor: 1, info: 0 },
     byStandard: { wcag: 3, 'best-practice': 2, unknown: 1 },
-    enginesSucceeded: 3,
+    enginesSucceeded: 4,
     enginesFailed: 1,
     keyboard: {
       expectedTabbable: 8,

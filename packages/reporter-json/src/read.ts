@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
-import { AUDIT_SCHEMA_VERSION } from '@ally/core';
-import type { AuditResult } from '@ally/core';
+import { AUDIT_SCHEMA_VERSION, normalizeAuditOptions } from '@ally/core';
+import type { AuditResult, EngineContribution } from '@ally/core';
 
 /**
  * Reads an `audit.json` produced by {@link writeAuditReport}.
@@ -23,5 +23,26 @@ export async function readAuditFile(path: string): Promise<AuditResult> {
     );
   }
 
-  return parsed as AuditResult;
+  return normalizeAuditResult(parsed as AuditResult);
+}
+
+export function normalizeAuditResult(result: AuditResult): AuditResult {
+  return {
+    ...result,
+    options: normalizeAuditOptions(result.options),
+    contributions: result.contributions.map(normalizeContribution),
+  };
+}
+
+function normalizeContribution(contribution: EngineContribution): EngineContribution {
+  const legacy = contribution as EngineContribution & {
+    readonly mergedFindings?: number;
+    readonly exclusiveFindings?: number;
+  };
+  return {
+    ...contribution,
+    mergedFindings:
+      legacy.mergedFindings ?? contribution.uniqueContributions + contribution.sharedContributions,
+    exclusiveFindings: legacy.exclusiveFindings ?? contribution.uniqueContributions,
+  };
 }

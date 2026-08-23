@@ -57,6 +57,18 @@ export type {
   TraversalStop,
 } from './keyboard.js';
 
+export type {
+  MarkupIssue,
+  MarkupIssueSeverity,
+  MarkupValidationResult,
+  MarkupValidationTool,
+} from './markup.js';
+
+export { DEFAULT_AUDIT_OPTIONS, normalizeAuditOptions } from './options.js';
+export type { AuditOptionsSnapshot } from './options.js';
+
+export type { Remediation, RemediationConfidence, RemediationReference } from './remediation.js';
+
 export {
   HALF_PENALTY,
   SCORE_METHODOLOGY,

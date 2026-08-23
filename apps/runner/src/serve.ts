@@ -67,7 +67,9 @@ function readJson(request: IncomingMessage): Promise<unknown> {
     request.on('data', (chunk: Buffer | string) => {
       chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
     });
-    request.on('error', rejectRead);
+    request.on('error', (error: unknown) => {
+      rejectRead(error instanceof Error ? error : new Error(String(error)));
+    });
     request.on('end', () => {
       try {
         const body = Buffer.concat(chunks).toString('utf8');

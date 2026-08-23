@@ -122,6 +122,8 @@ async function runAudit(
       outDir,
       only: [],
       keyboard: true,
+      recommendations: false,
+      markupValidation: false,
       buildReport: true,
       headless: true,
       timeoutMs: 30_000,

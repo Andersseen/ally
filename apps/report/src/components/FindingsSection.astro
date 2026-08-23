@@ -6,9 +6,10 @@ import { STANDARD_LABELS } from '../lib/format.js';
 
 interface Props {
   findings: AuditResult['findings'];
+  remediations?: AuditResult['remediations'];
 }
 
-const { findings } = Astro.props;
+const { findings, remediations } = Astro.props;
 
 // Only offer a filter for values that actually occur, so the UI never presents
 // a control that can only ever produce an empty list.
@@ -129,9 +130,14 @@ const presentEngines = [...new Set(findings.flatMap((finding) => finding.engineI
         </form>
 
         <ul class="mt-4 space-y-3" role="list" data-finding-list>
-          {findings.map((finding) => (
-            <FindingCard finding={finding} />
-          ))}
+          {findings.map((finding) => {
+            const remediation = remediations?.[finding.id];
+            return remediation === undefined ? (
+              <FindingCard finding={finding} />
+            ) : (
+              <FindingCard finding={finding} remediation={remediation} />
+            );
+          })}
         </ul>
 
         <p
