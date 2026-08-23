@@ -40,6 +40,7 @@ jobs:
           [ -n "$CLOUDFLARE_D1_DATABASE_ID" ] || missing+=("CLOUDFLARE_D1_DATABASE_ID")
           [ -n "$DEV_AUTH_CLIENT_SECRET" ] || missing+=("DEV_AUTH_CLIENT_SECRET")
           [ -n "$ALLY_SESSION_SECRET" ] || missing+=("ALLY_SESSION_SECRET")
+          [ -n "$ALLY_RUNNER_SECRET" ] || missing+=("ALLY_RUNNER_SECRET")
 
           if [ "${#missing[@]}" -gt 0 ]; then
             joined="$(IFS=', '; echo "${missing[*]}")"
@@ -55,6 +56,34 @@ jobs:
           CLOUDFLARE_D1_DATABASE_ID: ${{ secrets.CLOUDFLARE_D1_DATABASE_ID }}
           DEV_AUTH_CLIENT_SECRET: ${{ secrets.DEV_AUTH_CLIENT_SECRET }}
           ALLY_SESSION_SECRET: ${{ secrets.ALLY_SESSION_SECRET }}
+          ALLY_RUNNER_SECRET: ${{ secrets.ALLY_RUNNER_SECRET }}
+
+      - name: Check Cloudflare Containers access
+        if: steps.deployment-secrets.outputs.ready == 'true'
+        run: |
+          response_path="$RUNNER_TEMP/cloudflare-containers-access.json"
+          status="$(
+            curl -sS \
+              -o "$response_path" \
+              -w '%{http_code}' \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              -H 'Content-Type: application/json' \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/containers/me"
+          )"
+
+          if [ "$status" != "200" ]; then
+            {
+              printf '### Cloudflare deploy FAILED\nCloudflare Containers preflight returned HTTP %s.\n' "$status"
+              printf 'Response body:\n```json\n'
+              cat "$response_path"
+              printf '\n```\n'
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::Cloudflare Containers access failed with HTTP $status. Ensure CLOUDFLARE_API_TOKEN has Account > Containers Edit/Write plus the other deploy scopes, and that the account plan supports Cloudflare Containers."
+            exit 1
+          fi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Setup pnpm
         if: steps.deployment-secrets.outputs.ready == 'true'
@@ -112,9 +141,11 @@ jobs:
           secrets: |
             DEV_AUTH_CLIENT_SECRET
             ALLY_SESSION_SECRET
+            ALLY_RUNNER_SECRET
         env:
           DEV_AUTH_CLIENT_SECRET: ${{ secrets.DEV_AUTH_CLIENT_SECRET }}
           ALLY_SESSION_SECRET: ${{ secrets.ALLY_SESSION_SECRET }}
+          ALLY_RUNNER_SECRET: ${{ secrets.ALLY_RUNNER_SECRET }}
 
       - name: Deploy Pages
         if: steps.deployment-secrets.outputs.ready == 'true'

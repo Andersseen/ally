@@ -77,8 +77,7 @@ container instance at start time; for the external fallback, give the same
 value to the runner's own configuration (`apps/runner/.env`, or your
 container platform's secret store). Never commit it to `wrangler.jsonc`.
 
-For GitHub Actions deployment (Worker/Pages only — the runner is not
-deployed by this pipeline), add these repository or production environment
+For GitHub Actions deployment, add these repository or production environment
 secrets:
 
 - `CLOUDFLARE_API_TOKEN`
@@ -86,6 +85,15 @@ secrets:
 - `CLOUDFLARE_D1_DATABASE_ID`
 - `DEV_AUTH_CLIENT_SECRET`
 - `ALLY_SESSION_SECRET`
+- `ALLY_RUNNER_SECRET`
+
+`CLOUDFLARE_API_TOKEN` must be scoped for every resource the workflow touches:
+Workers Scripts, D1, R2, Queues, Pages, and Cloudflare Containers. In the
+current Cloudflare token UI, Containers appears as an account permission named
+`Containers Edit` or `Containers Write`. The deploy workflow preflights
+`/accounts/<account_id>/containers/me` before building the Docker image so a
+missing Containers permission, or an account plan that cannot use Containers,
+fails quickly with a clear error.
 
 ## 4. Apply D1 migrations
 
