@@ -14,6 +14,13 @@
 #
 # Keep this tag in sync with the `playwright` version pinned in
 # pnpm-workspace.yaml's catalog.
+#
+# Lives at the repo root (not apps/runner/) because Cloudflare Containers
+# builds with the Dockerfile's own directory as the build context — it has
+# no equivalent of `docker build -f`'s separate context argument. Rooting it
+# here gives `turbo prune` below the whole workspace it needs. External
+# Docker hosts still get an explicit context via
+# `docker build -f Dockerfile.runner .` (see docs/cloudflare-deployment.md).
 ARG PLAYWRIGHT_IMAGE=mcr.microsoft.com/playwright:v1.62.1-noble
 ARG PNPM_VERSION=10.30.1
 

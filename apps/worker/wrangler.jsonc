@@ -20,7 +20,7 @@
   "containers": [
     {
       "class_name": "AuditRunnerContainer",
-      "image": "../runner/Dockerfile",
+      "image": "../../Dockerfile.runner",
       "instance_type": "standard-1",
       "max_instances": 10,
     },

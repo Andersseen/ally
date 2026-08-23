@@ -104,7 +104,7 @@ Docker-anywhere fallback:
 
 ### 3. Container image
 
-Reuse `apps/runner/Dockerfile` — it already bundles Playwright/Chromium and
+Reuse `Dockerfile.runner` (repo root) — it already bundles Playwright/Chromium and
 `@ally/runner-core` correctly (see the file's own comments on why the
 Playwright base image matters). Only the final `CMD` needs to point at the
 new HTTP entrypoint instead of (or selectable alongside) `main.ts`:
@@ -128,7 +128,7 @@ move):
   "containers": [
     {
       "class_name": "AuditRunnerContainer",
-      "image": "../runner/Dockerfile",
+      "image": "../../Dockerfile.runner",
       "instance_type": "standard-1", // start here, size up if OOM
       "max_instances": 10, // cap concurrent audits; tune to load
     },
