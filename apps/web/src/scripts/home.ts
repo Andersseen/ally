@@ -148,7 +148,8 @@ function humanizeStage(currentStage: string | null | undefined): string {
   const [stage, status] = currentStage.split(':');
   if (stage === undefined) return '';
 
-  const label = stage === 'keyboard' ? 'Keyboard analysis' : stage;
+  const label =
+    stage === 'keyboard' ? 'Keyboard analysis' : stage === 'container' ? 'Runner container' : stage;
   if (status === 'started') return `Running ${label}…`;
   if (status === 'failed') return `${label} failed, continuing.`;
   return `✓ ${label}`;
@@ -168,7 +169,7 @@ async function poll(id: string, attempt = 0): Promise<void> {
   };
 
   if (stageMessage) stageMessage.textContent = humanizeStage(audit.currentStage);
-  setStatus(audit.status, pollMessage(audit.status, attempt, audit.lastError));
+  setStatus(audit.status, pollMessage(audit.status, attempt, audit.currentStage, audit.lastError));
 
   if (audit.status === 'completed' && reportLink instanceof HTMLElement) {
     reportLink.setAttribute('href', `/reports?id=${encodeURIComponent(id)}`);
@@ -189,6 +190,7 @@ async function poll(id: string, attempt = 0): Promise<void> {
 function pollMessage(
   status: HostedAuditStatus,
   attempt: number,
+  currentStage: string | null | undefined,
   lastError: string | null | undefined,
 ): string {
   if (status === 'failed') return lastError ?? 'The audit failed.';
@@ -196,6 +198,9 @@ function pollMessage(
   if (status === 'timed_out') return 'Audit timed out.';
   if (status === 'completed') return 'Audit complete.';
   if (stepGroup(status) === 'queued') {
+    if (currentStage?.startsWith('container:') === true) {
+      return 'Runner container is starting. First runs can take a few minutes.';
+    }
     return attempt >= STALE_QUEUE_POLLS
       ? 'Still queued — no runner has picked this up yet. Confirm a runner is deployed and processing the queue.'
       : 'Queued. Waiting for a runner to pick it up.';

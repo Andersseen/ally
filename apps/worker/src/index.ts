@@ -35,6 +35,9 @@ import { requireRunnerAuth } from './runner-auth.js';
 
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
 const DEFAULT_MAX_ATTEMPTS = 3;
+const DEFAULT_DAILY_AUDIT_LIMIT = 1;
+const DEFAULT_GLOBAL_DAILY_AUDIT_LIMIT = 1;
+const DEFAULT_GLOBAL_ACTIVE_AUDIT_LIMIT = 1;
 const AUDIT_LIST_LIMIT = 20;
 
 export { AuditRunnerContainer } from './audit-runner-container.js';
@@ -161,6 +164,7 @@ export default {
           throw new Error('ALLY_RUNNER_SECRET is not configured.');
         }
 
+        await reportContainerStage(message.body.id, env, 'started');
         const container = env.AUDIT_RUNNER.getByName(message.body.id);
         await container.startAndWaitForPorts({
           startOptions: {
@@ -171,6 +175,7 @@ export default {
             },
           },
         });
+        await reportContainerStage(message.body.id, env, 'ok');
         const response = await container.fetch('http://container/run', {
           method: 'POST',
           headers: JSON_HEADERS,
@@ -188,6 +193,7 @@ export default {
             error: firstLine(error),
           }),
         );
+        await reportContainerStage(message.body.id, env, 'failed', firstLine(error));
         message.retry();
       }
     }
@@ -309,6 +315,10 @@ async function requireAuth(request: Request, env: Env): Promise<AuthSession | Re
 }
 
 async function createAudit(request: Request, env: Env, session: AuthSession): Promise<Response> {
+  if (!auditsEnabled(env)) {
+    return json({ error: 'Audit submission is temporarily disabled.' }, 503);
+  }
+
   const body = await readJsonObject(request);
   const normalized = normalizePublicUrl(body?.url);
 
@@ -316,13 +326,46 @@ async function createAudit(request: Request, env: Env, session: AuthSession): Pr
 
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
+  const dayStart = utcDayStart(now);
+  const dailyLimit = dailyAuditLimit(env);
+  const globalDailyLimit = globalDailyAuditLimit(env);
+  const activeLimit = globalActiveAuditLimit(env);
 
-  await env.DB.prepare(
+  const insert = await env.DB.prepare(
     `INSERT INTO audits (id, url, status, attempt, created_at, updated_at, owner_user_id, owner_email)
-     VALUES (?, ?, 'queued', 0, ?, ?, ?, ?)`,
+     SELECT ?, ?, 'queued', 0, ?, ?, ?, ?
+     WHERE (SELECT COUNT(*) FROM audits WHERE owner_user_id = ? AND created_at >= ?) < ?
+       AND (SELECT COUNT(*) FROM audits WHERE created_at >= ?) < ?
+       AND (SELECT COUNT(*) FROM audits WHERE status IN ('queued', 'claimed', 'running', 'persisting')) < ?`,
   )
-    .bind(id, normalized.url, now, now, session.user.id, session.user.email)
+    .bind(
+      id,
+      normalized.url,
+      now,
+      now,
+      session.user.id,
+      session.user.email,
+      session.user.id,
+      dayStart,
+      dailyLimit,
+      dayStart,
+      globalDailyLimit,
+      activeLimit,
+    )
     .run();
+
+  if (insert.meta?.changes !== 1) {
+    return json(
+      {
+        error:
+          'Audit limit reached. This deployment is capped to control Cloudflare usage costs.',
+        dailyLimit,
+        globalDailyLimit,
+        globalActiveLimit: activeLimit,
+      },
+      429,
+    );
+  }
 
   const auditOptions = readAuditOptions(body?.options);
   const message: AuditJobMessage = { id, url: normalized.url, options: auditOptions };
@@ -539,6 +582,22 @@ async function reportRunnerStage(id: string, request: Request, env: Env): Promis
   return json({ ok: true });
 }
 
+async function reportContainerStage(
+  id: string,
+  env: Env,
+  status: 'started' | 'ok' | 'failed',
+  error?: string,
+): Promise<void> {
+  const now = new Date().toISOString();
+  await env.DB.prepare(
+    `UPDATE audits
+     SET current_stage = ?, last_error = COALESCE(?, last_error), updated_at = ?
+     WHERE id = ? AND status = 'queued'`,
+  )
+    .bind(`container:${status}`, error ?? null, now, id)
+    .run();
+}
+
 async function completeRunnerAudit(id: string, request: Request, env: Env): Promise<Response> {
   const row = await findAuditById(id, env);
   if (row === null) return json({ error: 'Audit not found' }, 404);
@@ -670,6 +729,31 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function auditMaxAttempts(env: Env): number {
   const parsed = Number(env.AUDIT_MAX_ATTEMPTS);
   return Number.isInteger(parsed) && parsed > 0 ? parsed : DEFAULT_MAX_ATTEMPTS;
+}
+
+function auditsEnabled(env: Env): boolean {
+  return env.AUDITS_ENABLED?.trim().toLowerCase() !== 'false';
+}
+
+function dailyAuditLimit(env: Env): number {
+  return positiveInteger(env.ALLY_DAILY_AUDIT_LIMIT, DEFAULT_DAILY_AUDIT_LIMIT);
+}
+
+function globalDailyAuditLimit(env: Env): number {
+  return positiveInteger(env.ALLY_GLOBAL_DAILY_AUDIT_LIMIT, DEFAULT_GLOBAL_DAILY_AUDIT_LIMIT);
+}
+
+function globalActiveAuditLimit(env: Env): number {
+  return positiveInteger(env.ALLY_GLOBAL_ACTIVE_AUDIT_LIMIT, DEFAULT_GLOBAL_ACTIVE_AUDIT_LIMIT);
+}
+
+function positiveInteger(value: string | undefined, fallback: number): number {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function utcDayStart(isoTimestamp: string): string {
+  return `${isoTimestamp.slice(0, 'YYYY-MM-DD'.length)}T00:00:00.000Z`;
 }
 
 // --- Compatibility spike: unrelated to the job queue, still uses Browser Run directly ---

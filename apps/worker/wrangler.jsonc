@@ -3,6 +3,10 @@
   "name": "ally-audit-worker",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-21",
+  "limits": {
+    "cpu_ms": 1000,
+    "subrequests": 100,
+  },
   "upload_source_maps": true,
   "observability": {
     "enabled": true,
@@ -22,7 +26,7 @@
       "class_name": "AuditRunnerContainer",
       "image": "../../Dockerfile.runner",
       "instance_type": "standard-1",
-      "max_instances": 10,
+      "max_instances": 1,
     },
   ],
   "durable_objects": {
@@ -73,7 +77,7 @@
       {
         "queue": "ally-audit-jobs",
         "max_batch_size": 1,
-        "max_retries": 3,
+        "max_retries": 1,
         "dead_letter_queue": "ally-audit-jobs-dlq",
       },
     ],
@@ -83,9 +87,15 @@
     "DEV_AUTH_CLIENT_ID": "ally-dev",
     "DEV_AUTH_REDIRECT_URI": "https://ally.andersseen.dev/api/auth/callback",
     "PUBLIC_WEB_ORIGIN": "https://ally.andersseen.dev",
+    "AUDITS_ENABLED": "true",
+    // Cost guardrails for the paid Workers account. Keep production in
+    // closed-beta mode until real usage is understood.
+    "ALLY_DAILY_AUDIT_LIMIT": "1",
+    "ALLY_GLOBAL_DAILY_AUDIT_LIMIT": "1",
+    "ALLY_GLOBAL_ACTIVE_AUDIT_LIMIT": "1",
     // Caps re-claim attempts per audit; independent of the queue's own
     // max_retries above, which bounds redelivery at the transport level.
-    "AUDIT_MAX_ATTEMPTS": "3",
+    "AUDIT_MAX_ATTEMPTS": "1",
   },
   // Secrets — never set here. Configure with `wrangler secret put <name>`:
   //   DEV_AUTH_CLIENT_SECRET, ALLY_SESSION_SECRET, ALLY_RUNNER_SECRET
