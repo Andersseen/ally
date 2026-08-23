@@ -17,6 +17,28 @@
   "browser": {
     "binding": "BROWSER",
   },
+  "containers": [
+    {
+      "class_name": "AuditRunnerContainer",
+      "image": "../runner/Dockerfile",
+      "instance_type": "standard-1",
+      "max_instances": 10,
+    },
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "AUDIT_RUNNER",
+        "class_name": "AuditRunnerContainer",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["AuditRunnerContainer"],
+    },
+  ],
   "d1_databases": [
     {
       "binding": "DB",
@@ -36,22 +58,23 @@
       "bucket_name": "ally-audit-artifacts",
     },
   ],
-  // Consumed by the standalone Node runner (apps/runner) via Cloudflare's
-  // HTTP pull-consumer API, not by this Worker's `fetch`/`queue` exports —
-  // the Worker only ever produces onto this queue. Pull consumers give the
-  // external runner lease semantics (`visibility_timeout_ms`) for free: a
-  // stalled or crashed runner's claim expires and the job becomes visible
-  // to another puller again, and `max_retries` plus the DLQ bound how many
-  // times a bad job can be retried before it's set aside for inspection.
-  // Configure the pull consumer and DLQ with:
-  //   wrangler queues create ally-audit-jobs-dlq
-  //   wrangler queues consumer http add ally-audit-jobs \
-  //     --dead-letter-queue ally-audit-jobs-dlq --max-retries 5
+  // Produced by the hosted API and consumed by this Worker's native
+  // `queue()` export, which starts a Cloudflare Container per audit. The
+  // standalone Node runner remains available as a documented fallback, but
+  // its HTTP pull-consumer registration is no longer the default deploy path.
   "queues": {
     "producers": [
       {
         "binding": "AUDIT_QUEUE",
         "queue": "ally-audit-jobs",
+      },
+    ],
+    "consumers": [
+      {
+        "queue": "ally-audit-jobs",
+        "max_batch_size": 1,
+        "max_retries": 3,
+        "dead_letter_queue": "ally-audit-jobs-dlq",
       },
     ],
   },

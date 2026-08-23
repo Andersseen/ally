@@ -23,6 +23,7 @@
     "@ally/net-guard": "workspace:*",
     "@ally/reporter-json": "workspace:*",
     "@ally/runner-core": "workspace:*",
+    "@cloudflare/containers": "catalog:",
     "@cloudflare/playwright": "catalog:"
   },
   "devDependencies": {

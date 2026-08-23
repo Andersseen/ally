@@ -59,4 +59,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
 # process is needed for this single-process image.
 STOPSIGNAL SIGTERM
 
-CMD ["node", "--experimental-strip-types", "src/main.ts"]
+CMD ["node", "--experimental-strip-types", "src/serve.ts"]

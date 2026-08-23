@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { loadRunnerConfig } from './config.js';
+import { loadRunnerConfig, loadRunnerServeConfig } from './config.js';
 
 const VALID_ENV: NodeJS.ProcessEnv = {
   ALLY_WORKER_BASE_URL: 'https://ally.andersseen.dev/',
@@ -25,6 +25,15 @@ describe('loadRunnerConfig', () => {
   test('strips a trailing slash from the worker base URL', () => {
     const config = loadRunnerConfig(VALID_ENV);
     expect(config.workerBaseUrl).toBe('https://ally.andersseen.dev');
+  });
+
+  test('serve mode does not require standalone queue pull credentials', () => {
+    const config = loadRunnerServeConfig({
+      ALLY_WORKER_BASE_URL: 'https://ally.andersseen.dev/',
+      ALLY_RUNNER_SECRET: 'runner-secret',
+    });
+    expect(config.workerBaseUrl).toBe('https://ally.andersseen.dev');
+    expect(config.runnerSecret).toBe('runner-secret');
   });
 
   test('applies sane defaults for optional budgets and timing', () => {

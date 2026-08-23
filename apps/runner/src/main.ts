@@ -2,6 +2,7 @@ import { PlaywrightChromiumBrowserProvider, executeAuditJob, logEvent } from '@a
 import type { AuditJob } from '@ally/runner-core';
 import { loadRunnerConfig } from './config.ts';
 import { startHealthServer } from './health.ts';
+import { parseJob } from './job.ts';
 import { createCloudflareQueueClient } from './queue-client.ts';
 import { createWorkerPersistence } from './worker-client.ts';
 
@@ -83,34 +84,6 @@ async function runOne(job: AuditJob, leaseId: string): Promise<void> {
     logEvent('error', 'job_execution_threw', { auditId: job.id, error: errorMessage(error) });
     await queue.retry(leaseId).catch(() => undefined);
   }
-}
-
-function parseJob(body: unknown): AuditJob | null {
-  if (typeof body !== 'object' || body === null) return null;
-  const record = body as Record<string, unknown>;
-  if (typeof record.id !== 'string' || typeof record.url !== 'string') return null;
-
-  const rawOptions = record.options;
-  const options =
-    typeof rawOptions === 'object' && rawOptions !== null
-      ? (rawOptions as Record<string, unknown>)
-      : undefined;
-
-  return {
-    id: record.id,
-    url: record.url,
-    attempt: 1,
-    ...(options === undefined
-      ? {}
-      : {
-          options: {
-            ...(Array.isArray(options.only)
-              ? { only: options.only.filter((value): value is string => typeof value === 'string') }
-              : {}),
-            ...(typeof options.keyboard === 'boolean' ? { keyboard: options.keyboard } : {}),
-          },
-        }),
-  };
 }
 
 function sleep(ms: number): Promise<void> {
