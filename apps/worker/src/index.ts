@@ -35,8 +35,9 @@ import { requireRunnerAuth } from './runner-auth.js';
 
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
 const DEFAULT_MAX_ATTEMPTS = 3;
-const DEFAULT_DAILY_AUDIT_LIMIT = 1;
-const DEFAULT_GLOBAL_DAILY_AUDIT_LIMIT = 1;
+const DEFAULT_AUDIT_WINDOW_DAYS = 30;
+const DEFAULT_USER_AUDIT_WINDOW_LIMIT = 30;
+const DEFAULT_GLOBAL_AUDIT_WINDOW_LIMIT = 30;
 const DEFAULT_GLOBAL_ACTIVE_AUDIT_LIMIT = 1;
 const AUDIT_LIST_LIMIT = 20;
 
@@ -326,16 +327,17 @@ async function createAudit(request: Request, env: Env, session: AuthSession): Pr
 
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
-  const dayStart = utcDayStart(now);
-  const dailyLimit = dailyAuditLimit(env);
-  const globalDailyLimit = globalDailyAuditLimit(env);
+  const auditWindowDays = auditWindowDaysLimit(env);
+  const windowStart = utcWindowStart(now, auditWindowDays);
+  const userWindowLimit = userAuditWindowLimit(env);
+  const globalWindowLimit = globalAuditWindowLimit(env);
   const activeLimit = globalActiveAuditLimit(env);
 
   const insert = await env.DB.prepare(
     `INSERT INTO audits (id, url, status, attempt, created_at, updated_at, owner_user_id, owner_email)
      SELECT ?, ?, 'queued', 0, ?, ?, ?, ?
-     WHERE (SELECT COUNT(*) FROM audits WHERE owner_user_id = ? AND created_at >= ?) < ?
-       AND (SELECT COUNT(*) FROM audits WHERE created_at >= ?) < ?
+     WHERE (SELECT COUNT(*) FROM audits WHERE owner_user_id = ? AND created_at >= ? AND NOT (status = 'cancelled' AND attempt = 0)) < ?
+       AND (SELECT COUNT(*) FROM audits WHERE created_at >= ? AND NOT (status = 'cancelled' AND attempt = 0)) < ?
        AND (SELECT COUNT(*) FROM audits WHERE status IN ('queued', 'claimed', 'running', 'persisting')) < ?`,
   )
     .bind(
@@ -346,10 +348,10 @@ async function createAudit(request: Request, env: Env, session: AuthSession): Pr
       session.user.id,
       session.user.email,
       session.user.id,
-      dayStart,
-      dailyLimit,
-      dayStart,
-      globalDailyLimit,
+      windowStart,
+      userWindowLimit,
+      windowStart,
+      globalWindowLimit,
       activeLimit,
     )
     .run();
@@ -359,8 +361,9 @@ async function createAudit(request: Request, env: Env, session: AuthSession): Pr
       {
         error:
           'Audit limit reached. This deployment is capped to control Cloudflare usage costs.',
-        dailyLimit,
-        globalDailyLimit,
+        auditWindowDays,
+        userWindowLimit,
+        globalWindowLimit,
         globalActiveLimit: activeLimit,
       },
       429,
@@ -735,12 +738,16 @@ function auditsEnabled(env: Env): boolean {
   return env.AUDITS_ENABLED?.trim().toLowerCase() !== 'false';
 }
 
-function dailyAuditLimit(env: Env): number {
-  return positiveInteger(env.ALLY_DAILY_AUDIT_LIMIT, DEFAULT_DAILY_AUDIT_LIMIT);
+function auditWindowDaysLimit(env: Env): number {
+  return positiveInteger(env.ALLY_AUDIT_WINDOW_DAYS, DEFAULT_AUDIT_WINDOW_DAYS);
 }
 
-function globalDailyAuditLimit(env: Env): number {
-  return positiveInteger(env.ALLY_GLOBAL_DAILY_AUDIT_LIMIT, DEFAULT_GLOBAL_DAILY_AUDIT_LIMIT);
+function userAuditWindowLimit(env: Env): number {
+  return positiveInteger(env.ALLY_USER_AUDIT_WINDOW_LIMIT, DEFAULT_USER_AUDIT_WINDOW_LIMIT);
+}
+
+function globalAuditWindowLimit(env: Env): number {
+  return positiveInteger(env.ALLY_GLOBAL_AUDIT_WINDOW_LIMIT, DEFAULT_GLOBAL_AUDIT_WINDOW_LIMIT);
 }
 
 function globalActiveAuditLimit(env: Env): number {
@@ -752,8 +759,10 @@ function positiveInteger(value: string | undefined, fallback: number): number {
   return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
 }
 
-function utcDayStart(isoTimestamp: string): string {
-  return `${isoTimestamp.slice(0, 'YYYY-MM-DD'.length)}T00:00:00.000Z`;
+function utcWindowStart(isoTimestamp: string, days: number): string {
+  const timestamp = Date.parse(isoTimestamp);
+  const windowMs = days * 24 * 60 * 60 * 1000;
+  return new Date(timestamp - windowMs).toISOString();
 }
 
 // --- Compatibility spike: unrelated to the job queue, still uses Browser Run directly ---

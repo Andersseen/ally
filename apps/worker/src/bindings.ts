@@ -10,10 +10,12 @@ export interface Env extends AuthEnv, RunnerAuthEnv {
   readonly AUDIT_RUNNER: ContainerNamespace;
   /** Emergency switch for audit submission. Set to "false" to reject new work. */
   readonly AUDITS_ENABLED?: string;
-  /** Caps accepted audit submissions per authenticated user per UTC day. Defaults to 1. */
-  readonly ALLY_DAILY_AUDIT_LIMIT?: string;
-  /** Caps accepted audit submissions across the deployment per UTC day. Defaults to 1. */
-  readonly ALLY_GLOBAL_DAILY_AUDIT_LIMIT?: string;
+  /** Rolling audit quota window in days. Defaults to 30. */
+  readonly ALLY_AUDIT_WINDOW_DAYS?: string;
+  /** Caps accepted audit submissions per authenticated user within the rolling window. Defaults to 30. */
+  readonly ALLY_USER_AUDIT_WINDOW_LIMIT?: string;
+  /** Caps accepted audit submissions across the deployment within the rolling window. Defaults to 30. */
+  readonly ALLY_GLOBAL_AUDIT_WINDOW_LIMIT?: string;
   /** Caps queued/running audit work across the deployment. Defaults to 1. */
   readonly ALLY_GLOBAL_ACTIVE_AUDIT_LIMIT?: string;
   /** Caps re-claim attempts per audit. Defaults to 3 when unset. */

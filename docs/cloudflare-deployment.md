@@ -255,10 +255,16 @@ with conservative cost guardrails:
 - `AUDITS_ENABLED=true`; set it to `false` as an emergency stop for new work.
 - `max_instances: 1` for Cloudflare Containers.
 - Container `sleepAfter: 30s`.
-- `ALLY_DAILY_AUDIT_LIMIT=1`.
-- `ALLY_GLOBAL_DAILY_AUDIT_LIMIT=1`.
+- `ALLY_AUDIT_WINDOW_DAYS=30`.
+- `ALLY_USER_AUDIT_WINDOW_LIMIT=30`.
+- `ALLY_GLOBAL_AUDIT_WINDOW_LIMIT=30`.
 - `ALLY_GLOBAL_ACTIVE_AUDIT_LIMIT=1`.
 - `AUDIT_MAX_ATTEMPTS=1` and queue `max_retries=1`.
+
+Rolling audit limits ignore audits that were cancelled before the runner made
+its first attempt (`status = cancelled` and `attempt = 0`). Those early
+cancellations do not start a paid container run, so they should not consume the
+development quota.
 
 These are technical guardrails, not a Cloudflare billing hard cap. Keep the
 Cloudflare budget alerts enabled and check Billable Usage after every real
