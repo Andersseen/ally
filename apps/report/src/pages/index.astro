@@ -2,6 +2,7 @@
 import EngineContributions from '../components/EngineContributions.astro';
 import FindingsSection from '../components/FindingsSection.astro';
 import KeyboardSection from '../components/KeyboardSection.astro';
+import MarkupValidationSection from '../components/MarkupValidationSection.astro';
 import Methodology from '../components/Methodology.astro';
 import Overview from '../components/Overview.astro';
 import SampleDataNotice from '../components/SampleDataNotice.astro';
@@ -46,8 +47,9 @@ const { result, isSample } = await loadAudit();
       <ScoreCard score={result.score} />
       <Overview result={result} />
       <EngineContributions engines={result.engines} contributions={result.contributions} />
-      <FindingsSection findings={result.findings} />
+      <FindingsSection findings={result.findings} remediations={result.remediations} />
       {result.keyboard && <KeyboardSection keyboard={result.keyboard} />}
+      {result.markupValidation && <MarkupValidationSection validation={result.markupValidation} />}
       <Methodology result={result} />
     </main>
 

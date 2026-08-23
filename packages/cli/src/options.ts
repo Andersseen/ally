@@ -14,6 +14,8 @@ export interface AuditOptions {
   /** Engine ids to run. Empty means all of them. */
   readonly only: readonly string[];
   readonly keyboard: boolean;
+  readonly recommendations: boolean;
+  readonly markupValidation: boolean;
   readonly buildReport: boolean;
   readonly headless: boolean;
   readonly timeoutMs: number;
@@ -50,6 +52,8 @@ Audit options
   --out <dir>        Where to write the audit artifact  (default: ./audit)
   --only <ids>       Comma-separated engine ids to run  (default: all)
   --no-keyboard      Skip the keyboard/focus analysis
+  --recommendations  Add deterministic remediation guidance
+  --markup           Run optional Nu HTML Checker markup validation
   --no-report        Write the artifact but do not build the static report
   --headed           Run Chromium with a visible window
   --timeout <ms>     Navigation and interaction timeout (default: 30000)
@@ -62,7 +66,7 @@ Serve options
   -v, --version      Show the Ally version
 
 Engines
-  axe-core, ibm-equal-access, alfa, qualweb
+  axe-core, ibm-equal-access, alfa, qualweb, htmlcs
 
 Examples
   ally https://example.com --out ./audit
@@ -84,6 +88,8 @@ export function parseArgs(argv: readonly string[], cwd: string): ParseResult {
   let outDir = 'audit';
   let only: string[] = [];
   let keyboard = true;
+  let recommendations = false;
+  let markupValidation = false;
   let buildReport = true;
   let headless = true;
   let timeoutMs = DEFAULT_TIMEOUT_MS;
@@ -104,6 +110,15 @@ export function parseArgs(argv: readonly string[], cwd: string): ParseResult {
 
       case '--no-keyboard':
         keyboard = false;
+        break;
+
+      case '--recommendations':
+        recommendations = true;
+        break;
+
+      case '--markup':
+      case '--markup-validation':
+        markupValidation = true;
         break;
 
       case '--no-report':
@@ -182,6 +197,8 @@ export function parseArgs(argv: readonly string[], cwd: string): ParseResult {
       outDir: resolveFrom(cwd, outDir),
       only,
       keyboard,
+      recommendations,
+      markupValidation,
       buildReport,
       headless,
       timeoutMs,

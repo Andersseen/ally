@@ -14,6 +14,8 @@ import type { NormalizedFinding } from './finding.js';
 import type { AuditHooks } from './hooks.js';
 import { summarizeKeyboard } from './keyboard.js';
 import type { KeyboardAnalyzer, KeyboardReport } from './keyboard.js';
+import { normalizeAuditOptions } from './options.js';
+import type { AuditOptionsSnapshot } from './options.js';
 import { scoreAudit } from './score.js';
 import { countBySeverity } from './severity.js';
 import { RULE_STANDARDS } from './wcag.js';
@@ -22,6 +24,7 @@ import type { RuleStandard } from './wcag.js';
 export interface RunAuditOptions<TPage> {
   readonly context: AuditContext<TPage>;
   readonly engines: readonly AuditEngine<TPage>[];
+  readonly auditOptions?: Partial<AuditOptionsSnapshot>;
   /** Optional behavioural analyzer. Runs after every engine. */
   readonly keyboard?: KeyboardAnalyzer<TPage>;
   /** Epoch-millisecond clock. Injectable so tests stay deterministic. */
@@ -97,6 +100,10 @@ export async function runAudit<TPage>(options: RunAuditOptions<TPage>): Promise<
     result: {
       schemaVersion: AUDIT_SCHEMA_VERSION,
       target: { url: options.context.url },
+      options: normalizeAuditOptions({
+        ...options.auditOptions,
+        keyboard: options.keyboard !== undefined,
+      }),
       startedAt: new Date(startedAt).toISOString(),
       finishedAt: new Date(finishedAt).toISOString(),
       durationMs: finishedAt - startedAt,
@@ -192,7 +199,9 @@ function contributionsOf(
       durationMs: run.durationMs,
       rawFindings: run.status === 'ok' ? run.rawFindingCount : 0,
       normalizedFindings: run.status === 'ok' ? run.findingCount : 0,
+      mergedFindings: reported.length,
       uniqueContributions: reported.filter((finding) => finding.engineAgreement === 1).length,
+      exclusiveFindings: reported.filter((finding) => finding.engineAgreement === 1).length,
       sharedContributions: reported.filter((finding) => finding.engineAgreement > 1).length,
     };
   });

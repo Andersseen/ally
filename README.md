@@ -134,14 +134,16 @@ audit/
 
 ### Options
 
-| Flag             | What it does                                    |
-| ---------------- | ----------------------------------------------- |
-| `--out <dir>`    | Where to write the artifact (default `./audit`) |
-| `--only <ids>`   | Run only these engines, comma-separated         |
-| `--no-keyboard`  | Skip the keyboard/focus analysis                |
-| `--no-report`    | Write the artifact but do not build the report  |
-| `--headed`       | Run Chromium with a visible window              |
-| `--timeout <ms>` | Navigation and interaction timeout              |
+| Flag                | What it does                                    |
+| ------------------- | ----------------------------------------------- |
+| `--out <dir>`       | Where to write the artifact (default `./audit`) |
+| `--only <ids>`      | Run only these engines, comma-separated         |
+| `--no-keyboard`     | Skip the keyboard/focus analysis                |
+| `--recommendations` | Add deterministic remediation guidance          |
+| `--markup`          | Run optional Nu HTML Checker validation         |
+| `--no-report`       | Write the artifact but do not build the report  |
+| `--headed`          | Run Chromium with a visible window              |
+| `--timeout <ms>`    | Navigation and interaction timeout              |
 
 ### Running audits from a browser
 
@@ -192,11 +194,13 @@ real deployment needs.
 ```text
 URL
  ↓  @ally/browser        launch Chromium, navigate
- ↓  engines              axe-core · IBM Equal Access · Alfa · QualWeb
+ ↓  engines              axe-core · IBM Equal Access · Alfa · QualWeb · HTML_CodeSniffer
  ↓  @ally/analyzer-keyboard   press Tab, observe focus
+ ↓  optional diagnostics      Nu HTML Checker markup validation
  ↓  normalize            each adapter → one shared finding model
  ↓  deduplicate          one problem, one finding, many sources
  ↓  score                Automated Accessibility Score
+ ↓  optional remediation deterministic recommendations
  ↓  @ally/reporter-json  audit.json + raw/
  ↓  @ally/report         static Astro report
 ```
@@ -205,6 +209,11 @@ A failing engine never fails the audit. `EngineRun` is a discriminated union of
 `ok` and `failed`, the failure is recorded with its message and duration, and
 the report shows it. A crashed engine reduces _coverage_; it never becomes a
 finding and never lowers the score.
+
+Markup validation and deterministic recommendations are optional. Nu HTML
+Checker results are stored as a separate diagnostic and never affect the
+Automated Accessibility Score. Recommendations are post-processing guidance
+attached after deduplication; they do not add, remove or re-score findings.
 
 An engine can also succeed _partially_. QualWeb is three independent rule sets
 behind one name, and one rule throwing inside the page would otherwise take the
@@ -226,7 +235,10 @@ never on a concrete engine.
 | `@ally/engine-ibm`        | IBM Equal Access adapter.                                                               |
 | `@ally/engine-alfa`       | Siteimprove Alfa adapter.                                                               |
 | `@ally/engine-qualweb`    | QualWeb adapter.                                                                        |
+| `@ally/engine-htmlcs`     | HTML_CodeSniffer adapter.                                                               |
 | `@ally/analyzer-keyboard` | Ally's own keyboard/focus analyzer.                                                     |
+| `@ally/markup-validator`  | Optional Nu HTML Checker integration, separate from accessibility findings and score.   |
+| `@ally/remediation`       | Deterministic, framework-agnostic remediation catalog for deduplicated findings.        |
 | `@ally/reporter-json`     | Writes `audit.json` plus per-engine raw output.                                         |
 | `@ally/cli`               | `ally <url>` and `ally serve` — parsing, orchestration, summary.                        |
 | `@ally/fixtures`          | Local benchmark pages with known problems, and a server for them.                       |

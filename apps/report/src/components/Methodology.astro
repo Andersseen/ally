@@ -22,6 +22,17 @@ const failed = result.engines.filter((run) => run.status === 'failed');
 <section aria-labelledby="methodology-heading" id="methodology">
   <h2 id="methodology-heading" class="text-lg font-semibold">Methodology</h2>
 
+  <dl class="mt-3 grid gap-x-6 gap-y-1 text-sm sm:grid-cols-[max-content_1fr]">
+    <dt class="font-medium text-slate-600 dark:text-slate-400">Accessibility engines</dt>
+    <dd>{result.coverage.enginesConfigured}</dd>
+    <dt class="font-medium text-slate-600 dark:text-slate-400">Keyboard analysis</dt>
+    <dd>{result.options.keyboard ? 'enabled' : 'disabled'}</dd>
+    <dt class="font-medium text-slate-600 dark:text-slate-400">Markup validation</dt>
+    <dd>{result.options.markupValidation ? 'enabled' : 'disabled, not scored'}</dd>
+    <dt class="font-medium text-slate-600 dark:text-slate-400">Recommendations</dt>
+    <dd>{result.options.recommendations ? 'enabled, not scored' : 'disabled'}</dd>
+  </dl>
+
   <h3 class="mt-4 text-sm font-semibold text-slate-700 dark:text-slate-300">Engines that ran</h3>
   <ul class="mt-2 list-disc space-y-1 pl-5 text-sm" role="list">
     {
@@ -60,6 +71,10 @@ const failed = result.engines.filter((run) => run.status === 'failed');
     {SCORE_METHODOLOGY.name} (version {result.score.version})
   </h3>
   <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">{SCORE_METHODOLOGY.summary}</p>
+  <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">
+    Markup validation and deterministic recommendations are post-processing diagnostics. They do not
+    add findings and never change this score.
+  </p>
   <ol class="mt-2 list-decimal space-y-1 pl-5 text-sm">
     {SCORE_METHODOLOGY.steps.map((step) => <li>{step}</li>)}
   </ol>

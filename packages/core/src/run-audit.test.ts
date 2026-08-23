@@ -191,14 +191,40 @@ describe('runAudit', () => {
       status: 'ok',
       rawFindings: 2,
       normalizedFindings: 2,
+      mergedFindings: 2,
       uniqueContributions: 1,
+      exclusiveFindings: 1,
       sharedContributions: 1,
     });
     expect(beta).toMatchObject({
       engineId: 'beta',
+      mergedFindings: 1,
       uniqueContributions: 0,
+      exclusiveFindings: 0,
       sharedContributions: 1,
     });
+  });
+
+  it('records audit options without changing score arithmetic', async () => {
+    const engine = fakeEngine('alpha', [
+      finding('alpha', 'color-contrast', 'serious', '/html[1]/p[1]'),
+    ]);
+
+    const withoutOptions = await runAudit({ context, clock: frozenClock, engines: [engine] });
+    const withOptions = await runAudit({
+      context,
+      clock: frozenClock,
+      engines: [engine],
+      auditOptions: { recommendations: true, markupValidation: true },
+    });
+
+    expect(withOptions.result.options).toEqual({
+      keyboard: false,
+      recommendations: true,
+      markupValidation: true,
+    });
+    expect(withOptions.result.findings).toEqual(withoutOptions.result.findings);
+    expect(withOptions.result.score).toEqual(withoutOptions.result.score);
   });
 
   it('carries an engine note through to the artifact', async () => {

@@ -13,6 +13,7 @@ function auditRun(raw: ReadonlyMap<string, unknown> = new Map()): AuditRun {
     result: {
       schemaVersion: AUDIT_SCHEMA_VERSION,
       target: { url: 'https://example.com/' },
+      options: { keyboard: true, recommendations: false, markupValidation: false },
       startedAt: '2026-01-01T00:00:00.000Z',
       finishedAt: '2026-01-01T00:00:01.000Z',
       durationMs: 1000,
@@ -39,7 +40,9 @@ function auditRun(raw: ReadonlyMap<string, unknown> = new Map()): AuditRun {
           durationMs: 900,
           rawFindings: 1,
           normalizedFindings: 1,
+          mergedFindings: 1,
           uniqueContributions: 1,
+          exclusiveFindings: 1,
           sharedContributions: 0,
         },
       ],
@@ -162,6 +165,30 @@ describe('writeAuditReport', () => {
     const { auditFile } = await writeAuditReport(run, { outDir });
 
     expect(await readAuditFile(auditFile)).toEqual(run.result);
+  });
+
+  it('fills defaults for older compatible artifacts', async () => {
+    const run = auditRun();
+    const legacy = {
+      ...run.result,
+      options: undefined,
+      contributions: run.result.contributions.map((contribution) => {
+        const legacyContribution: Record<string, unknown> = { ...contribution };
+        delete legacyContribution.mergedFindings;
+        delete legacyContribution.exclusiveFindings;
+        return legacyContribution;
+      }),
+    };
+    const file = join(outDir, 'legacy.json');
+    await writeFile(file, serializeJson(legacy), 'utf8');
+
+    const read = await readAuditFile(file);
+    expect(read.options).toEqual({
+      keyboard: true,
+      recommendations: false,
+      markupValidation: false,
+    });
+    expect(read.contributions[0]).toMatchObject({ mergedFindings: 1, exclusiveFindings: 1 });
   });
 
   it('rejects an artifact written by an incompatible schema version', async () => {

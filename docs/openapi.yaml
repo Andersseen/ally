@@ -158,6 +158,8 @@ paths:
                   format: uri
                   examples:
                     - https://www.andriipap.dev/
+                options:
+                  $ref: '#/components/schemas/AuditOptions'
       responses:
         '202':
           description: Audit job accepted.
@@ -598,6 +600,23 @@ components:
         status:
           type: string
           const: queued
+    AuditOptions:
+      type: object
+      additionalProperties: false
+      description: Optional audit capabilities. Omitted fields use Ally defaults.
+      properties:
+        keyboard:
+          type: boolean
+          default: true
+          description: Run Ally's keyboard/focus analyzer.
+        recommendations:
+          type: boolean
+          default: false
+          description: Add deterministic remediation guidance after findings are deduplicated.
+        markupValidation:
+          type: boolean
+          default: false
+          description: Run Nu HTML Checker as a separate non-scored diagnostic.
     Audit:
       type: object
       required:

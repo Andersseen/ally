@@ -23,6 +23,12 @@ export function parseJob(body: unknown): AuditJob | null {
               ? { only: options.only.filter((value): value is string => typeof value === 'string') }
               : {}),
             ...(typeof options.keyboard === 'boolean' ? { keyboard: options.keyboard } : {}),
+            ...(typeof options.recommendations === 'boolean'
+              ? { recommendations: options.recommendations }
+              : {}),
+            ...(typeof options.markupValidation === 'boolean'
+              ? { markupValidation: options.markupValidation }
+              : {}),
           },
         }),
   };

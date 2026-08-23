@@ -22,7 +22,7 @@ const byId = new Map(contributions.map((contribution) => [contribution.engineId,
 <section aria-labelledby="engines-heading">
   <h2 id="engines-heading" class="text-lg font-semibold">Engines</h2>
   <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
-    “Unique” means no other engine reported the same problem on the same element.
+    “Exclusive” means no other engine reported the same problem on the same element.
   </p>
 
   <ul class="mt-3 space-y-2" role="list">
@@ -62,7 +62,7 @@ const byId = new Map(contributions.map((contribution) => [contribution.engineId,
             </div>
 
             {run.status === 'ok' ? (
-              <dl class="mt-2 grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:grid-cols-4">
+              <dl class="mt-2 grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:grid-cols-5">
                 <div>
                   <dt class="text-slate-600 dark:text-slate-400">Raw</dt>
                   <dd class="font-medium tabular-nums">{run.rawFindingCount}</dd>
@@ -72,8 +72,12 @@ const byId = new Map(contributions.map((contribution) => [contribution.engineId,
                   <dd class="font-medium tabular-nums">{run.findingCount}</dd>
                 </div>
                 <div>
-                  <dt class="text-slate-600 dark:text-slate-400">Unique</dt>
-                  <dd class="font-medium tabular-nums">{contribution?.uniqueContributions ?? 0}</dd>
+                  <dt class="text-slate-600 dark:text-slate-400">Merged</dt>
+                  <dd class="font-medium tabular-nums">{contribution?.mergedFindings ?? 0}</dd>
+                </div>
+                <div>
+                  <dt class="text-slate-600 dark:text-slate-400">Exclusive</dt>
+                  <dd class="font-medium tabular-nums">{contribution?.exclusiveFindings ?? 0}</dd>
                 </div>
                 <div>
                   <dt class="text-slate-600 dark:text-slate-400">Shared</dt>

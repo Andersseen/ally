@@ -25,8 +25,9 @@ const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
         <p class="eyebrow">Hosted web audit</p>
         <h1 class="hero-title">Ally</h1>
         <p class="hero-copy">
-          Run axe-core, IBM Equal Access, Siteimprove Alfa, QualWeb, and Ally's keyboard analyzer
-          against one public page, then normalize, deduplicate, and score the findings.
+          Run axe-core, IBM Equal Access, Siteimprove Alfa, QualWeb, HTML_CodeSniffer, and Ally's
+          keyboard analyzer against one public page, then normalize, deduplicate, and score the
+          findings.
         </p>
         <div and-layout="horizontal gap:sm wrap:wrap">
           <and-badge variant="outline">
@@ -85,6 +86,21 @@ const apiBase = import.meta.env.PUBLIC_ALLY_API_BASE ?? 'http://127.0.0.1:8787';
               placeholder="https://example.com"
               class="native-field"
             />
+            <fieldset class="space-y-2">
+              <legend class="text-ally-ink text-sm font-semibold">Audit options</legend>
+              <label class="flex items-center gap-2 text-sm">
+                <input id="option-keyboard" type="checkbox" checked class="size-4" />
+                <span>Keyboard analysis</span>
+              </label>
+              <label class="flex items-center gap-2 text-sm">
+                <input id="option-recommendations" type="checkbox" class="size-4" />
+                <span>Recommendations</span>
+              </label>
+              <label class="flex items-center gap-2 text-sm">
+                <input id="option-markup" type="checkbox" class="size-4" />
+                <span>Markup validation</span>
+              </label>
+            </fieldset>
             <and-button id="run-button" class="full-width" type="submit" size="lg" disabled>
               <and-icon name="arrow-right" size="18"></and-icon>
               Run audit

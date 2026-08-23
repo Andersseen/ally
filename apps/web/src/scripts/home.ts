@@ -4,6 +4,9 @@ const form = document.querySelector('#audit-form');
 const input = document.querySelector('#audit-url');
 const auditLockMessage = document.querySelector('#audit-lock-message');
 const statusPanel = document.querySelector('#status-panel');
+const keyboardOption = document.querySelector('#option-keyboard');
+const recommendationsOption = document.querySelector('#option-recommendations');
+const markupOption = document.querySelector('#option-markup');
 const message = document.querySelector('#status-message');
 const stageMessage = document.querySelector('#stage-message');
 const stopButton = document.querySelector<HTMLElement & { disabled?: boolean }>('#stop-button');
@@ -98,7 +101,8 @@ function setStatus(status: HostedAuditStatus, text: string): void {
   const group = stepGroup(status);
   for (const step of steps) {
     const name = step.getAttribute('data-step');
-    const active = group === name || (status === 'completed' && (name === 'queued' || name === 'running'));
+    const active =
+      group === name || (status === 'completed' && (name === 'queued' || name === 'running'));
     const failedStep = group === 'failed' && name === 'failed';
 
     step.classList.toggle('hidden', name === 'failed' && group !== 'failed');
@@ -292,7 +296,15 @@ form?.addEventListener('submit', (event) => {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify({ url: input.value }),
+    body: JSON.stringify({
+      url: input.value,
+      options: {
+        keyboard: keyboardOption instanceof HTMLInputElement ? keyboardOption.checked : true,
+        recommendations:
+          recommendationsOption instanceof HTMLInputElement ? recommendationsOption.checked : false,
+        markupValidation: markupOption instanceof HTMLInputElement ? markupOption.checked : false,
+      },
+    }),
   })
     .then(async (response) => {
       const body = (await response.json()) as { readonly id?: string; readonly error?: string };
@@ -323,7 +335,8 @@ stopButton?.addEventListener('click', () => {
 });
 
 recentAuditsList?.addEventListener('click', (event) => {
-  const target = event.target instanceof Element ? event.target.closest('[data-cancel-audit]') : null;
+  const target =
+    event.target instanceof Element ? event.target.closest('[data-cancel-audit]') : null;
   const id = target?.getAttribute('data-cancel-audit');
   if (id === null || id === undefined) return;
 

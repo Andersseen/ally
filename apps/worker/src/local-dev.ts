@@ -397,9 +397,10 @@ async function createAudit(
   };
 
   ctx.audits.set(id, audit);
+  const options = readAuditOptions(body?.options);
   queueMicrotask(() => {
     void executeAuditJob(
-      { id, url: normalized.url, attempt: 1, options: { keyboard: true } },
+      { id, url: normalized.url, attempt: 1, options },
       {
         browserProvider: new PlaywrightChromiumBrowserProvider(),
         persistence: ctx.persistence,
@@ -410,6 +411,20 @@ async function createAudit(
   });
 
   send(response, request, ctx, { id, status: audit.status }, 202);
+}
+
+function readAuditOptions(value: unknown) {
+  const record = isRecord(value) ? value : {};
+  return {
+    keyboard: typeof record?.keyboard === 'boolean' ? record.keyboard : true,
+    recommendations: typeof record?.recommendations === 'boolean' ? record.recommendations : false,
+    markupValidation:
+      typeof record?.markupValidation === 'boolean' ? record.markupValidation : false,
+  };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
 }
 
 function listAudits(
@@ -479,7 +494,13 @@ function cancelAudit(
 
   const next = nextState(audit.status, 'cancel');
   if (next === null) {
-    send(response, request, ctx, { error: 'Audit cannot be cancelled from its current state' }, 409);
+    send(
+      response,
+      request,
+      ctx,
+      { error: 'Audit cannot be cancelled from its current state' },
+      409,
+    );
     return;
   }
 
