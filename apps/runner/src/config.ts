@@ -1,17 +1,21 @@
 import { randomUUID } from 'node:crypto';
 import type { AuditBudgets } from '@ally/runner-core';
 
-export interface RunnerConfig {
+export interface RunnerExecutionConfig {
   /** Origin of the Ally Worker, e.g. `https://ally.andersseen.dev`. No trailing slash. */
   readonly workerBaseUrl: string;
   /** Bearer secret for the Worker's `/api/runner/*` surface. */
   readonly runnerSecret: string;
   readonly runnerId: string;
+  readonly budgets: AuditBudgets;
+  readonly healthPort: number;
+}
+
+export interface RunnerConfig extends RunnerExecutionConfig {
   readonly cloudflareAccountId: string;
   /** Cloudflare API token scoped to Queues pull/ack on the audit queue only. */
   readonly cloudflareApiToken: string;
   readonly cloudflareQueueId: string;
-  readonly budgets: AuditBudgets;
   /** How long to sleep after an empty pull before trying again. */
   readonly pollIntervalMs: number;
   /**
@@ -21,12 +25,11 @@ export interface RunnerConfig {
    * message to another puller while this runner still legitimately owns it.
    */
   readonly visibilityTimeoutMs: number;
-  readonly healthPort: number;
 }
 
-const REQUIRED_VARS = [
-  'ALLY_WORKER_BASE_URL',
-  'ALLY_RUNNER_SECRET',
+const REQUIRED_EXECUTION_VARS = ['ALLY_WORKER_BASE_URL', 'ALLY_RUNNER_SECRET'] as const;
+
+const REQUIRED_STANDALONE_VARS = [
   'CLOUDFLARE_ACCOUNT_ID',
   'CLOUDFLARE_QUEUES_API_TOKEN',
   'CLOUDFLARE_QUEUE_ID',
@@ -38,7 +41,31 @@ const REQUIRED_VARS = [
  * with half its configuration should refuse to start, not limp along.
  */
 export function loadRunnerConfig(env: NodeJS.ProcessEnv = process.env): RunnerConfig {
-  const missing = REQUIRED_VARS.filter((name) => isBlank(env[name]));
+  const missing = [...REQUIRED_EXECUTION_VARS, ...REQUIRED_STANDALONE_VARS].filter((name) =>
+    isBlank(env[name]),
+  );
+  if (missing.length > 0) {
+    throw new Error(`Missing required runner environment variables: ${missing.join(', ')}`);
+  }
+
+  const execution = loadRunnerServeConfig(env);
+
+  return {
+    ...execution,
+    cloudflareAccountId: requireVar(env, 'CLOUDFLARE_ACCOUNT_ID'),
+    cloudflareApiToken: requireVar(env, 'CLOUDFLARE_QUEUES_API_TOKEN'),
+    cloudflareQueueId: requireVar(env, 'CLOUDFLARE_QUEUE_ID'),
+    pollIntervalMs: readIntEnv(env, 'ALLY_QUEUE_POLL_INTERVAL_MS', 2_000),
+    visibilityTimeoutMs: readIntEnv(
+      env,
+      'ALLY_QUEUE_VISIBILITY_TIMEOUT_MS',
+      execution.budgets.auditTimeoutMs + 30_000,
+    ),
+  };
+}
+
+export function loadRunnerServeConfig(env: NodeJS.ProcessEnv = process.env): RunnerExecutionConfig {
+  const missing = REQUIRED_EXECUTION_VARS.filter((name) => isBlank(env[name]));
   if (missing.length > 0) {
     throw new Error(`Missing required runner environment variables: ${missing.join(', ')}`);
   }
@@ -55,16 +82,7 @@ export function loadRunnerConfig(env: NodeJS.ProcessEnv = process.env): RunnerCo
     workerBaseUrl: requireVar(env, 'ALLY_WORKER_BASE_URL').replace(/\/$/, ''),
     runnerSecret: requireVar(env, 'ALLY_RUNNER_SECRET'),
     runnerId: isBlank(runnerId) ? defaultRunnerId() : runnerId.trim(),
-    cloudflareAccountId: requireVar(env, 'CLOUDFLARE_ACCOUNT_ID'),
-    cloudflareApiToken: requireVar(env, 'CLOUDFLARE_QUEUES_API_TOKEN'),
-    cloudflareQueueId: requireVar(env, 'CLOUDFLARE_QUEUE_ID'),
     budgets,
-    pollIntervalMs: readIntEnv(env, 'ALLY_QUEUE_POLL_INTERVAL_MS', 2_000),
-    visibilityTimeoutMs: readIntEnv(
-      env,
-      'ALLY_QUEUE_VISIBILITY_TIMEOUT_MS',
-      budgets.auditTimeoutMs + 30_000,
-    ),
     healthPort: readIntEnv(env, 'ALLY_HEALTH_PORT', 8080),
   };
 }

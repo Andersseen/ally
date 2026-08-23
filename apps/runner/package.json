@@ -10,6 +10,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "start": "node --experimental-strip-types src/main.ts",
+    "start:serve": "node --experimental-strip-types src/serve.ts",
     "clean": "rm -rf .turbo"
   },
   "dependencies": {

@@ -4,10 +4,10 @@ This repo deploys as three surfaces:
 
 - Web UI: Cloudflare Pages at `https://ally.andersseen.dev`.
 - API/control plane: Cloudflare Worker route at `https://ally.andersseen.dev/api/*`.
-- Execution plane: the standalone Node runner (`apps/runner`), deployed as a
-  Docker container on any Docker host — not a Cloudflare product. It claims
-  jobs from the Worker's Cloudflare Queue and reports back to
-  `/api/runner/*`; it has no D1/R2 access of its own.
+- Execution plane: Cloudflare Containers, owned by the Worker and triggered
+  from a native Cloudflare Queues consumer. The same `apps/runner` Docker
+  image can still run on an external Docker host as a fallback; either way it
+  reports back to `/api/runner/*` and has no D1/R2 access of its own.
 
 Keeping the Worker under the same site origin as the web UI matches the
 registered dev-auth callback byte for byte and lets the Worker set
@@ -48,32 +48,11 @@ pnpm --filter @ally/worker exec wrangler queues create ally-audit-jobs-dlq
 
 Copy the returned D1 `database_id` into `apps/worker/wrangler.jsonc`.
 
-### Configure the queue as a pull consumer
-
-The standalone runner is not a Worker, so it consumes the queue through
-Cloudflare's HTTP pull-consumer API rather than a `queue()` handler in the
-Worker:
-
-```bash
-pnpm --filter @ally/worker exec wrangler queues consumer http add ally-audit-jobs \
-  --dead-letter-queue ally-audit-jobs-dlq \
-  --max-retries 5 \
-  --visibility-timeout-ms 150000
-```
-
-Set `--visibility-timeout-ms` comfortably above the runner's
-`ALLY_AUDIT_TIMEOUT_MS` (default 120000) so a job's lease doesn't expire and
-get redelivered to another puller while it's still legitimately running.
-
-You'll also need a Cloudflare API token scoped to Queues on this account
-(ideally scoped further to just this queue if your plan supports resource-
-level scoping) for the runner's `CLOUDFLARE_QUEUES_API_TOKEN` — create one
-under **My Profile → API Tokens** in the Cloudflare dashboard, and find the
-queue's id (not its name) with:
-
-```bash
-pnpm --filter @ally/worker exec wrangler queues list
-```
+The queue consumer is configured declaratively in
+`apps/worker/wrangler.jsonc`; `wrangler deploy` registers the Worker's
+native `queue()` handler and dead-letter queue settings. Do not add an HTTP
+pull consumer unless you are deliberately using the external runner fallback
+in section 7.
 
 ## 3. Configure Worker secrets
 
@@ -91,10 +70,12 @@ Generate each with:
 openssl rand -base64 48
 ```
 
-`ALLY_RUNNER_SECRET` is the bearer token the standalone runner presents to
-`/api/runner/*` — generate a separate value from `ALLY_SESSION_SECRET` and
-give it to the runner's own configuration (`apps/runner/.env`, or your
-container platform's secret store), never to `wrangler.jsonc`.
+`ALLY_RUNNER_SECRET` is the bearer token the runner presents to
+`/api/runner/*` — generate a separate value from `ALLY_SESSION_SECRET`. For
+Cloudflare Containers, the Worker reads this secret and passes it into the
+container instance at start time; for the external fallback, give the same
+value to the runner's own configuration (`apps/runner/.env`, or your
+container platform's secret store). Never commit it to `wrangler.jsonc`.
 
 For GitHub Actions deployment (Worker/Pages only — the runner is not
 deployed by this pipeline), add these repository or production environment
@@ -150,13 +131,47 @@ Attach the Pages custom domain:
 ally.andersseen.dev -> ally-web
 ```
 
-## 7. Deploy the standalone Node runner
+## 7. Deploy the execution plane
+
+Cloudflare Containers is the default path. The Worker config declares:
+
+- `AuditRunnerContainer` as a container-enabled Durable Object.
+- `../runner/Dockerfile` as the container image.
+- `AUDIT_RUNNER` as the binding used by the Worker's `queue()` handler.
+- `ally-audit-jobs` as both the producer queue and native consumer queue.
+
+Deploying the Worker builds/pushes the runner image and registers the native
+queue consumer. Start with the committed `max_instances: 10` only after a
+staging smoke test; lower it first if you want a narrower beta rollout.
+
+The runner image exposes `/healthz` and `/run` on `ALLY_HEALTH_PORT`
+(default 8080). The Worker starts one named container per audit id, passes
+`ALLY_WORKER_BASE_URL`, `ALLY_RUNNER_SECRET`, and `ALLY_RUNNER_ID` as
+runtime environment variables, waits for the health port, then POSTs the
+queued job to `/run`.
+
+### External Docker host fallback
 
 The runner is a plain Docker image (`apps/runner/Dockerfile`) — build and
 push it to whatever registry your host reads from, then run it with the
 environment variables in `apps/runner/.env.example` filled in
 (`ALLY_WORKER_BASE_URL`, `ALLY_RUNNER_SECRET`, `CLOUDFLARE_ACCOUNT_ID`,
 `CLOUDFLARE_QUEUES_API_TOKEN`, `CLOUDFLARE_QUEUE_ID`).
+
+Before using this fallback, add the old HTTP pull consumer:
+
+```bash
+pnpm --filter @ally/worker exec wrangler queues consumer http add ally-audit-jobs \
+  --dead-letter-queue ally-audit-jobs-dlq \
+  --max-retries 5 \
+  --visibility-timeout-ms 150000
+```
+
+Set `--visibility-timeout-ms` comfortably above the runner's
+`ALLY_AUDIT_TIMEOUT_MS` (default 120000) so a job's lease doesn't expire and
+get redelivered to another puller while it's still legitimately running.
+You'll also need a Cloudflare API token scoped to Queues and the queue id
+from `pnpm --filter @ally/worker exec wrangler queues list`.
 
 ```bash
 docker build -t ally-runner -f apps/runner/Dockerfile .
@@ -167,7 +182,8 @@ docker run --rm \
   -e CLOUDFLARE_QUEUES_API_TOKEN=... \
   -e CLOUDFLARE_QUEUE_ID=... \
   -p 8080:8080 \
-  ally-runner
+  ally-runner \
+  node --experimental-strip-types src/main.ts
 ```
 
 This has not been build-tested against a real Docker daemon or a real
@@ -177,8 +193,8 @@ production. The image works the same way on Coolify, Fly.io, Railway, Cloud
 Run, or a bare VM with Docker: it needs outbound HTTPS to Cloudflare's API
 and to your Worker's origin, and nothing provider-specific. `/healthz` on
 `ALLY_HEALTH_PORT` (default 8080) is available for the platform's health
-check. `SIGTERM` triggers a graceful shutdown: the process stops pulling new
-jobs, lets an in-flight one finish, then exits.
+check. In standalone mode, `SIGTERM` triggers a graceful shutdown: the
+process stops pulling new jobs, lets an in-flight one finish, then exits.
 
 Run more than one instance for throughput or availability — the queue's
 lease semantics make concurrent runners safe without any coordination

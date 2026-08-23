@@ -37,6 +37,8 @@ const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
 const DEFAULT_MAX_ATTEMPTS = 3;
 const AUDIT_LIST_LIMIT = 20;
 
+export { AuditRunnerContainer } from './audit-runner-container.js';
+
 interface AuditRow {
   readonly id: string;
   readonly url: string;
@@ -150,7 +152,57 @@ export default {
       return withCors(json({ error: 'Internal server error' }, 500), request, env);
     }
   },
+
+  async queue(batch: MessageBatch<AuditJobMessage>, env: Env): Promise<void> {
+    for (const message of batch.messages) {
+      try {
+        const runnerSecret = env.ALLY_RUNNER_SECRET?.trim();
+        if (runnerSecret === undefined || runnerSecret === '') {
+          throw new Error('ALLY_RUNNER_SECRET is not configured.');
+        }
+
+        const container = env.AUDIT_RUNNER.getByName(message.body.id);
+        await container.startAndWaitForPorts({
+          startOptions: {
+            envVars: {
+              ALLY_WORKER_BASE_URL: webOrigin(env),
+              ALLY_RUNNER_SECRET: runnerSecret,
+              ALLY_RUNNER_ID: `container-${message.body.id}`,
+            },
+          },
+        });
+        const response = await container.fetch('http://container/run', {
+          method: 'POST',
+          headers: JSON_HEADERS,
+          body: JSON.stringify(message.body),
+        });
+
+        if (response.ok) message.ack();
+        else message.retry();
+      } catch (error) {
+        console.error(
+          JSON.stringify({
+            level: 'error',
+            message: 'container_dispatch_failed',
+            auditId: message.body.id,
+            error: firstLine(error),
+          }),
+        );
+        message.retry();
+      }
+    }
+  },
 };
+
+interface MessageBatch<T> {
+  readonly messages: readonly QueueMessage<T>[];
+}
+
+interface QueueMessage<T> {
+  readonly body: T;
+  ack(): void;
+  retry(): void;
+}
 
 async function getAuthSession(request: Request, env: Env): Promise<Response> {
   let session = null;

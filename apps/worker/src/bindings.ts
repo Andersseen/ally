@@ -7,6 +7,7 @@ export interface Env extends AuthEnv, RunnerAuthEnv {
   readonly DB: D1Database;
   readonly ARTIFACTS: R2Bucket;
   readonly AUDIT_QUEUE: Queue<AuditJobMessage>;
+  readonly AUDIT_RUNNER: ContainerNamespace;
   /** Caps re-claim attempts per audit. Defaults to 3 when unset. */
   readonly AUDIT_MAX_ATTEMPTS?: string;
 }
@@ -53,4 +54,17 @@ export interface R2ObjectBody {
 
 export interface Queue<T> {
   send(message: T): Promise<void>;
+}
+
+export interface ContainerNamespace {
+  getByName(name: string): ContainerStub;
+}
+
+export interface ContainerStub {
+  startAndWaitForPorts(options?: {
+    readonly startOptions?: {
+      readonly envVars?: Record<string, string>;
+    };
+  }): Promise<void>;
+  fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 }
