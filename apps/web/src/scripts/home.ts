@@ -117,7 +117,10 @@ function humanizeStage(currentStage: string | null | undefined): string {
   return `✓ ${label}`;
 }
 
-async function poll(id: string): Promise<void> {
+/** After this many 2s polls still queued, a runner is probably not deployed. */
+const STALE_QUEUE_POLLS = 15;
+
+async function poll(id: string, attempt = 0): Promise<void> {
   const response = await fetch(`${apiBase}/api/audits/${id}`, { credentials: 'include' });
   if (!response.ok) throw new Error('Could not read audit status.');
   const audit = (await response.json()) as {
@@ -135,7 +138,7 @@ async function poll(id: string): Promise<void> {
     return;
   }
 
-  setStatus(audit.status, audit.status === 'completed' ? 'Audit complete.' : 'Audit is running.');
+  setStatus(audit.status, pollMessage(audit.status, attempt));
 
   if (audit.status === 'completed') {
     if (reportLink instanceof HTMLElement) {
@@ -148,7 +151,16 @@ async function poll(id: string): Promise<void> {
     return;
   }
 
-  window.setTimeout(() => void poll(id).catch(showError), 2000);
+  window.setTimeout(() => void poll(id, attempt + 1).catch(showError), 2000);
+}
+
+function pollMessage(status: HostedAuditStatus, attempt: number): string {
+  if (stepGroup(status) === 'queued') {
+    return attempt >= STALE_QUEUE_POLLS
+      ? 'Still queued — no runner has picked this up yet. Confirm a runner is deployed and processing the queue.'
+      : 'Queued. Waiting for a runner to pick it up.';
+  }
+  return 'Audit is running.';
 }
 
 function showError(error: unknown): void {
