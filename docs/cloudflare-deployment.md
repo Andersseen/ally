@@ -260,6 +260,11 @@ with conservative cost guardrails:
 - `ALLY_GLOBAL_ACTIVE_AUDIT_LIMIT=1`.
 - `AUDIT_MAX_ATTEMPTS=1` and queue `max_retries=1`.
 
+Daily limits ignore audits that were cancelled before the runner made its first
+attempt (`status = cancelled` and `attempt = 0`). Those early cancellations do
+not start a paid container run, so they should not consume the day's smoke-test
+slot.
+
 These are technical guardrails, not a Cloudflare billing hard cap. Keep the
 Cloudflare budget alerts enabled and check Billable Usage after every real
 smoke test. Remaining follow-up:

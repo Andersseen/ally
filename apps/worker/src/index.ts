@@ -334,8 +334,8 @@ async function createAudit(request: Request, env: Env, session: AuthSession): Pr
   const insert = await env.DB.prepare(
     `INSERT INTO audits (id, url, status, attempt, created_at, updated_at, owner_user_id, owner_email)
      SELECT ?, ?, 'queued', 0, ?, ?, ?, ?
-     WHERE (SELECT COUNT(*) FROM audits WHERE owner_user_id = ? AND created_at >= ?) < ?
-       AND (SELECT COUNT(*) FROM audits WHERE created_at >= ?) < ?
+     WHERE (SELECT COUNT(*) FROM audits WHERE owner_user_id = ? AND created_at >= ? AND NOT (status = 'cancelled' AND attempt = 0)) < ?
+       AND (SELECT COUNT(*) FROM audits WHERE created_at >= ? AND NOT (status = 'cancelled' AND attempt = 0)) < ?
        AND (SELECT COUNT(*) FROM audits WHERE status IN ('queued', 'claimed', 'running', 'persisting')) < ?`,
   )
     .bind(
