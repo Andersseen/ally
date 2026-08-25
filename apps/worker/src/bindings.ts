@@ -73,6 +73,7 @@ export interface R2Bucket {
     options?: { httpMetadata?: { contentType?: string } },
   ): Promise<unknown>;
   get(key: string): Promise<R2ObjectBody | null>;
+  delete(key: string): Promise<void>;
 }
 
 export interface R2ObjectBody {

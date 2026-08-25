@@ -248,6 +248,13 @@ async function handle(
     return;
   }
 
+  if (request.method === 'DELETE' && auditMatch?.[1] !== undefined) {
+    const session = await requireAuth(request, response, ctx);
+    if (session === null) return;
+    deleteAudit(auditMatch[1], request, response, ctx, session);
+    return;
+  }
+
   send(response, request, ctx, { error: 'Not found' }, 404);
 }
 
@@ -515,6 +522,28 @@ function cancelAudit(
   send(response, request, ctx, { status: next });
 }
 
+function deleteAudit(
+  id: string,
+  request: IncomingMessage,
+  response: ServerResponse,
+  ctx: LocalDevContext,
+  session: AuthSession,
+): void {
+  const audit = ctx.audits.get(id);
+  if (audit === undefined || audit.ownerUserId !== session.user.id) {
+    send(response, request, ctx, { error: 'Audit not found' }, 404);
+    return;
+  }
+
+  if (!isTerminalStatus(audit.status)) {
+    send(response, request, ctx, { error: 'Cancel the audit before deleting it.' }, 409);
+    return;
+  }
+
+  ctx.audits.delete(id);
+  sendRaw(response, request, ctx, 204);
+}
+
 function auditJson(audit: LocalAudit): Record<string, unknown> {
   return {
     id: audit.id,
@@ -616,7 +645,7 @@ function sendRaw(
   const headers: OutgoingHttpHeaders = {
     ...JSON_HEADERS,
     'access-control-allow-origin': allowedOrigin(request.headers.origin, ctx),
-    'access-control-allow-methods': 'GET, POST, OPTIONS',
+    'access-control-allow-methods': 'GET, POST, DELETE, OPTIONS',
     'access-control-allow-headers': 'content-type',
     'access-control-allow-credentials': 'true',
     vary: 'Origin',

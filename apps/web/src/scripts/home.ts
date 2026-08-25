@@ -268,9 +268,20 @@ function recentAuditRow(audit: AuditListItem): string {
   const dateLabel = auditDateLabel(audit);
   const reportHref = `/reports?id=${encodeURIComponent(audit.id)}`;
 
+  const buttonClass =
+    'rounded-md border border-slate-400 px-3 py-1.5 text-sm font-semibold hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ally-primary)] dark:border-slate-600 dark:hover:bg-slate-800';
+
   const stopControl = isTerminal
     ? ''
-    : `<button type="button" class="rounded-md border border-slate-400 px-3 py-1.5 text-sm font-semibold hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ally-primary)] dark:border-slate-600 dark:hover:bg-slate-800" data-cancel-audit="${escapeHtml(audit.id)}">Stop</button>`;
+    : `<button type="button" class="${buttonClass}" data-cancel-audit="${escapeHtml(audit.id)}">Stop</button>`;
+
+  const rerunControl = isTerminal
+    ? `<button type="button" class="${buttonClass}" data-rerun-audit="${escapeHtml(audit.url)}">Re-run</button>`
+    : '';
+
+  const deleteControl = isTerminal
+    ? `<button type="button" class="${buttonClass}" data-delete-audit="${escapeHtml(audit.id)}">Delete</button>`
+    : '';
 
   const row = `
     <li>
@@ -294,6 +305,8 @@ function recentAuditRow(audit: AuditListItem): string {
             : ''
         }
       ${stopControl}
+      ${rerunControl}
+      ${deleteControl}
     </div>
     </div>
     </div>
@@ -340,13 +353,14 @@ function escapeHtml(value: string): string {
     .replace(/"/g, '&quot;');
 }
 
-form?.addEventListener('submit', (event) => {
-  event.preventDefault();
-  if (!(input instanceof HTMLInputElement)) return;
-  if (!isAuthenticated) {
-    setStatus('failed', 'Sign in before running a hosted audit.');
-    return;
-  }
+interface AuditOptions {
+  readonly keyboard: boolean;
+  readonly recommendations: boolean;
+  readonly markupValidation: boolean;
+  readonly aiReview: boolean;
+}
+
+function startAudit(targetUrl: string, options: AuditOptions): void {
   setButtonBusy(true);
   if (reportLink) reportLink.classList.add('hidden');
 
@@ -356,16 +370,7 @@ form?.addEventListener('submit', (event) => {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify({
-      url: input.value,
-      options: {
-        keyboard: keyboardOption instanceof HTMLInputElement ? keyboardOption.checked : true,
-        recommendations:
-          recommendationsOption instanceof HTMLInputElement ? recommendationsOption.checked : false,
-        markupValidation: markupOption instanceof HTMLInputElement ? markupOption.checked : false,
-        aiReview: aiReviewOption instanceof HTMLInputElement ? aiReviewOption.checked : false,
-      },
-    }),
+    body: JSON.stringify({ url: targetUrl, options }),
   })
     .then(async (response) => {
       const body = (await response.json()) as { readonly id?: string; readonly error?: string };
@@ -377,10 +382,44 @@ form?.addEventListener('submit', (event) => {
       return poll(body.id);
     })
     .catch(showError);
+}
+
+form?.addEventListener('submit', (event) => {
+  event.preventDefault();
+  if (!(input instanceof HTMLInputElement)) return;
+  if (!isAuthenticated) {
+    setStatus('failed', 'Sign in before running a hosted audit.');
+    return;
+  }
+
+  startAudit(input.value, {
+    keyboard: keyboardOption instanceof HTMLInputElement ? keyboardOption.checked : true,
+    recommendations:
+      recommendationsOption instanceof HTMLInputElement ? recommendationsOption.checked : false,
+    markupValidation: markupOption instanceof HTMLInputElement ? markupOption.checked : false,
+    aiReview: aiReviewOption instanceof HTMLInputElement ? aiReviewOption.checked : false,
+  });
 });
+
+function rerunAudit(targetUrl: string): void {
+  if (!isAuthenticated) return;
+  if (input instanceof HTMLInputElement) input.value = targetUrl;
+  startAudit(targetUrl, {
+    keyboard: keyboardOption instanceof HTMLInputElement ? keyboardOption.checked : true,
+    recommendations:
+      recommendationsOption instanceof HTMLInputElement ? recommendationsOption.checked : false,
+    markupValidation: markupOption instanceof HTMLInputElement ? markupOption.checked : false,
+    aiReview: aiReviewOption instanceof HTMLInputElement ? aiReviewOption.checked : false,
+  });
+  statusPanel?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
 
 async function cancelAudit(id: string): Promise<void> {
   await fetch(`${apiBase}/api/audits/${id}/cancel`, { method: 'POST', credentials: 'include' });
+}
+
+async function deleteAudit(id: string): Promise<void> {
+  await fetch(`${apiBase}/api/audits/${id}`, { method: 'DELETE', credentials: 'include' });
 }
 
 stopButton?.addEventListener('click', () => {
@@ -396,15 +435,31 @@ stopButton?.addEventListener('click', () => {
 });
 
 recentAuditsList?.addEventListener('click', (event) => {
-  const target =
-    event.target instanceof Element ? event.target.closest('[data-cancel-audit]') : null;
-  const id = target?.getAttribute('data-cancel-audit');
-  if (id === null || id === undefined) return;
+  if (!(event.target instanceof Element)) return;
 
-  void cancelAudit(id).finally(() => {
-    void loadRecentAudits();
-    if (id === activeAuditId) void poll(id).catch(showError);
-  });
+  const cancelTarget = event.target.closest('[data-cancel-audit]');
+  const cancelId = cancelTarget?.getAttribute('data-cancel-audit');
+  if (cancelId !== null && cancelId !== undefined) {
+    void cancelAudit(cancelId).finally(() => {
+      void loadRecentAudits();
+      if (cancelId === activeAuditId) void poll(cancelId).catch(showError);
+    });
+    return;
+  }
+
+  const rerunTarget = event.target.closest('[data-rerun-audit]');
+  const rerunUrl = rerunTarget?.getAttribute('data-rerun-audit');
+  if (rerunUrl !== null && rerunUrl !== undefined) {
+    rerunAudit(rerunUrl);
+    return;
+  }
+
+  const deleteTarget = event.target.closest('[data-delete-audit]');
+  const deleteId = deleteTarget?.getAttribute('data-delete-audit');
+  if (deleteId !== null && deleteId !== undefined) {
+    if (!window.confirm('Delete this audit and its report? This cannot be undone.')) return;
+    void deleteAudit(deleteId).then(() => loadRecentAudits());
+  }
 });
 
 authLogout?.addEventListener('click', () => {
