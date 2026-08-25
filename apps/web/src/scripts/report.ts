@@ -9,6 +9,7 @@ interface AuditResultJson {
   readonly options?: {
     readonly recommendations?: boolean;
     readonly markupValidation?: boolean;
+    readonly aiReview?: boolean;
   };
   readonly finishedAt: string;
   readonly score: { readonly value: number };
@@ -39,6 +40,48 @@ interface AuditResultJson {
     };
   }[];
   readonly remediations?: Record<string, RemediationJson>;
+  readonly aiReview?: AiReviewJson;
+  readonly wcagReview?: {
+    readonly standard: {
+      readonly name: string;
+      readonly version: string;
+      readonly levels: readonly string[];
+      readonly datasetRevision: string;
+    };
+    readonly criteria: readonly {
+      readonly criterion: { readonly id: string; readonly title: string; readonly level: string };
+      readonly statuses: readonly string[];
+      readonly automatedFindingCount: number;
+      readonly aiReviewCount: number;
+      readonly manualReviewRequired: boolean;
+    }[];
+  };
+}
+
+interface AiReviewJson {
+  readonly enabled: boolean;
+  readonly model?: string;
+  readonly status: 'disabled' | 'pending' | 'completed' | 'failed' | 'unavailable';
+  readonly reviews: readonly {
+    readonly status: 'pending' | 'reviewed' | 'failed' | 'skipped';
+    readonly task: {
+      readonly id: string;
+      readonly criterion: string;
+      readonly rule: {
+        readonly title: string;
+        readonly level: string;
+        readonly reviewGoal: string;
+      };
+      readonly evidenceRefs: readonly string[];
+    };
+    readonly result?: {
+      readonly outcome: string;
+      readonly confidence: string;
+      readonly summary: string;
+      readonly suggestedReview?: string;
+    };
+    readonly error?: string;
+  }[];
 }
 
 interface RemediationJson {
@@ -67,6 +110,7 @@ function render(result: AuditResultJson): void {
   const engines = result.engines ?? [];
   const remediations = result.remediations ?? {};
   const recommendationsRequested = result.options?.recommendations === true;
+  const aiReviewRequested = result.options?.aiReview === true;
   const remediationCount = Object.keys(remediations).length;
 
   if (root) {
@@ -81,7 +125,7 @@ function render(result: AuditResultJson): void {
       <p class="text-ally-muted mt-1 text-sm">
         Recommendations ${recommendationsRequested ? `enabled (${escapeHtml(remediationCount)} fixes)` : 'not requested'}${
           result.options?.markupValidation === true ? ' · Markup validation enabled' : ''
-        }
+        }${aiReviewRequested ? ' · AI-assisted review enabled' : ''}
       </p>
 
       <div class="report-grid mt-6" and-motion="fade-in-up" and-motion-trigger="enter">
@@ -95,6 +139,8 @@ function render(result: AuditResultJson): void {
         <and-icon slot="icon" name="info"></and-icon>
         Automated testing only. This report does not establish WCAG conformance, and manual review is still required.
       </and-alert>
+
+      ${renderWcagReview(result)}
 
       <section class="mt-8" aria-labelledby="engine-runs-heading">
         <h2 id="engine-runs-heading" class="text-ally-ink text-xl font-bold">Engine runs</h2>
@@ -140,6 +186,121 @@ function render(result: AuditResultJson): void {
       </section>
     `;
   }
+}
+
+function renderWcagReview(result: AuditResultJson): string {
+  const wcag = result.wcagReview;
+  const ai = result.aiReview;
+  if (wcag === undefined) return '';
+  const counts = countWcagStatuses(wcag.criteria);
+  const reviewed = ai?.reviews.filter((review) => review.status === 'reviewed') ?? [];
+  const flagged = reviewed.filter((review) => review.result?.outcome === 'potential-issue');
+
+  return `
+    <section class="mt-8" aria-labelledby="wcag-review-heading">
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 id="wcag-review-heading" class="text-ally-ink text-xl font-bold">WCAG 2.2 A/AA Review</h2>
+          <p class="text-ally-muted mt-1 text-sm">Dataset ${escapeHtml(wcag.standard.datasetRevision)}</p>
+        </div>
+        <and-badge variant="${ai?.status === 'completed' ? 'default' : ai?.status === 'failed' || ai?.status === 'unavailable' ? 'destructive' : 'secondary'}">
+          AI ${escapeHtml(ai?.status ?? 'disabled')}
+        </and-badge>
+      </div>
+      <div class="report-grid mt-4">
+        ${renderMetric('Review coverage', `${escapeHtml(counts.coveragePercent)}% (${escapeHtml(counts.covered)} / ${escapeHtml(wcag.criteria.length)})`, 'success')}
+        ${renderMetric('Automatically checked', counts.automated, 'success')}
+        ${renderMetric('Behaviorally checked', counts.behavioral, 'accessibility')}
+        ${renderMetric('AI-assisted review', reviewed.length, 'activity')}
+        ${renderMetric('Manual review required', counts.manual, 'file-text')}
+      </div>
+      ${
+        ai?.status === 'unavailable'
+          ? `<and-alert class="mt-4 block" variant="default"><and-icon slot="icon" name="info"></and-icon>AI-assisted review unavailable. Deterministic audit results are still complete.</and-alert>`
+          : ''
+      }
+      <and-card class="mt-4 block" padded="true">
+        <ul class="space-y-3" role="list">
+          ${wcag.criteria
+            .filter(
+              (criterion) =>
+                criterion.automatedFindingCount > 0 ||
+                criterion.aiReviewCount > 0 ||
+                criterion.statuses.includes('not-yet-covered'),
+            )
+            .slice(0, 12)
+            .map((criterion) => renderCriterionRow(criterion, ai))
+            .join('')}
+        </ul>
+      </and-card>
+      ${
+        flagged.length === 0
+          ? ''
+          : `<div class="mt-4 space-y-3">${flagged.map(renderAiReview).join('')}</div>`
+      }
+    </section>
+  `;
+}
+
+function countWcagStatuses(criteria: NonNullable<AuditResultJson['wcagReview']>['criteria']) {
+  const covered = criteria.filter(
+    (criterion) =>
+      criterion.statuses.includes('automated-checked') ||
+      criterion.statuses.includes('behaviorally-checked') ||
+      criterion.statuses.includes('ai-reviewed'),
+  ).length;
+  return {
+    covered,
+    coveragePercent: criteria.length === 0 ? 0 : Math.round((covered / criteria.length) * 100),
+    automated: criteria.filter((criterion) => criterion.statuses.includes('automated-checked'))
+      .length,
+    behavioral: criteria.filter((criterion) => criterion.statuses.includes('behaviorally-checked'))
+      .length,
+    manual: criteria.filter((criterion) => criterion.manualReviewRequired).length,
+  };
+}
+
+function renderCriterionRow(
+  criterion: NonNullable<AuditResultJson['wcagReview']>['criteria'][number],
+  ai: AiReviewJson | undefined,
+): string {
+  const review = ai?.reviews.find(
+    (item) => item.status === 'reviewed' && item.task.criterion === criterion.criterion.id,
+  );
+  return `
+    <li class="border-b border-[var(--ally-secondary-border)] pb-3 last:border-b-0 last:pb-0">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h3 class="text-ally-ink text-sm font-semibold">
+          ${escapeHtml(criterion.criterion.id)} ${escapeHtml(criterion.criterion.title)}
+          <span class="text-ally-muted">Level ${escapeHtml(criterion.criterion.level)}</span>
+        </h3>
+        <and-badge variant="outline">${escapeHtml(review?.result?.outcome ?? criterion.statuses[0] ?? 'manual-review-required')}</and-badge>
+      </div>
+      <p class="text-ally-muted mt-1 text-sm">
+        Automated evidence ${escapeHtml(criterion.automatedFindingCount)} · AI reviews ${escapeHtml(criterion.aiReviewCount)} · Human review ${criterion.manualReviewRequired ? 'recommended' : 'not expected'}
+      </p>
+    </li>
+  `;
+}
+
+function renderAiReview(review: AiReviewJson['reviews'][number]): string {
+  const result = review.result;
+  if (result === undefined) return '';
+  return `
+    <and-card class="block" padded="true">
+      <div class="flex flex-wrap items-center gap-2">
+        <and-badge variant="${result.outcome === 'potential-issue' ? 'destructive' : 'secondary'}">${escapeHtml(result.outcome)}</and-badge>
+        <and-badge variant="outline">Confidence ${escapeHtml(result.confidence)}</and-badge>
+      </div>
+      <h3 class="text-ally-ink mt-3 font-semibold">${escapeHtml(review.task.criterion)} ${escapeHtml(review.task.rule.title)}</h3>
+      <p class="text-ally-muted mt-2 text-sm leading-6">${escapeHtml(result.summary)}</p>
+      ${
+        result.suggestedReview === undefined
+          ? ''
+          : `<p class="text-ally-muted mt-2 text-sm leading-6">${escapeHtml(result.suggestedReview)}</p>`
+      }
+    </and-card>
+  `;
 }
 
 function renderFinding(

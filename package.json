@@ -16,6 +16,8 @@
     "test": "turbo run test",
     "test:e2e": "pnpm build && pnpm run e2e:prepare && pnpm --filter @ally/report test:e2e",
     "e2e:prepare": "node scripts/prepare-e2e.ts",
+    "wcag:sync": "pnpm --filter @ally/wcag run sync",
+    "ai:smoke": "pnpm --filter @ally/worker run test -- ai-review",
     "typecheck": "turbo run build typecheck && tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -31,6 +33,7 @@
     "clean": "turbo run clean && rm -rf node_modules/.cache .turbo"
   },
   "devDependencies": {
+    "@ally/analyzer-ai": "workspace:*",
     "@ally/analyzer-keyboard": "workspace:*",
     "@ally/audit-runner": "workspace:*",
     "@ally/browser": "workspace:*",
@@ -39,6 +42,7 @@
     "@ally/core": "workspace:*",
     "@ally/fixtures": "workspace:*",
     "@ally/reporter-json": "workspace:*",
+    "@ally/wcag": "workspace:*",
     "@eslint/js": "^10.0.1",
     "@types/node": "catalog:",
     "eslint": "catalog:",

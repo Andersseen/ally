@@ -7,6 +7,7 @@ import Methodology from '../components/Methodology.astro';
 import Overview from '../components/Overview.astro';
 import SampleDataNotice from '../components/SampleDataNotice.astro';
 import ScoreCard from '../components/ScoreCard.astro';
+import WcagReviewSection from '../components/WcagReviewSection.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { formatDuration, formatTimestamp } from '../lib/format.js';
 import { loadAudit } from '../lib/load-audit.js';
@@ -46,6 +47,7 @@ const { result, isSample } = await loadAudit();
 
       <ScoreCard score={result.score} />
       <Overview result={result} />
+      <WcagReviewSection result={result} />
       <EngineContributions engines={result.engines} contributions={result.contributions} />
       <FindingsSection findings={result.findings} remediations={result.remediations} />
       {result.keyboard && <KeyboardSection keyboard={result.keyboard} />}

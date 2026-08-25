@@ -124,6 +124,7 @@ async function runAudit(
       keyboard: true,
       recommendations: false,
       markupValidation: false,
+      aiReview: false,
       buildReport: true,
       headless: true,
       timeoutMs: 30_000,

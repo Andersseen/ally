@@ -7,6 +7,57 @@ import type { Remediation } from './remediation.js';
 import type { AutomatedScore } from './score.js';
 import type { SeverityCounts } from './severity.js';
 import type { RuleStandard } from './wcag.js';
+import type { WcagReviewSummary } from '@ally/wcag';
+
+export type AiReviewOutcome = 'no-concern-detected' | 'potential-issue' | 'needs-human-review';
+export type AiReviewConfidence = 'high' | 'medium' | 'low';
+
+export interface AiReviewTaskSnapshot {
+  readonly id: string;
+  readonly criterion: string;
+  readonly rule: {
+    readonly title: string;
+    readonly level: 'A' | 'AA';
+    readonly requirement: string;
+    readonly reviewGoal: string;
+  };
+  readonly evidence: unknown;
+  readonly allowedOutcomes: readonly AiReviewOutcome[];
+  readonly evidenceRefs: readonly string[];
+}
+
+export interface AiReviewResultSnapshot {
+  readonly criterion: string;
+  readonly outcome: AiReviewOutcome;
+  readonly confidence: AiReviewConfidence;
+  readonly summary: string;
+  readonly evidenceRefs: readonly string[];
+  readonly suggestedReview?: string;
+}
+
+export interface AiReviewRecordSnapshot {
+  readonly task: AiReviewTaskSnapshot;
+  readonly status: 'pending' | 'reviewed' | 'failed' | 'skipped';
+  readonly result?: AiReviewResultSnapshot;
+  readonly error?: string;
+}
+
+export interface AiReviewReportSnapshot {
+  readonly enabled: boolean;
+  readonly model?: string;
+  readonly datasetRevision: string;
+  readonly status: 'disabled' | 'pending' | 'completed' | 'failed' | 'unavailable';
+  readonly tasks: readonly AiReviewTaskSnapshot[];
+  readonly reviews: readonly AiReviewRecordSnapshot[];
+  readonly usage?: {
+    readonly provider: string;
+    readonly model: string;
+    readonly requests: number;
+    readonly durationMs: number;
+    readonly diagnostics?: Record<string, unknown>;
+  };
+  readonly error?: string;
+}
 
 /**
  * Version of the `audit.json` document shape.
@@ -119,6 +170,8 @@ export interface AuditResult {
   readonly keyboard?: KeyboardReport;
   readonly markupValidation?: MarkupValidationResult;
   readonly remediations?: Readonly<Record<string, Remediation>>;
+  readonly wcagReview?: WcagReviewSummary;
+  readonly aiReview?: AiReviewReportSnapshot;
   readonly score: AutomatedScore;
   readonly coverage: AuditCoverage;
   readonly summary: AuditSummary;

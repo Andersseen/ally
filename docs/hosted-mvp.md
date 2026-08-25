@@ -63,8 +63,13 @@ does — but no longer gates anything.
                      │
        optional markup validation + recommendations
                      │
+       WCAG coverage + optional bounded AI tasks
+                     │
                      ▼
               /api/runner/* (ALLY_RUNNER_SECRET)
+                     │
+                     ▼
+        Worker enriches pending tasks with Workers AI
                      │
                      ▼
                 Worker writes D1 + R2
@@ -74,6 +79,11 @@ The Worker remains the sole owner of D1, R2, and the public API. The runner
 is purely an execution plane: it claims a job, runs the shared pipeline, and
 reports state back through `/api/runner/*` — it never touches D1 or R2
 directly.
+
+AI-assisted review keeps the same boundary. The runner collects deterministic
+candidate evidence after the engines, keyboard analyzer, and optional
+remediation. The Worker owns `env.AI`, validates structured model output, and
+persists concise AI review records separately from automated findings.
 
 ## One pipeline, reused three ways
 

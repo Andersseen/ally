@@ -6,7 +6,7 @@ function result(overrides: Partial<AuditResult> = {}): AuditResult {
   return {
     schemaVersion: 2,
     target: { url: 'https://example.com/' },
-    options: { keyboard: true, recommendations: false, markupValidation: false },
+    options: { keyboard: true, recommendations: false, markupValidation: false, aiReview: false },
     startedAt: '2026-01-01T00:00:00.000Z',
     finishedAt: '2026-01-01T00:00:06.000Z',
     durationMs: 6000,

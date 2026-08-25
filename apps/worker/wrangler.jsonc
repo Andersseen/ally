@@ -21,6 +21,9 @@
   "browser": {
     "binding": "BROWSER",
   },
+  "ai": {
+    "binding": "AI",
+  },
   "containers": [
     {
       "class_name": "AuditRunnerContainer",
@@ -97,6 +100,8 @@
     // Caps re-claim attempts per audit; independent of the queue's own
     // max_retries above, which bounds redelivery at the transport level.
     "AUDIT_MAX_ATTEMPTS": "1",
+    "ALLY_AI_MODEL": "@cf/google/gemma-4-26b-a4b-it",
+    "ALLY_AI_TIMEOUT_MS": "30000",
   },
   // Secrets — never set here. Configure with `wrangler secret put <name>`:
   //   DEV_AUTH_CLIENT_SECRET, ALLY_SESSION_SECRET, ALLY_RUNNER_SECRET

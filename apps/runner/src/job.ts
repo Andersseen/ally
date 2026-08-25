@@ -29,6 +29,7 @@ export function parseJob(body: unknown): AuditJob | null {
             ...(typeof options.markupValidation === 'boolean'
               ? { markupValidation: options.markupValidation }
               : {}),
+            ...(typeof options.aiReview === 'boolean' ? { aiReview: options.aiReview } : {}),
           },
         }),
   };

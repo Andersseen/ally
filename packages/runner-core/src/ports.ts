@@ -11,6 +11,7 @@ export interface AuditJob {
     readonly keyboard?: boolean;
     readonly recommendations?: boolean;
     readonly markupValidation?: boolean;
+    readonly aiReview?: boolean;
   };
 }
 

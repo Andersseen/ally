@@ -17,6 +17,7 @@
     "clean": "rm -rf .turbo .wrangler"
   },
   "dependencies": {
+    "@ally/analyzer-ai": "workspace:*",
     "@ally/audit-runner": "workspace:*",
     "@ally/browser": "workspace:*",
     "@ally/core": "workspace:*",

@@ -1,0 +1,38 @@
+[
+  {
+    "criterion": "1.1.1",
+    "reviewHints": [
+      "Compare meaningful images, alt text, nearby headings, and captions. Generic alternatives such as \"image\" or \"chart\" usually require semantic review."
+    ]
+  },
+  {
+    "criterion": "2.4.4",
+    "reviewHints": [
+      "Review ambiguous link text only with its programmatically determinable context."
+    ]
+  },
+  {
+    "criterion": "2.4.6",
+    "reviewHints": [
+      "Check whether headings and labels describe topic or purpose rather than only whether they exist."
+    ]
+  },
+  {
+    "criterion": "3.1.2",
+    "reviewHints": [
+      "Review text passages that appear to use a different human language without a local lang attribute."
+    ]
+  },
+  {
+    "criterion": "3.3.2",
+    "reviewHints": [
+      "Review whether required inputs provide enough instruction for expected format or constraints."
+    ]
+  },
+  {
+    "criterion": "3.3.3",
+    "reviewHints": [
+      "Review detected error messages for useful correction suggestions when suggestions are known."
+    ]
+  }
+]

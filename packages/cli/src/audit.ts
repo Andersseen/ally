@@ -31,6 +31,7 @@ export async function performAudit(options: AuditOptions): Promise<AuditOutcome>
         keyboard: options.keyboard,
         recommendations: options.recommendations,
         markupValidation: options.markupValidation,
+        aiReview: options.aiReview,
       }),
     { headless: options.headless, timeoutMs: options.timeoutMs },
   );

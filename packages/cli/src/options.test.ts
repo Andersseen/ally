@@ -59,15 +59,17 @@ describe('parseArgs', () => {
     expect(options.keyboard).toBe(true);
     expect(options.recommendations).toBe(false);
     expect(options.markupValidation).toBe(false);
+    expect(options.aiReview).toBe(false);
     expect(options.buildReport).toBe(true);
     expect(options.headless).toBe(true);
   });
 
-  it('enables optional recommendations and markup validation', () => {
-    const options = audit(['https://example.com', '--recommendations', '--markup']);
+  it('enables optional recommendations, markup validation, and AI review', () => {
+    const options = audit(['https://example.com', '--recommendations', '--markup', '--ai-review']);
 
     expect(options.recommendations).toBe(true);
     expect(options.markupValidation).toBe(true);
+    expect(options.aiReview).toBe(true);
   });
 
   it('honours the opt-out flags', () => {
