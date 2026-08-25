@@ -315,6 +315,15 @@ a {
   line-height: 1;
 }
 
+// Used for status text ("Not requested", "Unavailable") instead of a count,
+// so it doesn't read as a headline number when nothing was actually measured.
+.metric-value-muted {
+  color: var(--ally-muted);
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 .engine-row,
 .finding-row {
   border-top: 1px solid var(--ally-faint);

@@ -383,13 +383,15 @@ function renderWcagReview(result: AuditResultJson): string {
         ${renderMetric('Review coverage', `${escapeHtml(counts.coveragePercent)}% (${escapeHtml(counts.covered)} / ${escapeHtml(wcag.criteria.length)})`, 'success')}
         ${renderMetric('Automatically checked', counts.automated, 'success')}
         ${renderMetric('Behaviorally checked', counts.behavioral, 'accessibility')}
-        ${renderMetric('AI-assisted review', reviewed.length, 'activity')}
+        ${renderMetric('AI-assisted review', aiReviewMetricValue(ai, reviewed.length), 'activity', ai?.status !== 'completed')}
         ${renderMetric('Manual review required', counts.manual, 'file-text')}
       </div>
       ${
         ai?.status === 'unavailable'
           ? `<and-alert class="mt-4 block" variant="default"><and-icon slot="icon" name="info"></and-icon>AI-assisted review unavailable. Deterministic audit results are still complete.</and-alert>`
-          : ''
+          : ai?.status === undefined || ai.status === 'disabled'
+            ? `<and-alert class="mt-4 block" variant="default"><and-icon slot="icon" name="info"></and-icon>AI-assisted review was not requested for this audit, so no Workers AI calls were made. The coverage above reflects automated and behavioral checks only. Enable “AI-assisted WCAG review” before running the next audit to include it.</and-alert>`
+            : ''
       }
       <and-card class="mt-4 block" padded="true">
         <ul class="space-y-3" role="list">
@@ -579,13 +581,29 @@ function renderCodeExample(label: string, value: string | undefined): string {
   `;
 }
 
-function renderMetric(label: string, value: unknown, icon: string): string {
+function aiReviewMetricValue(ai: AiReviewJson | undefined, reviewedCount: number): string {
+  switch (ai?.status) {
+    case 'completed':
+      return String(reviewedCount);
+    case 'unavailable':
+      return 'Unavailable';
+    case 'failed':
+      return 'Failed';
+    case 'pending':
+      return 'In progress';
+    case 'disabled':
+    case undefined:
+      return 'Not requested';
+  }
+}
+
+function renderMetric(label: string, value: unknown, icon: string, muted = false): string {
   return `
     <and-card padded="true">
       <div and-layout="horizontal align:center justify:between gap:sm">
         <div>
           <p class="text-ally-muted text-sm">${escapeHtml(label)}</p>
-          <p class="metric-value mt-2">${escapeHtml(value)}</p>
+          <p class="metric-value mt-2${muted ? ' metric-value-muted' : ''}">${escapeHtml(value)}</p>
         </div>
         <span class="brand-icon" aria-hidden="true">
           <and-icon name="${escapeHtml(icon)}" size="18"></and-icon>
