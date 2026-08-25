@@ -128,6 +128,21 @@ function render(result: AuditResultJson): void {
         }${aiReviewRequested ? ' · AI-assisted review enabled' : ''}
       </p>
 
+      <div class="mt-4 flex flex-wrap gap-2" data-print-hide>
+        <and-button id="export-json" type="button" variant="outline" size="sm">
+          <and-icon name="file-text" size="15"></and-icon>
+          Export JSON
+        </and-button>
+        <and-button id="export-md" type="button" variant="outline" size="sm">
+          <and-icon name="file-text" size="15"></and-icon>
+          Export Markdown
+        </and-button>
+        <and-button id="export-pdf" type="button" variant="outline" size="sm">
+          <and-icon name="file-text" size="15"></and-icon>
+          Export PDF
+        </and-button>
+      </div>
+
       <div class="report-grid mt-6" and-motion="fade-in-up" and-motion-trigger="enter">
         ${renderMetric('Score', `${escapeHtml(result.score.value)} / 100`, 'activity')}
         ${renderMetric('Unique findings', result.summary.uniqueFindings, 'file-text')}
@@ -185,7 +200,164 @@ function render(result: AuditResultJson): void {
         </div>
       </section>
     `;
+
+    wireExportButtons(result);
   }
+}
+
+function wireExportButtons(result: AuditResultJson): void {
+  const baseName = reportFileBaseName(result);
+
+  document.querySelector('#export-json')?.addEventListener('click', () => {
+    downloadBlob(`${baseName}.json`, JSON.stringify(result, null, 2), 'application/json');
+  });
+
+  document.querySelector('#export-md')?.addEventListener('click', () => {
+    downloadBlob(`${baseName}.md`, toMarkdown(result), 'text/markdown');
+  });
+
+  document.querySelector('#export-pdf')?.addEventListener('click', () => {
+    window.print();
+  });
+}
+
+function reportFileBaseName(result: AuditResultJson): string {
+  const hostname = safeHostname(result.target.url);
+  const date = new Date(result.finishedAt).toISOString().slice(0, 10);
+  return `ally-report-${hostname}-${date}`;
+}
+
+function safeHostname(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return 'report';
+  }
+}
+
+function downloadBlob(filename: string, content: string, mimeType: string): void {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function toMarkdown(result: AuditResultJson): string {
+  const findings = result.findings ?? [];
+  const engines = result.engines ?? [];
+  const remediations = result.remediations ?? {};
+  const wcag = result.wcagReview;
+  const ai = result.aiReview;
+
+  const lines: string[] = [];
+
+  lines.push(`# Accessibility audit — ${result.target.url}`);
+  lines.push('');
+  lines.push(`Audited ${new Date(result.finishedAt).toUTCString()}`);
+  lines.push('');
+  lines.push(
+    '> Automated testing only. This report does not establish WCAG conformance, and manual review is still required.',
+  );
+  lines.push('');
+
+  lines.push('## Summary');
+  lines.push('');
+  lines.push('| Metric | Value |');
+  lines.push('| --- | --- |');
+  lines.push(`| Score | ${result.score.value} / 100 |`);
+  lines.push(`| Unique findings | ${result.summary.uniqueFindings} |`);
+  lines.push(
+    `| Engines | ${result.coverage.enginesSucceeded} / ${result.coverage.enginesConfigured} |`,
+  );
+  lines.push(`| Keyboard | ${result.coverage.keyboardAnalysis} |`);
+  lines.push('');
+
+  if (wcag !== undefined) {
+    lines.push(`## WCAG ${wcag.standard.version} ${wcag.standard.levels.join('/')} Review`);
+    lines.push('');
+    lines.push(`Dataset ${wcag.standard.datasetRevision} · AI review ${ai?.status ?? 'disabled'}`);
+    lines.push('');
+    lines.push('| Criterion | Level | Status | Automated evidence | AI reviews | Manual review |');
+    lines.push('| --- | --- | --- | --- | --- | --- |');
+    for (const criterion of wcag.criteria) {
+      lines.push(
+        `| ${criterion.criterion.id} ${criterion.criterion.title} | ${criterion.criterion.level} | ${criterion.statuses.join(', ') || '—'} | ${criterion.automatedFindingCount} | ${criterion.aiReviewCount} | ${criterion.manualReviewRequired ? 'Yes' : 'No'} |`,
+      );
+    }
+    lines.push('');
+
+    const flagged = (ai?.reviews ?? []).filter(
+      (review) => review.status === 'reviewed' && review.result?.outcome === 'potential-issue',
+    );
+    if (flagged.length > 0) {
+      lines.push('### AI-flagged potential issues');
+      lines.push('');
+      for (const review of flagged) {
+        lines.push(
+          `- **${review.task.criterion} ${review.task.rule.title}** (confidence: ${review.result?.confidence}) — ${review.result?.summary}`,
+        );
+      }
+      lines.push('');
+    }
+  }
+
+  lines.push('## Engine runs');
+  lines.push('');
+  for (const run of engines) {
+    lines.push(
+      run.status === 'ok'
+        ? `- **${run.engine.name}**: ok, ${run.findingCount ?? 0} normalized findings`
+        : `- **${run.engine.name}**: failed — ${run.error?.message ?? 'unknown error'}`,
+    );
+  }
+  lines.push('');
+
+  lines.push(`## Findings (${findings.length})`);
+  lines.push('');
+  if (findings.length === 0) {
+    lines.push('No automated findings were reported.');
+    lines.push('');
+  }
+  for (const finding of findings) {
+    lines.push(`### ${finding.title}`);
+    lines.push('');
+    lines.push(`Severity: ${finding.severity} · Engines: ${finding.engineIds.join(', ')}`);
+    lines.push('');
+    if (finding.description !== undefined && finding.description !== '') {
+      lines.push(finding.description);
+      lines.push('');
+    }
+    const selector = finding.target?.selector ?? finding.target?.path;
+    if (selector !== undefined && selector !== '') {
+      lines.push(`Element: \`${selector}\``);
+      lines.push('');
+    }
+
+    const remediation = remediations[finding.id];
+    if (remediation !== undefined) {
+      lines.push(`**Fix recommendation** (confidence: ${remediation.confidence})`);
+      lines.push('');
+      lines.push(remediation.summary);
+      lines.push('');
+      lines.push(remediation.why);
+      lines.push('');
+      for (const [index, step] of remediation.steps.entries()) {
+        lines.push(`${index + 1}. ${step}`);
+      }
+      lines.push('');
+      if (remediation.references !== undefined && remediation.references.length > 0) {
+        for (const reference of remediation.references) {
+          lines.push(`- [${reference.label}](${reference.url})`);
+        }
+        lines.push('');
+      }
+    }
+  }
+
+  return lines.join('\n');
 }
 
 function renderWcagReview(result: AuditResultJson): string {
