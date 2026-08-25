@@ -20,6 +20,9 @@ const button = document.querySelector<HTMLElement & { disabled?: boolean; loadin
 );
 const recentAuditsEmpty = document.querySelector('#recent-audits-empty');
 const recentAuditsList = document.querySelector('#recent-audits-list');
+const authLogout = document.querySelector<HTMLElement & { disabled?: boolean; loading?: boolean }>(
+  '#auth-logout',
+);
 
 const apiBase = form?.getAttribute('data-api-base') ?? '';
 let isAuthenticated = false;
@@ -402,6 +405,15 @@ recentAuditsList?.addEventListener('click', (event) => {
     void loadRecentAudits();
     if (id === activeAuditId) void poll(id).catch(showError);
   });
+});
+
+authLogout?.addEventListener('click', () => {
+  authLogout.disabled = true;
+  authLogout.loading = true;
+  void fetch(`${apiBase}/api/auth/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  }).then(() => window.location.replace('/'));
 });
 
 void refreshAuth();
