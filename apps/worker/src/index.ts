@@ -131,6 +131,12 @@ export default {
         return withCors(await getAudit(auditMatch[1], env, session), request, env);
       }
 
+      if (request.method === 'DELETE' && auditMatch?.[1] !== undefined) {
+        const session = await requireAuth(request, env);
+        if (session instanceof Response) return withCors(session, request, env);
+        return withCors(await deleteAudit(auditMatch[1], env, session), request, env);
+      }
+
       if (request.method === 'GET' && url.pathname === '/api/compatibility') {
         const session = await requireAuth(request, env);
         if (session instanceof Response) return withCors(session, request, env);
@@ -436,6 +442,20 @@ async function cancelAudit(id: string, env: Env, session: AuthSession): Promise<
     .run();
 
   return json({ status: next });
+}
+
+async function deleteAudit(id: string, env: Env, session: AuthSession): Promise<Response> {
+  const row = await findAudit(id, env, session);
+  if (row === null) return json({ error: 'Audit not found' }, 404);
+
+  if (!isTerminalStatus(row.status)) {
+    return json({ error: 'Cancel the audit before deleting it.' }, 409);
+  }
+
+  if (row.artifact_key !== null) await env.ARTIFACTS.delete(row.artifact_key);
+  await env.DB.prepare(`DELETE FROM audits WHERE id = ?`).bind(id).run();
+
+  return new Response(null, { status: 204 });
 }
 
 // --- Runner API: authenticated by ALLY_RUNNER_SECRET, never by a user session ---
@@ -1000,7 +1020,7 @@ function withCors(response: Response, request: Request, env: Env): Response {
   const headers = new Headers(response.headers);
   const origin = request.headers.get('origin');
   headers.set('access-control-allow-origin', allowedOrigin(origin, env));
-  headers.set('access-control-allow-methods', 'GET, POST, OPTIONS');
+  headers.set('access-control-allow-methods', 'GET, POST, DELETE, OPTIONS');
   headers.set('access-control-allow-headers', 'content-type');
   headers.set('access-control-allow-credentials', 'true');
   headers.set('vary', 'Origin');

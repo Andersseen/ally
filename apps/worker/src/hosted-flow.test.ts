@@ -139,5 +139,22 @@ describe('hosted audit flow', () => {
       headers: { cookie: ownerCookie },
     });
     expect(ownerCancelAlreadyDone.status).toBe(409);
+
+    const strangerDelete = await fetch(`${devServer.url}/api/audits/${created.id}`, {
+      method: 'DELETE',
+      headers: { cookie: strangerCookie },
+    });
+    expect(strangerDelete.status).toBe(404);
+
+    const ownerDelete = await fetch(`${devServer.url}/api/audits/${created.id}`, {
+      method: 'DELETE',
+      headers: { cookie: ownerCookie },
+    });
+    expect(ownerDelete.status).toBe(204);
+
+    const afterDelete = await fetch(`${devServer.url}/api/audits/${created.id}`, {
+      headers: { cookie: ownerCookie },
+    });
+    expect(afterDelete.status).toBe(404);
   }, 60_000);
 });

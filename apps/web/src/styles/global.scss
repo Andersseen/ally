@@ -304,8 +304,18 @@ a {
 
 .report-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 14px;
+  align-items: stretch;
+}
+
+// `and-card` stretches to the row's height (the grid default), but its
+// slotted content otherwise stays top-aligned, so a card with a one-line
+// value ends up mostly empty while its taller siblings fill the box —
+// the "descuadrado" look. Stretching this row to the card's full height
+// lets `align:center` (from `and-layout`) center content vertically instead.
+.metric-row {
+  height: 100%;
 }
 
 .metric-value {
@@ -313,6 +323,15 @@ a {
   font-size: clamp(1.8rem, 5vw, 2.6rem);
   font-weight: 800;
   line-height: 1;
+}
+
+// Used for status text ("Not requested", "Unavailable") instead of a count,
+// so it doesn't read as a headline number when nothing was actually measured.
+.metric-value-muted {
+  color: var(--ally-muted);
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .engine-row,
@@ -388,5 +407,47 @@ and-button.full-width::part(button) {
 
   .topbar {
     align-items: flex-start;
+  }
+}
+
+// "Export PDF" reuses the browser's native print-to-PDF instead of a
+// server-rendered PDF, so it stays free and renders the same shadow-DOM
+// components the page already shows. Force the light palette regardless of
+// the active theme — dark backgrounds waste ink and print poorly — and hide
+// controls that don't make sense on paper.
+@media print {
+  :root,
+  :root[data-theme-mode='dark'] {
+    background: #fff;
+    color: #14211e;
+    --ally-ink: #14211e;
+    --ally-muted: #5c6861;
+    --ally-faint: #ebe1d1;
+    --ally-panel: #ffffff;
+    --ally-panel-strong: #ffffff;
+    --ally-body-gradient: none;
+    --ally-brand-icon-bg: #fff;
+    --ally-brand-icon-border: rgb(20 33 30 / 0.12);
+    --ally-card-shadow: none;
+    --ally-copy: #33413c;
+    --ally-field-bg: #fff;
+    --ally-secondary-bg: #fff7f8;
+    --ally-secondary-bg-hover: #fff7f8;
+    --ally-secondary-border: #d9cdd0;
+    --ally-secondary-text: #2b1018;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  and-card,
+  li,
+  .engine-row {
+    break-inside: avoid;
   }
 }
