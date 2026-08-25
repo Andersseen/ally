@@ -15,7 +15,7 @@ import type { AuditResult } from '@ally/core';
 export const SAMPLE_AUDIT: AuditResult = {
   schemaVersion: AUDIT_SCHEMA_VERSION,
   target: { url: 'https://example.com/' },
-  options: { keyboard: true, recommendations: true, markupValidation: true },
+  options: { keyboard: true, recommendations: true, markupValidation: true, aiReview: false },
   startedAt: '2026-01-15T09:24:11.000Z',
   finishedAt: '2026-01-15T09:24:17.420Z',
   durationMs: 6420,

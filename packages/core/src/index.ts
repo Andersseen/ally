@@ -14,10 +14,15 @@ export type {
   AuditRun,
   AuditSummary,
   AuditTarget,
+  AiReviewReportSnapshot,
+  AiReviewRecordSnapshot,
+  AiReviewResultSnapshot,
+  AiReviewTaskSnapshot,
   EngineContribution,
   EngineFailure,
   EngineRun,
 } from './audit.js';
+export type { AiReviewConfidence, AiReviewOutcome } from './audit.js';
 
 export { CATEGORY_LABELS, categoryOf, FINDING_CATEGORIES, isFindingCategory } from './category.js';
 export type { FindingCategory } from './category.js';

@@ -21,6 +21,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@ally/analyzer-ai": "workspace:*",
     "@ally/analyzer-keyboard": "workspace:*",
     "@ally/browser": "workspace:*",
     "@ally/core": "workspace:*",
@@ -30,7 +31,8 @@
     "@ally/engine-ibm": "workspace:*",
     "@ally/engine-qualweb": "workspace:*",
     "@ally/markup-validator": "workspace:*",
-    "@ally/remediation": "workspace:*"
+    "@ally/remediation": "workspace:*",
+    "@ally/wcag": "workspace:*"
   },
   "devDependencies": {
     "@ally/config": "workspace:*",

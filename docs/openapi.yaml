@@ -396,6 +396,10 @@ paths:
         `audits/<id>/audit.json` and `audits/<id>/raw/<engine>.json` keys —
         the only place those keys are ever written, so a retried job can
         never leave a partially-written final artifact.
+        If the artifact contains pending AI-assisted review tasks and the
+        Worker has an AI binding, the Worker enriches the result before the R2
+        write. AI failure is recorded in the artifact and does not fail the
+        deterministic audit.
       parameters:
         - $ref: '#/components/parameters/AuditId'
       requestBody:
@@ -617,6 +621,10 @@ components:
           type: boolean
           default: false
           description: Run Nu HTML Checker as a separate non-scored diagnostic.
+        aiReview:
+          type: boolean
+          default: false
+          description: Collect bounded semantic WCAG review tasks and, in hosted mode, run optional AI-assisted review.
     Audit:
       type: object
       required:

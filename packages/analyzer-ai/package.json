@@ -1,8 +1,8 @@
 {
-  "name": "@ally/core",
+  "name": "@ally/analyzer-ai",
   "version": "0.0.0",
   "type": "module",
-  "description": "Framework-agnostic domain model and engine contracts for Ally",
+  "description": "AI-assisted WCAG review task semantics for Ally",
   "license": "Apache-2.0",
   "sideEffects": false,
   "exports": {
@@ -20,9 +20,11 @@
     "test": "vitest run",
     "clean": "rm -rf dist .turbo"
   },
+  "dependencies": {
+    "@ally/wcag": "workspace:*"
+  },
   "devDependencies": {
     "@ally/config": "workspace:*",
-    "@ally/wcag": "workspace:*",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

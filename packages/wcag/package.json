@@ -1,8 +1,8 @@
 {
-  "name": "@ally/core",
+  "name": "@ally/wcag",
   "version": "0.0.0",
   "type": "module",
-  "description": "Framework-agnostic domain model and engine contracts for Ally",
+  "description": "Versioned WCAG 2.2 A/AA knowledge and Ally coverage metadata",
   "license": "Apache-2.0",
   "sideEffects": false,
   "exports": {
@@ -12,17 +12,18 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "data"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
+    "sync": "node scripts/sync-wcag.mjs",
     "clean": "rm -rf dist .turbo"
   },
   "devDependencies": {
     "@ally/config": "workspace:*",
-    "@ally/wcag": "workspace:*",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

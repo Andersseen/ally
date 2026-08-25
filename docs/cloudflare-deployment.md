@@ -8,6 +8,8 @@ This repo deploys as three surfaces:
   from a native Cloudflare Queues consumer. The same `apps/runner` Docker
   image can still run on an external Docker host as a fallback; either way it
   reports back to `/api/runner/*` and has no D1/R2 access of its own.
+- Optional AI-assisted WCAG review: Cloudflare Workers AI from the Worker
+  control plane, using bounded candidate evidence produced by the runner.
 
 Keeping the Worker under the same site origin as the web UI matches the
 registered dev-auth callback byte for byte and lets the Worker set
@@ -34,6 +36,8 @@ For local development, copy `apps/worker/.dev.vars.example` to
 `apps/worker/.dev.vars` and fill in the confidential client secret plus a local
 session secret. `.dev.vars` is gitignored; do not commit those values.
 Production Workers read both secrets from Cloudflare Worker secrets.
+Workers AI is configured as the Wrangler AI binding `AI`; no separate binding
+secret is committed or needed.
 
 ## 2. Create Cloudflare resources
 
@@ -154,6 +158,13 @@ queue consumer. The committed production guardrail is deliberately narrow:
 globally and per user. Raise those `wrangler.jsonc` vars only after reviewing
 billable usage.
 
+AI-assisted review has separate guardrails in `@ally/analyzer-ai`: at most six
+criteria, three candidates per criterion, twelve total candidates, and bounded
+text evidence per audit. The Worker model is centralized in `ALLY_AI_MODEL`
+and currently defaults to `@cf/google/gemma-4-26b-a4b-it`; `ALLY_AI_TIMEOUT_MS`
+defaults to 30000 per task. Unit tests use fake AI bindings and never call the
+live model.
+
 The runner image exposes `/healthz` and `/run` on `ALLY_HEALTH_PORT`
 (default 8080). The Worker starts one named container per audit id, passes
 `ALLY_WORKER_BASE_URL`, `ALLY_RUNNER_SECRET`, and `ALLY_RUNNER_ID` as
@@ -260,6 +271,8 @@ with conservative cost guardrails:
 - `ALLY_GLOBAL_AUDIT_WINDOW_LIMIT=30`.
 - `ALLY_GLOBAL_ACTIVE_AUDIT_LIMIT=1`.
 - `AUDIT_MAX_ATTEMPTS=1` and queue `max_retries=1`.
+- `ALLY_AI_MODEL=@cf/google/gemma-4-26b-a4b-it`.
+- `ALLY_AI_TIMEOUT_MS=30000`.
 
 Rolling audit limits ignore audits that were cancelled before the runner made
 its first attempt (`status = cancelled` and `attempt = 0`). Those early

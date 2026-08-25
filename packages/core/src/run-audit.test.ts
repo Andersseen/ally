@@ -222,6 +222,7 @@ describe('runAudit', () => {
       keyboard: false,
       recommendations: true,
       markupValidation: true,
+      aiReview: false,
     });
     expect(withOptions.result.findings).toEqual(withoutOptions.result.findings);
     expect(withOptions.result.score).toEqual(withoutOptions.result.score);

@@ -8,6 +8,7 @@ export interface Env extends AuthEnv, RunnerAuthEnv {
   readonly ARTIFACTS: R2Bucket;
   readonly AUDIT_QUEUE: Queue<AuditJobMessage>;
   readonly AUDIT_RUNNER: ContainerNamespace;
+  readonly AI?: AiBinding;
   /** Emergency switch for audit submission. Set to "false" to reject new work. */
   readonly AUDITS_ENABLED?: string;
   /** Rolling audit quota window in days. Defaults to 30. */
@@ -20,6 +21,10 @@ export interface Env extends AuthEnv, RunnerAuthEnv {
   readonly ALLY_GLOBAL_ACTIVE_AUDIT_LIMIT?: string;
   /** Caps re-claim attempts per audit. Defaults to 3 when unset. */
   readonly AUDIT_MAX_ATTEMPTS?: string;
+  /** Workers AI model for AI-assisted review. Defaults to Gemma 4 26B A4B. */
+  readonly ALLY_AI_MODEL?: string;
+  /** Per-task Workers AI timeout in milliseconds. Defaults to 30000. */
+  readonly ALLY_AI_TIMEOUT_MS?: string;
 }
 
 /**
@@ -36,7 +41,12 @@ export interface AuditJobMessage {
     readonly keyboard?: boolean;
     readonly recommendations?: boolean;
     readonly markupValidation?: boolean;
+    readonly aiReview?: boolean;
   };
+}
+
+export interface AiBinding {
+  run(model: string, input: unknown): Promise<unknown>;
 }
 
 export interface D1Database {

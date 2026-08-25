@@ -16,6 +16,7 @@ export interface AuditOptions {
   readonly keyboard: boolean;
   readonly recommendations: boolean;
   readonly markupValidation: boolean;
+  readonly aiReview: boolean;
   readonly buildReport: boolean;
   readonly headless: boolean;
   readonly timeoutMs: number;
@@ -54,6 +55,7 @@ Audit options
   --no-keyboard      Skip the keyboard/focus analysis
   --recommendations  Add deterministic remediation guidance
   --markup           Run optional Nu HTML Checker markup validation
+  --ai-review        Add bounded AI-assisted WCAG review tasks
   --no-report        Write the artifact but do not build the static report
   --headed           Run Chromium with a visible window
   --timeout <ms>     Navigation and interaction timeout (default: 30000)
@@ -90,6 +92,7 @@ export function parseArgs(argv: readonly string[], cwd: string): ParseResult {
   let keyboard = true;
   let recommendations = false;
   let markupValidation = false;
+  let aiReview = false;
   let buildReport = true;
   let headless = true;
   let timeoutMs = DEFAULT_TIMEOUT_MS;
@@ -119,6 +122,11 @@ export function parseArgs(argv: readonly string[], cwd: string): ParseResult {
       case '--markup':
       case '--markup-validation':
         markupValidation = true;
+        break;
+
+      case '--ai-review':
+      case '--ai':
+        aiReview = true;
         break;
 
       case '--no-report':
@@ -199,6 +207,7 @@ export function parseArgs(argv: readonly string[], cwd: string): ParseResult {
       keyboard,
       recommendations,
       markupValidation,
+      aiReview,
       buildReport,
       headless,
       timeoutMs,

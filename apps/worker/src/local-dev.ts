@@ -420,6 +420,7 @@ function readAuditOptions(value: unknown) {
     recommendations: typeof record?.recommendations === 'boolean' ? record.recommendations : false,
     markupValidation:
       typeof record?.markupValidation === 'boolean' ? record.markupValidation : false,
+    aiReview: typeof record?.aiReview === 'boolean' ? record.aiReview : false,
   };
 }
 

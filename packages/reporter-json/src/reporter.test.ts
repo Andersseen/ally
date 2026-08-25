@@ -13,7 +13,7 @@ function auditRun(raw: ReadonlyMap<string, unknown> = new Map()): AuditRun {
     result: {
       schemaVersion: AUDIT_SCHEMA_VERSION,
       target: { url: 'https://example.com/' },
-      options: { keyboard: true, recommendations: false, markupValidation: false },
+      options: { keyboard: true, recommendations: false, markupValidation: false, aiReview: false },
       startedAt: '2026-01-01T00:00:00.000Z',
       finishedAt: '2026-01-01T00:00:01.000Z',
       durationMs: 1000,
@@ -187,6 +187,7 @@ describe('writeAuditReport', () => {
       keyboard: true,
       recommendations: false,
       markupValidation: false,
+      aiReview: false,
     });
     expect(read.contributions[0]).toMatchObject({ mergedFindings: 1, exclusiveFindings: 1 });
   });

@@ -7,6 +7,7 @@ const statusPanel = document.querySelector('#status-panel');
 const keyboardOption = document.querySelector('#option-keyboard');
 const recommendationsOption = document.querySelector('#option-recommendations');
 const markupOption = document.querySelector('#option-markup');
+const aiReviewOption = document.querySelector('#option-ai-review');
 const message = document.querySelector('#status-message');
 const stageMessage = document.querySelector('#stage-message');
 const statusTitle = document.querySelector('#status-title');
@@ -359,6 +360,7 @@ form?.addEventListener('submit', (event) => {
         recommendations:
           recommendationsOption instanceof HTMLInputElement ? recommendationsOption.checked : false,
         markupValidation: markupOption instanceof HTMLInputElement ? markupOption.checked : false,
+        aiReview: aiReviewOption instanceof HTMLInputElement ? aiReviewOption.checked : false,
       },
     }),
   })

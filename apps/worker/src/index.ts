@@ -31,6 +31,7 @@ import {
 } from './auth.js';
 import type { AuthSession } from './auth.js';
 import type { AuditJobMessage, Env } from './bindings.js';
+import { enrichResultWithWorkersAi } from './ai-review.js';
 import { requireRunnerAuth } from './runner-auth.js';
 
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
@@ -359,8 +360,7 @@ async function createAudit(request: Request, env: Env, session: AuthSession): Pr
   if (insert.meta?.changes !== 1) {
     return json(
       {
-        error:
-          'Audit limit reached. This deployment is capped to control Cloudflare usage costs.',
+        error: 'Audit limit reached. This deployment is capped to control Cloudflare usage costs.',
         auditWindowDays,
         userWindowLimit,
         globalWindowLimit,
@@ -384,6 +384,7 @@ function readAuditOptions(value: unknown): NonNullable<AuditJobMessage['options'
     recommendations: typeof record.recommendations === 'boolean' ? record.recommendations : false,
     markupValidation:
       typeof record.markupValidation === 'boolean' ? record.markupValidation : false,
+    aiReview: typeof record.aiReview === 'boolean' ? record.aiReview : false,
   };
 }
 
@@ -609,7 +610,9 @@ async function completeRunnerAudit(id: string, request: Request, env: Env): Prom
   if (next === null) return json({ error: 'Invalid state transition' }, 409);
 
   const body = await readJsonObject(request);
-  const result = isRecord(body?.result) ? body.result : undefined;
+  const result = isRecord(body?.result)
+    ? await enrichResultWithWorkersAi(body.result, env)
+    : undefined;
   const raw = isRecord(body?.raw) ? body.raw : {};
   if (result === undefined) return json({ error: 'result is required' }, 400);
 

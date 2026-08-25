@@ -1,0 +1,13 @@
+{
+  "standard": "WCAG",
+  "version": "2.2",
+  "levels": ["A", "AA"],
+  "generatedAt": "2026-08-25T06:51:09.502Z",
+  "sourceRevision": "w3c-wcag22-sha256-6e3c5fe39725",
+  "datasetVersion": "wcag-2.2-aa-sha256-3c3d3f0a",
+  "sources": [
+    "https://www.w3.org/TR/WCAG22/",
+    "https://www.w3.org/WAI/WCAG22/Understanding/",
+    "https://www.w3.org/WAI/WCAG22/quickref/"
+  ]
+}

@@ -87,6 +87,7 @@ export async function executeAuditJob(
             keyboard: job.options?.keyboard ?? true,
             recommendations: job.options?.recommendations ?? false,
             markupValidation: job.options?.markupValidation ?? false,
+            aiReview: job.options?.aiReview ?? false,
             hooks,
           }).then((outcome) => outcome.run),
       ),

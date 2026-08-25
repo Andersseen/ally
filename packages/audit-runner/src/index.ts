@@ -1,3 +1,9 @@
+import {
+  createDisabledAiReviewReport,
+  createPendingAiReviewReport,
+  createWcagReviewSummary,
+  discoverAiReviewTasks,
+} from '@ally/analyzer-ai';
 import { createKeyboardAnalyzer } from '@ally/analyzer-keyboard';
 import type { AllyPage } from '@ally/browser/page';
 import { normalizeAuditOptions, runAudit } from '@ally/core';
@@ -54,6 +60,7 @@ export interface AuditPageOptions {
   readonly keyboard?: boolean;
   readonly recommendations?: boolean;
   readonly markupValidation?: boolean;
+  readonly aiReview?: boolean;
   /** Forwarded to `runAudit` unchanged. See `@ally/core`'s `AuditHooks`. */
   readonly hooks?: AuditHooks;
 }
@@ -101,6 +108,7 @@ export async function auditPage(options: AuditPageOptions): Promise<AuditPageOut
     ...(options.markupValidation === undefined
       ? {}
       : { markupValidation: options.markupValidation }),
+    ...(options.aiReview === undefined ? {} : { aiReview: options.aiReview }),
   });
   const keyboard: KeyboardAnalyzer<AllyPage> | undefined = auditOptions.keyboard
     ? createKeyboardAnalyzer()
@@ -141,6 +149,15 @@ async function enrichAuditRun(
   if (options.recommendations) {
     result = { ...result, remediations: remediateFindings(result.findings) };
   }
+
+  const aiReview = options.aiReview
+    ? createPendingAiReviewReport(await discoverAiReviewTasks(page))
+    : createDisabledAiReviewReport();
+  result = {
+    ...result,
+    aiReview,
+    wcagReview: createWcagReviewSummary({ findings: result.findings, aiReview }),
+  };
 
   return { result, raw };
 }

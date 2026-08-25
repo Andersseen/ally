@@ -63,6 +63,7 @@ So Ally deliberately reports:
 
 - **automated accessibility audits**, not certification;
 - **findings** and **evidence**, not compliance percentages;
+- **AI-assisted review notes**, never AI certification;
 - **manual review required**, wherever automation cannot decide.
 
 An audit with zero findings is not evidence that a page is accessible. Ally will
@@ -141,6 +142,7 @@ audit/
 | `--no-keyboard`     | Skip the keyboard/focus analysis                |
 | `--recommendations` | Add deterministic remediation guidance          |
 | `--markup`          | Run optional Nu HTML Checker validation         |
+| `--ai-review`       | Collect bounded AI-assisted WCAG review tasks   |
 | `--no-report`       | Write the artifact but do not build the report  |
 | `--headed`          | Run Chromium with a visible window              |
 | `--timeout <ms>`    | Navigation and interaction timeout              |
@@ -201,6 +203,8 @@ URL
  ↓  deduplicate          one problem, one finding, many sources
  ↓  score                Automated Accessibility Score
  ↓  optional remediation deterministic recommendations
+ ↓  WCAG coverage        local WCAG 2.2 A/AA dataset + Ally coverage map
+ ↓  optional AI review   bounded semantic tasks, separate from findings/score
  ↓  @ally/reporter-json  audit.json + raw/
  ↓  @ally/report         static Astro report
 ```
@@ -215,6 +219,14 @@ Checker results are stored as a separate diagnostic and never affect the
 Automated Accessibility Score. Recommendations are post-processing guidance
 attached after deduplication; they do not add, remove or re-score findings.
 
+AI-assisted review is optional and defaults off. It is not another
+accessibility engine and it never changes the Automated Accessibility Score.
+Ally first builds WCAG 2.2 A/AA coverage from a local versioned dataset, then
+creates small semantic review tasks only where deterministic evidence leaves a
+bounded judgement question, such as generic image alternatives or ambiguous
+link text. The strongest positive AI outcome is "no concern detected", not
+"pass" or "compliant".
+
 An engine can also succeed _partially_. QualWeb is three independent rule sets
 behind one name, and one rule throwing inside the page would otherwise take the
 other two modules with it. Each module runs isolated, and a partial loss is
@@ -227,25 +239,27 @@ silence would misstate what the audit actually covered.
 Dependencies point in one direction. The audit core never depends on the UI, and
 never on a concrete engine.
 
-| Package                   | Responsibility                                                                          |
-| ------------------------- | --------------------------------------------------------------------------------------- |
-| `@ally/core`              | Domain model, engine contract, dedup, scoring. No dependencies.                         |
-| `@ally/browser`           | Playwright/Chromium lifecycle and shared in-page DOM helpers.                           |
-| `@ally/engine-axe`        | axe-core adapter.                                                                       |
-| `@ally/engine-ibm`        | IBM Equal Access adapter.                                                               |
-| `@ally/engine-alfa`       | Siteimprove Alfa adapter.                                                               |
-| `@ally/engine-qualweb`    | QualWeb adapter.                                                                        |
-| `@ally/engine-htmlcs`     | HTML_CodeSniffer adapter.                                                               |
-| `@ally/analyzer-keyboard` | Ally's own keyboard/focus analyzer.                                                     |
-| `@ally/markup-validator`  | Optional Nu HTML Checker integration, separate from accessibility findings and score.   |
-| `@ally/remediation`       | Deterministic, framework-agnostic remediation catalog for deduplicated findings.        |
-| `@ally/reporter-json`     | Writes `audit.json` plus per-engine raw output.                                         |
-| `@ally/cli`               | `ally <url>` and `ally serve` — parsing, orchestration, summary.                        |
-| `@ally/fixtures`          | Local benchmark pages with known problems, and a server for them.                       |
-| `@ally/config`            | Shared TypeScript configuration.                                                        |
-| `@ally/report`            | Static Astro report. Consumes the model; never runs audits.                             |
-| `@ally/net-guard`         | SSRF protection: URL validation and DNS-aware navigation guard.                         |
-| `@ally/runner-core`       | Environment-agnostic hosted-job execution, used by the standalone runner and local dev. |
+| Package                   | Responsibility                                                                            |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| `@ally/core`              | Domain model, engine contract, dedup, scoring. No dependencies.                           |
+| `@ally/wcag`              | Local WCAG 2.2 A/AA data, source manifest, guidance summaries, and Ally coverage map.     |
+| `@ally/browser`           | Playwright/Chromium lifecycle and shared in-page DOM helpers.                             |
+| `@ally/engine-axe`        | axe-core adapter.                                                                         |
+| `@ally/engine-ibm`        | IBM Equal Access adapter.                                                                 |
+| `@ally/engine-alfa`       | Siteimprove Alfa adapter.                                                                 |
+| `@ally/engine-qualweb`    | QualWeb adapter.                                                                          |
+| `@ally/engine-htmlcs`     | HTML_CodeSniffer adapter.                                                                 |
+| `@ally/analyzer-keyboard` | Ally's own keyboard/focus analyzer.                                                       |
+| `@ally/analyzer-ai`       | AI-assisted WCAG task discovery, prompt safety, result validation, and provider boundary. |
+| `@ally/markup-validator`  | Optional Nu HTML Checker integration, separate from accessibility findings and score.     |
+| `@ally/remediation`       | Deterministic, framework-agnostic remediation catalog for deduplicated findings.          |
+| `@ally/reporter-json`     | Writes `audit.json` plus per-engine raw output.                                           |
+| `@ally/cli`               | `ally <url>` and `ally serve` — parsing, orchestration, summary.                          |
+| `@ally/fixtures`          | Local benchmark pages with known problems, and a server for them.                         |
+| `@ally/config`            | Shared TypeScript configuration.                                                          |
+| `@ally/report`            | Static Astro report. Consumes the model; never runs audits.                               |
+| `@ally/net-guard`         | SSRF protection: URL validation and DNS-aware navigation guard.                           |
+| `@ally/runner-core`       | Environment-agnostic hosted-job execution, used by the standalone runner and local dev.   |
 
 The hosted apps follow the same rule: `apps/web` and `apps/worker` are the
 Cloudflare control plane, `apps/runner` is the standalone Node execution
@@ -356,18 +370,30 @@ It only navigates. It does not click, and does not press Enter, Space or Escape.
 
 ## Commands
 
-| Command           | What it does                                        |
-| ----------------- | --------------------------------------------------- |
-| `pnpm ally <url>` | Audit a page and build its report                   |
-| `pnpm ally serve` | Run audits from a local page in your browser        |
-| `pnpm dev`        | Astro report in watch mode                          |
-| `pnpm build`      | Build every package and the report, in order        |
-| `pnpm test`       | Unit tests (Vitest)                                 |
-| `pnpm test:e2e`   | Build fixtures audits, then Playwright report tests |
-| `pnpm typecheck`  | Type-check every package independently              |
-| `pnpm lint`       | ESLint, type-aware, including `.astro`              |
-| `pnpm format`     | Prettier                                            |
-| `pnpm check`      | The full local quality gate                         |
+| Command           | What it does                                         |
+| ----------------- | ---------------------------------------------------- |
+| `pnpm ally <url>` | Audit a page and build its report                    |
+| `pnpm ally serve` | Run audits from a local page in your browser         |
+| `pnpm dev`        | Astro report in watch mode                           |
+| `pnpm build`      | Build every package and the report, in order         |
+| `pnpm test`       | Unit tests (Vitest)                                  |
+| `pnpm test:e2e`   | Build fixtures audits, then Playwright report tests  |
+| `pnpm typecheck`  | Type-check every package independently               |
+| `pnpm lint`       | ESLint, type-aware, including `.astro`               |
+| `pnpm format`     | Prettier                                             |
+| `pnpm check`      | The full local quality gate                          |
+| `pnpm wcag:sync`  | Dev-time W3C source freshness check and dataset diff |
+| `pnpm ai:smoke`   | Deterministic Worker AI provider smoke tests         |
+
+### WCAG dataset freshness
+
+Normal audits make `0` network requests to W3C. The WCAG source of truth is
+the official W3C WCAG 2.2 Recommendation, while Ally stores a concise local
+WCAG 2.2 A/AA dataset and records its dataset revision in each report. Run
+`pnpm wcag:sync` during development to fetch W3C, validate the expected
+55-criterion A/AA matrix, and expose deterministic diffs for review. A
+scheduled GitHub Action runs the same check monthly; it does not deploy new
+interpretations automatically.
 
 ## Testing
 
