@@ -599,13 +599,13 @@ function aiReviewMetricValue(ai: AiReviewJson | undefined, reviewedCount: number
 
 function renderMetric(label: string, value: unknown, icon: string, muted = false): string {
   return `
-    <and-card padded="true">
-      <div and-layout="horizontal align:center justify:between gap:sm">
-        <div>
+    <and-card class="metric-card" padded="true">
+      <div class="metric-row" and-layout="horizontal align:center justify:between gap:sm">
+        <div class="min-w-0">
           <p class="text-ally-muted text-sm">${escapeHtml(label)}</p>
           <p class="metric-value mt-2${muted ? ' metric-value-muted' : ''}">${escapeHtml(value)}</p>
         </div>
-        <span class="brand-icon" aria-hidden="true">
+        <span class="brand-icon shrink-0" aria-hidden="true">
           <and-icon name="${escapeHtml(icon)}" size="18"></and-icon>
         </span>
       </div>

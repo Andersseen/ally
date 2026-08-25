@@ -304,8 +304,18 @@ a {
 
 .report-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 14px;
+  align-items: stretch;
+}
+
+// `and-card` stretches to the row's height (the grid default), but its
+// slotted content otherwise stays top-aligned, so a card with a one-line
+// value ends up mostly empty while its taller siblings fill the box —
+// the "descuadrado" look. Stretching this row to the card's full height
+// lets `align:center` (from `and-layout`) center content vertically instead.
+.metric-row {
+  height: 100%;
 }
 
 .metric-value {
