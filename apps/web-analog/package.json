@@ -1,0 +1,53 @@
+{
+  "name": "@ally/web-analog",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Parallel Analog.js candidate for the hosted Ally audit web interface",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 4323 --strictPort",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4323",
+    "typecheck": "ngc -p tsconfig.app.json --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "clean": "rm -rf dist .analog .turbo coverage playwright-report test-results"
+  },
+  "dependencies": {
+    "@analogjs/content": "2.7.0",
+    "@analogjs/platform": "2.7.0",
+    "@analogjs/router": "2.7.0",
+    "@angular/cdk": "21.2.0",
+    "@angular/common": "21.2.0",
+    "@angular/compiler": "21.2.0",
+    "@angular/core": "21.2.0",
+    "@angular/forms": "21.2.0",
+    "@angular/platform-browser": "21.2.0",
+    "@angular/platform-server": "21.2.0",
+    "@angular/router": "21.2.0",
+    "@angular/ssr": "21.2.0",
+    "@voltui/components": "1.0.1",
+    "angular-movement": "0.8.0",
+    "front-matter": "^4.0.2",
+    "lumen-icons": "0.2.0",
+    "rxjs": "7.8.2",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@analogjs/vitest-angular": "2.7.0",
+    "@angular/build": "21.2.0",
+    "@angular/cli": "21.2.0",
+    "@angular/compiler-cli": "21.2.0",
+    "@playwright/test": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "@testing-library/angular": "19.4.2",
+    "@testing-library/dom": "^10.4.1",
+    "@types/node": "catalog:",
+    "jsdom": "30.0.1",
+    "tailwindcss": "catalog:",
+    "typescript": "5.9.3",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}
