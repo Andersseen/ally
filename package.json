@@ -26,8 +26,10 @@
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm test:e2e",
     "ally": "node scripts/ally.ts",
     "build:web:production": "PUBLIC_SITE_URL=https://ally.andersseen.dev PUBLIC_ALLY_API_BASE=https://ally.andersseen.dev pnpm --filter @ally/web build",
+    "dev:web:analog": "node scripts/dev-web-analog.mjs",
     "pages:create": "pnpm --dir apps/worker exec wrangler pages project create ally-audit-web --production-branch main",
     "deploy:web": "pnpm run build:web:production && pnpm --dir apps/worker exec wrangler pages deploy ../web/dist --project-name ally-audit-web --branch main --commit-dirty=true",
+    "deploy:web:analog": "PUBLIC_ALLY_API_BASE=https://ally.andersseen.dev pnpm --filter @ally/web-analog build && pnpm --dir apps/worker exec wrangler pages deploy ../web-analog/dist/client --project-name ally-audit-web-analog --branch main --commit-dirty=true",
     "deploy:worker:dry-run": "pnpm --filter @ally/worker run deploy:dry-run",
     "e2e:install": "playwright install chromium",
     "clean": "turbo run clean && rm -rf node_modules/.cache .turbo"
@@ -52,6 +54,7 @@
     "playwright": "catalog:",
     "prettier": "catalog:",
     "prettier-plugin-astro": "catalog:",
+    "tslib": "^2.8.1",
     "turbo": "catalog:",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:"

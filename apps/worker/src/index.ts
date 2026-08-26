@@ -1037,6 +1037,10 @@ function allowedOrigin(origin: string | null, env: Env): string {
     configured,
     'http://127.0.0.1:4321',
     'http://localhost:4321',
+    'http://127.0.0.1:4323',
+    'http://localhost:4323',
+    'http://127.0.0.1:4324',
+    'http://localhost:4324',
     // The Pages project's default domain, live until/alongside the custom
     // domain configured via PUBLIC_WEB_ORIGIN.
     'https://ally-audit-web.pages.dev',

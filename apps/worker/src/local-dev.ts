@@ -660,7 +660,11 @@ function allowedOrigin(origin: string | undefined, ctx: LocalDevContext): string
   if (
     origin === configured ||
     origin === 'http://127.0.0.1:4321' ||
-    origin === 'http://localhost:4321'
+    origin === 'http://localhost:4321' ||
+    origin === 'http://127.0.0.1:4323' ||
+    origin === 'http://localhost:4323' ||
+    origin === 'http://127.0.0.1:4324' ||
+    origin === 'http://localhost:4324'
   ) {
     return origin;
   }

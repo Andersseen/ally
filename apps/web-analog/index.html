@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ally - Analog Candidate</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#17695d" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1412" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/logo.svg" />
+    <script>
+      (() => {
+        const key = 'ally-theme-mode';
+        const stored = window.localStorage.getItem(key);
+        const mode =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        document.documentElement.dataset.themeMode = mode;
+        document.documentElement.style.colorScheme = mode;
+        document.documentElement.classList.toggle('dark', mode === 'dark');
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
