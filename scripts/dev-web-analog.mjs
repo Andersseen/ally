@@ -1,5 +1,7 @@
 import { spawn } from 'node:child_process';
 
+/* global fetch, setTimeout */
+
 const children = [];
 let shuttingDown = false;
 

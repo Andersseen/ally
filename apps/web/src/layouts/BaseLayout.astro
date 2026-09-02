@@ -46,9 +46,11 @@ const umamiWebsiteId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
     <title>{fullTitle}</title>
-    {umamiUrl && umamiWebsiteId && (
-      <script is:inline defer src={umamiUrl} data-website-id={umamiWebsiteId} />
-    )}
+    {
+      umamiUrl && umamiWebsiteId && (
+        <script is:inline defer src={umamiUrl} data-website-id={umamiWebsiteId} />
+      )
+    }
     <script is:inline>
       (() => {
         const key = 'ally-theme-mode';
