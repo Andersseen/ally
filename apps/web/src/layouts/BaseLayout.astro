@@ -18,6 +18,8 @@ const siteUrl = (import.meta.env.PUBLIC_SITE_URL ?? 'https://ally.andersseen.dev
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const fullTitle = title === 'Ally' ? 'Ally - Hosted Web Audit' : `${title} - Ally`;
 const socialImage = new URL('/social-card.svg', siteUrl).toString();
+const umamiUrl = import.meta.env.PUBLIC_UMAMI_URL;
+const umamiWebsiteId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
 ---
 
 <!doctype html>
@@ -44,6 +46,9 @@ const socialImage = new URL('/social-card.svg', siteUrl).toString();
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
     <title>{fullTitle}</title>
+    {umamiUrl && umamiWebsiteId && (
+      <script is:inline defer src={umamiUrl} data-website-id={umamiWebsiteId} />
+    )}
     <script is:inline>
       (() => {
         const key = 'ally-theme-mode';
