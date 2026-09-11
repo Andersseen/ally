@@ -17,8 +17,8 @@ permissions:
 env:
   PUBLIC_SITE_URL: https://ally.andersseen.dev
   PUBLIC_ALLY_API_BASE: https://ally.andersseen.dev
-  PUBLIC_UMAMI_URL: https://umami.andersseen.dev/script.js
-  PUBLIC_UMAMI_WEBSITE_ID: ade5376e-baba-4f88-b4b7-dab4ef7d97b3
+  PUBLIC_UMAMI_URL: ${{ vars.PUBLIC_UMAMI_URL || 'https://umami.andersseen.dev/script.js' }}
+  PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.PUBLIC_UMAMI_WEBSITE_ID || 'ade5376e-baba-4f88-b4b7-dab4ef7d97b3' }}
 
 jobs:
   deploy:
