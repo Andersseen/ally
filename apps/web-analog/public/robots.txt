@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ally.andersseen.dev/sitemap.xml
